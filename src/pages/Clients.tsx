@@ -1,0 +1,147 @@
+import { useState } from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Badge } from '@/components/ui/badge'
+import useAppStore from '@/stores/useAppStore'
+import { AlertTriangle, ImageIcon, User } from 'lucide-react'
+import { cn } from '@/lib/utils'
+
+export default function Clients() {
+  const { clients } = useAppStore()
+  const [selectedClient, setSelectedClient] = useState<any>(null)
+
+  return (
+    <div className="space-y-6 animate-fade-in-up">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold tracking-tight">Banco de Clientes</h2>
+      </div>
+
+      <Card className="border-border/50 bg-card/50">
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader>
+              <TableRow className="border-border hover:bg-transparent">
+                <TableHead>Nome</TableHead>
+                <TableHead>Contato</TableHead>
+                <TableHead>Total Gasto</TableHead>
+                <TableHead>Status Saúde</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {clients.map((client) => (
+                <TableRow
+                  key={client.id}
+                  className="border-border cursor-pointer hover:bg-muted/50 transition-colors"
+                  onClick={() => setSelectedClient(client)}
+                >
+                  <TableCell className="font-medium flex items-center gap-3">
+                    <img src={client.avatar} alt="avatar" className="size-8 rounded-full" />
+                    {client.name}
+                  </TableCell>
+                  <TableCell>{client.phone}</TableCell>
+                  <TableCell>R$ {client.totalSpent}</TableCell>
+                  <TableCell>
+                    {client.healthAlerts.length > 0 ? (
+                      <Badge
+                        variant="destructive"
+                        className="bg-destructive/20 text-destructive border-destructive/30"
+                      >
+                        <AlertTriangle className="size-3 mr-1" /> Alerta
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline" className="text-muted-foreground border-border">
+                        Limpo
+                      </Badge>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      <Dialog open={!!selectedClient} onOpenChange={() => setSelectedClient(null)}>
+        <DialogContent className="sm:max-w-[500px] border-border bg-card">
+          {selectedClient && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-3">
+                  <img
+                    src={selectedClient.avatar}
+                    className="size-12 rounded-full ring-2 ring-primary/20"
+                    alt="avatar"
+                  />
+                  <div>
+                    <span className="text-xl">{selectedClient.name}</span>
+                    <p className="text-sm text-muted-foreground font-normal">
+                      {selectedClient.phone}
+                    </p>
+                  </div>
+                </DialogTitle>
+              </DialogHeader>
+
+              <div className="space-y-6 pt-4">
+                {selectedClient.healthAlerts.length > 0 && (
+                  <div className="bg-destructive/10 border border-destructive/50 rounded-lg p-4 animate-shake">
+                    <h4 className="flex items-center gap-2 text-destructive font-bold text-sm mb-2">
+                      <AlertTriangle className="size-4" /> FICHA MÉDICA - ATENÇÃO
+                    </h4>
+                    <ul className="list-disc list-inside pl-4 text-sm text-destructive-foreground">
+                      {selectedClient.healthAlerts.map((alert: string, i: number) => (
+                        <li key={i}>{alert}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                <div>
+                  <h4 className="text-sm font-medium text-muted-foreground flex items-center gap-2 mb-3">
+                    <User className="size-4" /> Histórico Financeiro
+                  </h4>
+                  <div className="bg-background rounded-lg p-4 border border-border">
+                    <p className="text-sm">Total Investido no Studio:</p>
+                    <p className="text-2xl font-bold text-primary mt-1">
+                      R$ {selectedClient.totalSpent}
+                    </p>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-medium text-muted-foreground flex items-center gap-2 mb-3">
+                    <ImageIcon className="size-4" /> Galeria de Trabalhos
+                  </h4>
+                  <div className="grid grid-cols-3 gap-2">
+                    {selectedClient.history.length > 0 ? (
+                      selectedClient.history.map((img: string, i: number) => (
+                        <div key={i} className="aspect-square rounded-md overflow-hidden bg-muted">
+                          <img
+                            src={img}
+                            alt="Tattoo history"
+                            className="w-full h-full object-cover hover:scale-110 transition-transform cursor-pointer"
+                          />
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-sm text-muted-foreground col-span-3">
+                        Nenhum trabalho finalizado ainda.
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+    </div>
+  )
+}
