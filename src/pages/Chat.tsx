@@ -7,6 +7,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { AlertCircle, CheckCircle2, ShieldAlert } from 'lucide-react'
 import useAppStore from '@/stores/useAppStore'
 import { toast } from '@/components/ui/use-toast'
+import { cn } from '@/lib/utils'
 
 type Message = { id: string; text: string; isBot: boolean; time: string }
 
@@ -61,7 +62,7 @@ export default function Chat() {
             true,
           )
           break
-        case 3:
+        case 3: {
           setClientData((prev) => ({ ...prev, health: text }))
           const hasAlert = text.toLowerCase().includes('sim')
           addMsg(
@@ -71,6 +72,7 @@ export default function Chat() {
             true,
           )
           break
+        }
         case 4:
           addMsg(
             'Sinal confirmado! 🎉 Seu agendamento foi pré-confirmado na agenda do artista. Em breve ele entrará em contato para definir a data e horário exatos. Obrigado!',

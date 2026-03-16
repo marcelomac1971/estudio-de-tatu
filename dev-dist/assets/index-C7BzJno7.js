@@ -20663,7 +20663,7 @@ var twMerge = /* @__PURE__ */ createTailwindMerge(getDefaultConfig);
 * @param inputs - Array of class names
 * @returns Merged class names
 */
-function cn$2(...inputs) {
+function cn$1(...inputs) {
 	return twMerge(clsx(inputs));
 }
 //#endregion
@@ -20673,7 +20673,7 @@ var ToastViewport = import_react.forwardRef(({ className, ...props }, ref) => /*
 	"data-uid": "src/components/ui/toast.tsx:15:3",
 	"data-prohibitions": "[editContent]",
 	ref,
-	className: cn$2("fixed top-0 z-[100] flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-[420px]", className),
+	className: cn$1("fixed top-0 z-[100] flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-[420px]", className),
 	...props
 }));
 ToastViewport.displayName = Viewport$1.displayName;
@@ -20689,7 +20689,7 @@ var Toast$1 = import_react.forwardRef(({ className, variant, ...props }, ref) =>
 		"data-uid": "src/components/ui/toast.tsx:47:5",
 		"data-prohibitions": "[editContent]",
 		ref,
-		className: cn$2(toastVariants({ variant }), className),
+		className: cn$1(toastVariants({ variant }), className),
 		...props
 	});
 });
@@ -20698,7 +20698,7 @@ var ToastAction = import_react.forwardRef(({ className, ...props }, ref) => /* @
 	"data-uid": "src/components/ui/toast.tsx:60:3",
 	"data-prohibitions": "[editContent]",
 	ref,
-	className: cn$2("inline-flex h-8 shrink-0 items-center justify-center rounded-md border bg-transparent px-3 text-sm font-medium ring-offset-background transition-colors hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 group-[.destructive]:border-muted/40 group-[.destructive]:hover:border-destructive/30 group-[.destructive]:hover:bg-destructive group-[.destructive]:hover:text-destructive-foreground group-[.destructive]:focus:ring-destructive", className),
+	className: cn$1("inline-flex h-8 shrink-0 items-center justify-center rounded-md border bg-transparent px-3 text-sm font-medium ring-offset-background transition-colors hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 group-[.destructive]:border-muted/40 group-[.destructive]:hover:border-destructive/30 group-[.destructive]:hover:bg-destructive group-[.destructive]:hover:text-destructive-foreground group-[.destructive]:focus:ring-destructive", className),
 	...props
 }));
 ToastAction.displayName = Action.displayName;
@@ -20706,7 +20706,7 @@ var ToastClose = import_react.forwardRef(({ className, ...props }, ref) => /* @_
 	"data-uid": "src/components/ui/toast.tsx:75:3",
 	"data-prohibitions": "[editContent]",
 	ref,
-	className: cn$2("absolute right-2 top-2 rounded-md p-1 text-foreground/50 opacity-0 transition-opacity hover:text-foreground focus:opacity-100 focus:outline-none focus:ring-2 group-hover:opacity-100 group-[.destructive]:text-red-300 group-[.destructive]:hover:text-red-50 group-[.destructive]:focus:ring-red-400 group-[.destructive]:focus:ring-offset-red-600", className),
+	className: cn$1("absolute right-2 top-2 rounded-md p-1 text-foreground/50 opacity-0 transition-opacity hover:text-foreground focus:opacity-100 focus:outline-none focus:ring-2 group-hover:opacity-100 group-[.destructive]:text-red-300 group-[.destructive]:hover:text-red-50 group-[.destructive]:focus:ring-red-400 group-[.destructive]:focus:ring-offset-red-600", className),
 	"toast-close": "",
 	...props,
 	children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X, {
@@ -20720,7 +20720,7 @@ var ToastTitle = import_react.forwardRef(({ className, ...props }, ref) => /* @_
 	"data-uid": "src/components/ui/toast.tsx:93:3",
 	"data-prohibitions": "[editContent]",
 	ref,
-	className: cn$2("text-sm font-semibold", className),
+	className: cn$1("text-sm font-semibold", className),
 	...props
 }));
 ToastTitle.displayName = Title$1.displayName;
@@ -20728,7 +20728,7 @@ var ToastDescription = import_react.forwardRef(({ className, ...props }, ref) =>
 	"data-uid": "src/components/ui/toast.tsx:101:3",
 	"data-prohibitions": "[editContent]",
 	ref,
-	className: cn$2("text-sm opacity-90", className),
+	className: cn$1("text-sm opacity-90", className),
 	...props
 }));
 ToastDescription.displayName = Description$1.displayName;
@@ -21171,7 +21171,7 @@ var TOAST_WIDTH = 356;
 var GAP = 14;
 var SWIPE_THRESHOLD = 45;
 var TIME_BEFORE_UNMOUNT = 200;
-function cn$1(...classes) {
+function cn(...classes) {
 	return classes.filter(Boolean).join(" ");
 }
 function getDefaultSwipeDirections(position) {
@@ -21324,12 +21324,12 @@ var Toast = (props) => {
 		if (icons == null ? void 0 : icons.loading) {
 			var _toast_classNames1;
 			return /* @__PURE__ */ import_react.createElement("div", {
-				className: cn$1(classNames == null ? void 0 : classNames.loader, toast == null ? void 0 : (_toast_classNames1 = toast.classNames) == null ? void 0 : _toast_classNames1.loader, "sonner-loader"),
+				className: cn(classNames == null ? void 0 : classNames.loader, toast == null ? void 0 : (_toast_classNames1 = toast.classNames) == null ? void 0 : _toast_classNames1.loader, "sonner-loader"),
 				"data-visible": toastType === "loading"
 			}, icons.loading);
 		}
 		return /* @__PURE__ */ import_react.createElement(Loader, {
-			className: cn$1(classNames == null ? void 0 : classNames.loader, toast == null ? void 0 : (_toast_classNames = toast.classNames) == null ? void 0 : _toast_classNames.loader),
+			className: cn(classNames == null ? void 0 : classNames.loader, toast == null ? void 0 : (_toast_classNames = toast.classNames) == null ? void 0 : _toast_classNames.loader),
 			visible: toastType === "loading"
 		});
 	}
@@ -21338,7 +21338,7 @@ var Toast = (props) => {
 	return /* @__PURE__ */ import_react.createElement("li", {
 		tabIndex: 0,
 		ref: toastRef,
-		className: cn$1(className, toastClassname, classNames == null ? void 0 : classNames.toast, toast == null ? void 0 : (_toast_classNames = toast.classNames) == null ? void 0 : _toast_classNames.toast, classNames == null ? void 0 : classNames.default, classNames == null ? void 0 : classNames[toastType], toast == null ? void 0 : (_toast_classNames1 = toast.classNames) == null ? void 0 : _toast_classNames1[toastType]),
+		className: cn(className, toastClassname, classNames == null ? void 0 : classNames.toast, toast == null ? void 0 : (_toast_classNames = toast.classNames) == null ? void 0 : _toast_classNames.toast, classNames == null ? void 0 : classNames.default, classNames == null ? void 0 : classNames[toastType], toast == null ? void 0 : (_toast_classNames1 = toast.classNames) == null ? void 0 : _toast_classNames1[toastType]),
 		"data-sonner-toast": "",
 		"data-rich-colors": (_toast_richColors = toast.richColors) != null ? _toast_richColors : defaultRichColors,
 		"data-styled": !Boolean(toast.jsx || toast.unstyled || unstyled),
@@ -21453,19 +21453,19 @@ var Toast = (props) => {
 			deleteToast();
 			toast.onDismiss == null || toast.onDismiss.call(toast, toast);
 		},
-		className: cn$1(classNames == null ? void 0 : classNames.closeButton, toast == null ? void 0 : (_toast_classNames2 = toast.classNames) == null ? void 0 : _toast_classNames2.closeButton)
+		className: cn(classNames == null ? void 0 : classNames.closeButton, toast == null ? void 0 : (_toast_classNames2 = toast.classNames) == null ? void 0 : _toast_classNames2.closeButton)
 	}, (_icons_close = icons == null ? void 0 : icons.close) != null ? _icons_close : CloseIcon) : null, (toastType || toast.icon || toast.promise) && toast.icon !== null && ((icons == null ? void 0 : icons[toastType]) !== null || toast.icon) ? /* @__PURE__ */ import_react.createElement("div", {
 		"data-icon": "",
-		className: cn$1(classNames == null ? void 0 : classNames.icon, toast == null ? void 0 : (_toast_classNames3 = toast.classNames) == null ? void 0 : _toast_classNames3.icon)
+		className: cn(classNames == null ? void 0 : classNames.icon, toast == null ? void 0 : (_toast_classNames3 = toast.classNames) == null ? void 0 : _toast_classNames3.icon)
 	}, toast.promise || toast.type === "loading" && !toast.icon ? toast.icon || getLoadingIcon() : null, toast.type !== "loading" ? icon : null) : null, /* @__PURE__ */ import_react.createElement("div", {
 		"data-content": "",
-		className: cn$1(classNames == null ? void 0 : classNames.content, toast == null ? void 0 : (_toast_classNames4 = toast.classNames) == null ? void 0 : _toast_classNames4.content)
+		className: cn(classNames == null ? void 0 : classNames.content, toast == null ? void 0 : (_toast_classNames4 = toast.classNames) == null ? void 0 : _toast_classNames4.content)
 	}, /* @__PURE__ */ import_react.createElement("div", {
 		"data-title": "",
-		className: cn$1(classNames == null ? void 0 : classNames.title, toast == null ? void 0 : (_toast_classNames5 = toast.classNames) == null ? void 0 : _toast_classNames5.title)
+		className: cn(classNames == null ? void 0 : classNames.title, toast == null ? void 0 : (_toast_classNames5 = toast.classNames) == null ? void 0 : _toast_classNames5.title)
 	}, toast.jsx ? toast.jsx : typeof toast.title === "function" ? toast.title() : toast.title), toast.description ? /* @__PURE__ */ import_react.createElement("div", {
 		"data-description": "",
-		className: cn$1(descriptionClassName, toastDescriptionClassname, classNames == null ? void 0 : classNames.description, toast == null ? void 0 : (_toast_classNames6 = toast.classNames) == null ? void 0 : _toast_classNames6.description)
+		className: cn(descriptionClassName, toastDescriptionClassname, classNames == null ? void 0 : classNames.description, toast == null ? void 0 : (_toast_classNames6 = toast.classNames) == null ? void 0 : _toast_classNames6.description)
 	}, typeof toast.description === "function" ? toast.description() : toast.description) : null), /* @__PURE__ */ import_react.isValidElement(toast.cancel) ? toast.cancel : toast.cancel && isAction(toast.cancel) ? /* @__PURE__ */ import_react.createElement("button", {
 		"data-button": true,
 		"data-cancel": true,
@@ -21476,7 +21476,7 @@ var Toast = (props) => {
 			toast.cancel.onClick == null || toast.cancel.onClick.call(toast.cancel, event);
 			deleteToast();
 		},
-		className: cn$1(classNames == null ? void 0 : classNames.cancelButton, toast == null ? void 0 : (_toast_classNames7 = toast.classNames) == null ? void 0 : _toast_classNames7.cancelButton)
+		className: cn(classNames == null ? void 0 : classNames.cancelButton, toast == null ? void 0 : (_toast_classNames7 = toast.classNames) == null ? void 0 : _toast_classNames7.cancelButton)
 	}, toast.cancel.label) : null, /* @__PURE__ */ import_react.isValidElement(toast.action) ? toast.action : toast.action && isAction(toast.action) ? /* @__PURE__ */ import_react.createElement("button", {
 		"data-button": true,
 		"data-action": true,
@@ -21487,7 +21487,7 @@ var Toast = (props) => {
 			if (event.defaultPrevented) return;
 			deleteToast();
 		},
-		className: cn$1(classNames == null ? void 0 : classNames.actionButton, toast == null ? void 0 : (_toast_classNames8 = toast.classNames) == null ? void 0 : _toast_classNames8.actionButton)
+		className: cn(classNames == null ? void 0 : classNames.actionButton, toast == null ? void 0 : (_toast_classNames8 = toast.classNames) == null ? void 0 : _toast_classNames8.actionButton)
 	}, toast.action.label) : null);
 };
 function getDocumentDirection() {
@@ -24189,7 +24189,7 @@ var TooltipContent = import_react.forwardRef(({ className, sideOffset = 4, ...pr
 	"data-prohibitions": "[editContent]",
 	ref,
 	sideOffset,
-	className: cn$2("z-50 overflow-hidden rounded-md border bg-popover px-3 py-1.5 text-sm text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-[--radix-tooltip-content-transform-origin]", className),
+	className: cn$1("z-50 overflow-hidden rounded-md border bg-popover px-3 py-1.5 text-sm text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-[--radix-tooltip-content-transform-origin]", className),
 	...props
 }));
 TooltipContent.displayName = Content2.displayName;
@@ -24331,7 +24331,7 @@ var Button$1 = import_react.forwardRef(({ className, variant, size, asChild = fa
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(asChild ? Slot$1 : "button", {
 		"data-uid": "src/components/ui/button.tsx:44:7",
 		"data-prohibitions": "[editContent]",
-		className: cn$2(buttonVariants({
+		className: cn$1(buttonVariants({
 			variant,
 			size,
 			className
@@ -24348,7 +24348,7 @@ var Input = import_react.forwardRef(({ className, type, ...props }, ref) => {
 		"data-uid": "src/components/ui/input.tsx:9:7",
 		"data-prohibitions": "[editContent]",
 		type,
-		className: cn$2("flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm", className),
+		className: cn$1("flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm", className),
 		ref,
 		...props
 	});
@@ -24424,7 +24424,7 @@ var Separator = import_react.forwardRef(({ className, orientation = "horizontal"
 	ref,
 	decorative,
 	orientation,
-	className: cn$2("shrink-0 bg-border", orientation === "horizontal" ? "h-[1px] w-full" : "h-full w-[1px]", className),
+	className: cn$1("shrink-0 bg-border", orientation === "horizontal" ? "h-[1px] w-full" : "h-full w-[1px]", className),
 	...props
 }));
 Separator.displayName = Root$6.displayName;
@@ -25745,7 +25745,7 @@ var SheetPortal = Portal;
 var SheetOverlay = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Overlay, {
 	"data-uid": "src/components/ui/sheet.tsx:21:3",
 	"data-prohibitions": "[editContent]",
-	className: cn$2("fixed inset-0 z-50 bg-black/80  data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0", className),
+	className: cn$1("fixed inset-0 z-50 bg-black/80  data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0", className),
 	...props,
 	ref
 }));
@@ -25769,7 +25769,7 @@ var SheetContent = import_react.forwardRef(({ side = "right", className, childre
 		"data-uid": "src/components/ui/sheet.tsx:62:5",
 		"data-prohibitions": "[editContent]",
 		ref,
-		className: cn$2(sheetVariants({ side }), className),
+		className: cn$1(sheetVariants({ side }), className),
 		...props,
 		children: [children, /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Close, {
 			"data-uid": "src/components/ui/sheet.tsx:64:7",
@@ -25792,14 +25792,14 @@ SheetContent.displayName = Content.displayName;
 var SheetHeader = ({ className, ...props }) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 	"data-uid": "src/components/ui/sheet.tsx:74:3",
 	"data-prohibitions": "[editContent]",
-	className: cn$2("flex flex-col space-y-2 text-center sm:text-left", className),
+	className: cn$1("flex flex-col space-y-2 text-center sm:text-left", className),
 	...props
 });
 SheetHeader.displayName = "SheetHeader";
 var SheetFooter = ({ className, ...props }) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 	"data-uid": "src/components/ui/sheet.tsx:79:3",
 	"data-prohibitions": "[editContent]",
-	className: cn$2("flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2", className),
+	className: cn$1("flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2", className),
 	...props
 });
 SheetFooter.displayName = "SheetFooter";
@@ -25807,7 +25807,7 @@ var SheetTitle = import_react.forwardRef(({ className, ...props }, ref) => /* @_
 	"data-uid": "src/components/ui/sheet.tsx:90:3",
 	"data-prohibitions": "[editContent]",
 	ref,
-	className: cn$2("text-lg font-semibold text-foreground", className),
+	className: cn$1("text-lg font-semibold text-foreground", className),
 	...props
 }));
 SheetTitle.displayName = Title.displayName;
@@ -25815,7 +25815,7 @@ var SheetDescription = import_react.forwardRef(({ className, ...props }, ref) =>
 	"data-uid": "src/components/ui/sheet.tsx:102:3",
 	"data-prohibitions": "[editContent]",
 	ref,
-	className: cn$2("text-sm text-muted-foreground", className),
+	className: cn$1("text-sm text-muted-foreground", className),
 	...props
 }));
 SheetDescription.displayName = Description.displayName;
@@ -25825,7 +25825,7 @@ function Skeleton({ className, ...props }) {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 		"data-uid": "src/components/ui/skeleton.tsx:5:10",
 		"data-prohibitions": "[editContent]",
-		className: cn$2("animate-pulse rounded-md bg-muted", className),
+		className: cn$1("animate-pulse rounded-md bg-muted", className),
 		...props
 	});
 }
@@ -25905,7 +25905,7 @@ var SidebarProvider = import_react.forwardRef(({ defaultOpen = true, open: openP
 					"--sidebar-width-icon": SIDEBAR_WIDTH_ICON,
 					...style
 				},
-				className: cn$2("group/sidebar-wrapper flex min-h-svh w-full has-[[data-variant=inset]]:bg-sidebar", className),
+				className: cn$1("group/sidebar-wrapper flex min-h-svh w-full has-[[data-variant=inset]]:bg-sidebar", className),
 				ref,
 				...props,
 				children
@@ -25919,7 +25919,7 @@ var Sidebar = import_react.forwardRef(({ side = "left", variant = "sidebar", col
 	if (collapsible === "none") return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 		"data-uid": "src/components/ui/sidebar.tsx:177:9",
 		"data-prohibitions": "[editContent]",
-		className: cn$2("flex h-full w-[--sidebar-width] flex-col bg-sidebar text-sidebar-foreground", className),
+		className: cn$1("flex h-full w-[--sidebar-width] flex-col bg-sidebar text-sidebar-foreground", className),
 		ref,
 		...props,
 		children
@@ -25971,11 +25971,11 @@ var Sidebar = import_react.forwardRef(({ side = "left", variant = "sidebar", col
 		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 			"data-uid": "src/components/ui/sidebar.tsx:224:9",
 			"data-prohibitions": "[editContent]",
-			className: cn$2("relative w-[--sidebar-width] bg-transparent transition-[width] duration-200 ease-linear", "group-data-[collapsible=offcanvas]:w-0", "group-data-[side=right]:rotate-180", variant === "floating" || variant === "inset" ? "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)_+_theme(spacing.4))]" : "group-data-[collapsible=icon]:w-[--sidebar-width-icon]")
+			className: cn$1("relative w-[--sidebar-width] bg-transparent transition-[width] duration-200 ease-linear", "group-data-[collapsible=offcanvas]:w-0", "group-data-[side=right]:rotate-180", variant === "floating" || variant === "inset" ? "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)_+_theme(spacing.4))]" : "group-data-[collapsible=icon]:w-[--sidebar-width-icon]")
 		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 			"data-uid": "src/components/ui/sidebar.tsx:234:9",
 			"data-prohibitions": "[editContent]",
-			className: cn$2("fixed inset-y-0 z-10 hidden h-svh w-[--sidebar-width] transition-[left,right,width] duration-200 ease-linear md:flex", side === "left" ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]" : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]", variant === "floating" || variant === "inset" ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)_+_theme(spacing.4)_+2px)]" : "group-data-[collapsible=icon]:w-[--sidebar-width-icon] group-data-[side=left]:border-r group-data-[side=right]:border-l", className),
+			className: cn$1("fixed inset-y-0 z-10 hidden h-svh w-[--sidebar-width] transition-[left,right,width] duration-200 ease-linear md:flex", side === "left" ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]" : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]", variant === "floating" || variant === "inset" ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)_+_theme(spacing.4)_+2px)]" : "group-data-[collapsible=icon]:w-[--sidebar-width-icon] group-data-[side=left]:border-r group-data-[side=right]:border-l", className),
 			...props,
 			children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 				"data-uid": "src/components/ui/sidebar.tsx:248:11",
@@ -25997,7 +25997,7 @@ var SidebarTrigger = import_react.forwardRef(({ className, onClick, ...props }, 
 		"data-sidebar": "trigger",
 		variant: "ghost",
 		size: "icon",
-		className: cn$2("h-7 w-7", className),
+		className: cn$1("h-7 w-7", className),
 		onClick: (event) => {
 			onClick?.(event);
 			toggleSidebar();
@@ -26030,7 +26030,7 @@ var SidebarRail = import_react.forwardRef(({ className, ...props }, ref) => {
 		tabIndex: -1,
 		onClick: toggleSidebar,
 		title: "Toggle Sidebar",
-		className: cn$2("absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] hover:after:bg-sidebar-border group-data-[side=left]:-right-4 group-data-[side=right]:left-0 sm:flex", "[[data-side=left]_&]:cursor-w-resize [[data-side=right]_&]:cursor-e-resize", "[[data-side=left][data-state=collapsed]_&]:cursor-e-resize [[data-side=right][data-state=collapsed]_&]:cursor-w-resize", "group-data-[collapsible=offcanvas]:translate-x-0 group-data-[collapsible=offcanvas]:after:left-full group-data-[collapsible=offcanvas]:hover:bg-sidebar", "[[data-side=left][data-collapsible=offcanvas]_&]:-right-2", "[[data-side=right][data-collapsible=offcanvas]_&]:-left-2", className),
+		className: cn$1("absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] hover:after:bg-sidebar-border group-data-[side=left]:-right-4 group-data-[side=right]:left-0 sm:flex", "[[data-side=left]_&]:cursor-w-resize [[data-side=right]_&]:cursor-e-resize", "[[data-side=left][data-state=collapsed]_&]:cursor-e-resize [[data-side=right][data-state=collapsed]_&]:cursor-w-resize", "group-data-[collapsible=offcanvas]:translate-x-0 group-data-[collapsible=offcanvas]:after:left-full group-data-[collapsible=offcanvas]:hover:bg-sidebar", "[[data-side=left][data-collapsible=offcanvas]_&]:-right-2", "[[data-side=right][data-collapsible=offcanvas]_&]:-left-2", className),
 		...props
 	});
 });
@@ -26040,7 +26040,7 @@ var SidebarInset = import_react.forwardRef(({ className, ...props }, ref) => {
 		"data-uid": "src/components/ui/sidebar.tsx:320:7",
 		"data-prohibitions": "[editContent]",
 		ref,
-		className: cn$2("relative flex w-full flex-1 flex-col bg-background", "md:peer-data-[variant=inset]:m-2 md:peer-data-[state=collapsed]:peer-data-[variant=inset]:ml-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow", className),
+		className: cn$1("relative flex w-full flex-1 flex-col bg-background", "md:peer-data-[variant=inset]:m-2 md:peer-data-[state=collapsed]:peer-data-[variant=inset]:ml-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow", className),
 		...props
 	});
 });
@@ -26051,7 +26051,7 @@ var SidebarInput = import_react.forwardRef(({ className, ...props }, ref) => {
 		"data-prohibitions": "[editContent]",
 		ref,
 		"data-sidebar": "input",
-		className: cn$2("h-8 w-full bg-background shadow-none focus-visible:ring-2 focus-visible:ring-sidebar-ring", className),
+		className: cn$1("h-8 w-full bg-background shadow-none focus-visible:ring-2 focus-visible:ring-sidebar-ring", className),
 		...props
 	});
 });
@@ -26062,7 +26062,7 @@ var SidebarHeader = import_react.forwardRef(({ className, ...props }, ref) => {
 		"data-prohibitions": "[editContent]",
 		ref,
 		"data-sidebar": "header",
-		className: cn$2("flex flex-col gap-2 p-2", className),
+		className: cn$1("flex flex-col gap-2 p-2", className),
 		...props
 	});
 });
@@ -26073,7 +26073,7 @@ var SidebarFooter = import_react.forwardRef(({ className, ...props }, ref) => {
 		"data-prohibitions": "[editContent]",
 		ref,
 		"data-sidebar": "footer",
-		className: cn$2("flex flex-col gap-2 p-2", className),
+		className: cn$1("flex flex-col gap-2 p-2", className),
 		...props
 	});
 });
@@ -26084,7 +26084,7 @@ var SidebarSeparator = import_react.forwardRef(({ className, ...props }, ref) =>
 		"data-prohibitions": "[editContent]",
 		ref,
 		"data-sidebar": "separator",
-		className: cn$2("mx-2 w-auto bg-sidebar-border", className),
+		className: cn$1("mx-2 w-auto bg-sidebar-border", className),
 		...props
 	});
 });
@@ -26095,7 +26095,7 @@ var SidebarContent = import_react.forwardRef(({ className, ...props }, ref) => {
 		"data-prohibitions": "[editContent]",
 		ref,
 		"data-sidebar": "content",
-		className: cn$2("flex min-h-0 flex-1 flex-col gap-2 overflow-auto group-data-[collapsible=icon]:overflow-hidden", className),
+		className: cn$1("flex min-h-0 flex-1 flex-col gap-2 overflow-auto group-data-[collapsible=icon]:overflow-hidden", className),
 		...props
 	});
 });
@@ -26106,7 +26106,7 @@ var SidebarGroup = import_react.forwardRef(({ className, ...props }, ref) => {
 		"data-prohibitions": "[editContent]",
 		ref,
 		"data-sidebar": "group",
-		className: cn$2("relative flex w-full min-w-0 flex-col p-2", className),
+		className: cn$1("relative flex w-full min-w-0 flex-col p-2", className),
 		...props
 	});
 });
@@ -26117,7 +26117,7 @@ var SidebarGroupLabel = import_react.forwardRef(({ className, asChild = false, .
 		"data-prohibitions": "[editContent]",
 		ref,
 		"data-sidebar": "group-label",
-		className: cn$2("flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium text-sidebar-foreground/70 outline-none ring-sidebar-ring transition-[margin,opacity] duration-200 ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0", "group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0", className),
+		className: cn$1("flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium text-sidebar-foreground/70 outline-none ring-sidebar-ring transition-[margin,opacity] duration-200 ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0", "group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0", className),
 		...props
 	});
 });
@@ -26128,7 +26128,7 @@ var SidebarGroupAction = import_react.forwardRef(({ className, asChild = false, 
 		"data-prohibitions": "[editContent]",
 		ref,
 		"data-sidebar": "group-action",
-		className: cn$2("absolute right-3 top-3.5 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground outline-none ring-sidebar-ring transition-transform hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0", "after:absolute after:-inset-2 after:md:hidden", "group-data-[collapsible=icon]:hidden", className),
+		className: cn$1("absolute right-3 top-3.5 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground outline-none ring-sidebar-ring transition-transform hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0", "after:absolute after:-inset-2 after:md:hidden", "group-data-[collapsible=icon]:hidden", className),
 		...props
 	});
 });
@@ -26138,7 +26138,7 @@ var SidebarGroupContent = import_react.forwardRef(({ className, ...props }, ref)
 	"data-prohibitions": "[editContent]",
 	ref,
 	"data-sidebar": "group-content",
-	className: cn$2("w-full text-sm", className),
+	className: cn$1("w-full text-sm", className),
 	...props
 }));
 SidebarGroupContent.displayName = "SidebarGroupContent";
@@ -26147,7 +26147,7 @@ var SidebarMenu = import_react.forwardRef(({ className, ...props }, ref) => /* @
 	"data-prohibitions": "[editContent]",
 	ref,
 	"data-sidebar": "menu",
-	className: cn$2("flex w-full min-w-0 flex-col gap-1", className),
+	className: cn$1("flex w-full min-w-0 flex-col gap-1", className),
 	...props
 }));
 SidebarMenu.displayName = "SidebarMenu";
@@ -26156,7 +26156,7 @@ var SidebarMenuItem = import_react.forwardRef(({ className, ...props }, ref) => 
 	"data-prohibitions": "[editContent]",
 	ref,
 	"data-sidebar": "menu-item",
-	className: cn$2("group/menu-item relative", className),
+	className: cn$1("group/menu-item relative", className),
 	...props
 }));
 SidebarMenuItem.displayName = "SidebarMenuItem";
@@ -26187,7 +26187,7 @@ var SidebarMenuButton = import_react.forwardRef(({ asChild = false, isActive = f
 		"data-sidebar": "menu-button",
 		"data-size": size,
 		"data-active": isActive,
-		className: cn$2(sidebarMenuButtonVariants({
+		className: cn$1(sidebarMenuButtonVariants({
 			variant,
 			size
 		}), className),
@@ -26220,7 +26220,7 @@ var SidebarMenuAction = import_react.forwardRef(({ className, asChild = false, s
 		"data-prohibitions": "[editContent]",
 		ref,
 		"data-sidebar": "menu-action",
-		className: cn$2("absolute right-1 top-1.5 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground outline-none ring-sidebar-ring transition-transform hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 peer-hover/menu-button:text-sidebar-accent-foreground [&>svg]:size-4 [&>svg]:shrink-0", "after:absolute after:-inset-2 after:md:hidden", "peer-data-[size=sm]/menu-button:top-1", "peer-data-[size=default]/menu-button:top-1.5", "peer-data-[size=lg]/menu-button:top-2.5", "group-data-[collapsible=icon]:hidden", showOnHover && "group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 peer-data-[active=true]/menu-button:text-sidebar-accent-foreground md:opacity-0", className),
+		className: cn$1("absolute right-1 top-1.5 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground outline-none ring-sidebar-ring transition-transform hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 peer-hover/menu-button:text-sidebar-accent-foreground [&>svg]:size-4 [&>svg]:shrink-0", "after:absolute after:-inset-2 after:md:hidden", "peer-data-[size=sm]/menu-button:top-1", "peer-data-[size=default]/menu-button:top-1.5", "peer-data-[size=lg]/menu-button:top-2.5", "group-data-[collapsible=icon]:hidden", showOnHover && "group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 peer-data-[active=true]/menu-button:text-sidebar-accent-foreground md:opacity-0", className),
 		...props
 	});
 });
@@ -26230,7 +26230,7 @@ var SidebarMenuBadge = import_react.forwardRef(({ className, ...props }, ref) =>
 	"data-prohibitions": "[editContent]",
 	ref,
 	"data-sidebar": "menu-badge",
-	className: cn$2("pointer-events-none absolute right-1 flex h-5 min-w-5 select-none items-center justify-center rounded-md px-1 text-xs font-medium tabular-nums text-sidebar-foreground", "peer-hover/menu-button:text-sidebar-accent-foreground peer-data-[active=true]/menu-button:text-sidebar-accent-foreground", "peer-data-[size=sm]/menu-button:top-1", "peer-data-[size=default]/menu-button:top-1.5", "peer-data-[size=lg]/menu-button:top-2.5", "group-data-[collapsible=icon]:hidden", className),
+	className: cn$1("pointer-events-none absolute right-1 flex h-5 min-w-5 select-none items-center justify-center rounded-md px-1 text-xs font-medium tabular-nums text-sidebar-foreground", "peer-hover/menu-button:text-sidebar-accent-foreground peer-data-[active=true]/menu-button:text-sidebar-accent-foreground", "peer-data-[size=sm]/menu-button:top-1", "peer-data-[size=default]/menu-button:top-1.5", "peer-data-[size=lg]/menu-button:top-2.5", "group-data-[collapsible=icon]:hidden", className),
 	...props
 }));
 SidebarMenuBadge.displayName = "SidebarMenuBadge";
@@ -26243,7 +26243,7 @@ var SidebarMenuSkeleton = import_react.forwardRef(({ className, showIcon = false
 		"data-prohibitions": "[editContent]",
 		ref,
 		"data-sidebar": "menu-skeleton",
-		className: cn$2("flex h-8 items-center gap-2 rounded-md px-2", className),
+		className: cn$1("flex h-8 items-center gap-2 rounded-md px-2", className),
 		...props,
 		children: [showIcon && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Skeleton, {
 			"data-uid": "src/components/ui/sidebar.tsx:656:20",
@@ -26265,7 +26265,7 @@ var SidebarMenuSub = import_react.forwardRef(({ className, ...props }, ref) => /
 	"data-prohibitions": "[editContent]",
 	ref,
 	"data-sidebar": "menu-sub",
-	className: cn$2("mx-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-l border-sidebar-border px-2.5 py-0.5", "group-data-[collapsible=icon]:hidden", className),
+	className: cn$1("mx-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-l border-sidebar-border px-2.5 py-0.5", "group-data-[collapsible=icon]:hidden", className),
 	...props
 }));
 SidebarMenuSub.displayName = "SidebarMenuSub";
@@ -26284,7 +26284,7 @@ var SidebarMenuSubButton = import_react.forwardRef(({ asChild = false, size = "m
 		"data-sidebar": "menu-sub-button",
 		"data-size": size,
 		"data-active": isActive,
-		className: cn$2("flex h-7 min-w-0 -translate-x-px items-center gap-2 overflow-hidden rounded-md px-2 text-sidebar-foreground outline-none ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:text-sidebar-accent-foreground", "data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground", size === "sm" && "text-xs", size === "md" && "text-sm", "group-data-[collapsible=icon]:hidden", className),
+		className: cn$1("flex h-7 min-w-0 -translate-x-px items-center gap-2 overflow-hidden rounded-md px-2 text-sidebar-foreground outline-none ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:text-sidebar-accent-foreground", "data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground", size === "sm" && "text-xs", size === "md" && "text-sm", "group-data-[collapsible=icon]:hidden", className),
 		...props
 	});
 });
@@ -26534,7 +26534,7 @@ var Avatar = import_react.forwardRef(({ className, ...props }, ref) => /* @__PUR
 	"data-uid": "src/components/ui/avatar.tsx:11:3",
 	"data-prohibitions": "[editContent]",
 	ref,
-	className: cn$2("relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full", className),
+	className: cn$1("relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full", className),
 	...props
 }));
 Avatar.displayName = Root$4.displayName;
@@ -26542,7 +26542,7 @@ var AvatarImage = import_react.forwardRef(({ className, ...props }, ref) => /* @
 	"data-uid": "src/components/ui/avatar.tsx:23:3",
 	"data-prohibitions": "[editContent]",
 	ref,
-	className: cn$2("aspect-square h-full w-full", className),
+	className: cn$1("aspect-square h-full w-full", className),
 	...props
 }));
 AvatarImage.displayName = Image.displayName;
@@ -26550,7 +26550,7 @@ var AvatarFallback = import_react.forwardRef(({ className, ...props }, ref) => /
 	"data-uid": "src/components/ui/avatar.tsx:35:3",
 	"data-prohibitions": "[editContent]",
 	ref,
-	className: cn$2("flex h-full w-full items-center justify-center rounded-full bg-muted", className),
+	className: cn$1("flex h-full w-full items-center justify-center rounded-full bg-muted", className),
 	...props
 }));
 AvatarFallback.displayName = Fallback.displayName;
@@ -26758,7 +26758,7 @@ var Card = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE_
 	"data-uid": "src/components/ui/card.tsx:8:5",
 	"data-prohibitions": "[editContent]",
 	ref,
-	className: cn$2("rounded-lg border bg-card text-card-foreground shadow-sm", className),
+	className: cn$1("rounded-lg border bg-card text-card-foreground shadow-sm", className),
 	...props
 }));
 Card.displayName = "Card";
@@ -26766,7 +26766,7 @@ var CardHeader = import_react.forwardRef(({ className, ...props }, ref) => /* @_
 	"data-uid": "src/components/ui/card.tsx:19:5",
 	"data-prohibitions": "[editContent]",
 	ref,
-	className: cn$2("flex flex-col space-y-1.5 p-6", className),
+	className: cn$1("flex flex-col space-y-1.5 p-6", className),
 	...props
 }));
 CardHeader.displayName = "CardHeader";
@@ -26774,7 +26774,7 @@ var CardTitle = import_react.forwardRef(({ className, ...props }, ref) => /* @__
 	"data-uid": "src/components/ui/card.tsx:26:5",
 	"data-prohibitions": "[editContent]",
 	ref,
-	className: cn$2("text-2xl font-semibold leading-none tracking-tight", className),
+	className: cn$1("text-2xl font-semibold leading-none tracking-tight", className),
 	...props
 }));
 CardTitle.displayName = "CardTitle";
@@ -26782,7 +26782,7 @@ var CardDescription = import_react.forwardRef(({ className, ...props }, ref) => 
 	"data-uid": "src/components/ui/card.tsx:37:5",
 	"data-prohibitions": "[editContent]",
 	ref,
-	className: cn$2("text-sm text-muted-foreground", className),
+	className: cn$1("text-sm text-muted-foreground", className),
 	...props
 }));
 CardDescription.displayName = "CardDescription";
@@ -26790,7 +26790,7 @@ var CardContent = import_react.forwardRef(({ className, ...props }, ref) => /* @
 	"data-uid": "src/components/ui/card.tsx:44:5",
 	"data-prohibitions": "[editContent]",
 	ref,
-	className: cn$2("p-6 pt-0", className),
+	className: cn$1("p-6 pt-0", className),
 	...props
 }));
 CardContent.displayName = "CardContent";
@@ -26798,7 +26798,7 @@ var CardFooter = import_react.forwardRef(({ className, ...props }, ref) => /* @_
 	"data-uid": "src/components/ui/card.tsx:51:5",
 	"data-prohibitions": "[editContent]",
 	ref,
-	className: cn$2("flex items-center p-6 pt-0", className),
+	className: cn$1("flex items-center p-6 pt-0", className),
 	...props
 }));
 CardFooter.displayName = "CardFooter";
@@ -26808,7 +26808,7 @@ function MetricCard({ title, value, icon: Icon, trend, trendUp, className }) {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Card, {
 		"data-uid": "src/components/MetricCard.tsx:23:5",
 		"data-prohibitions": "[editContent]",
-		className: cn$2("overflow-hidden border-border/50 bg-card/50 backdrop-blur", className),
+		className: cn$1("overflow-hidden border-border/50 bg-card/50 backdrop-blur", className),
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(CardContent, {
 			"data-uid": "src/components/MetricCard.tsx:24:7",
 			"data-prohibitions": "[editContent]",
@@ -26844,7 +26844,7 @@ function MetricCard({ title, value, icon: Icon, trend, trendUp, className }) {
 				}), trend && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
 					"data-uid": "src/components/MetricCard.tsx:34:13",
 					"data-prohibitions": "[editContent]",
-					className: cn$2("text-xs font-medium", trendUp ? "text-secondary" : "text-destructive"),
+					className: cn$1("text-xs font-medium", trendUp ? "text-secondary" : "text-destructive"),
 					children: trend
 				})]
 			})]
@@ -27155,11 +27155,11 @@ function ChatBubble({ text, isBot, time }) {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 		"data-uid": "src/components/chat/ChatBubble.tsx:11:5",
 		"data-prohibitions": "[editContent]",
-		className: cn$2("flex w-full mb-4", isBot ? "justify-start" : "justify-end"),
+		className: cn$1("flex w-full mb-4", isBot ? "justify-start" : "justify-end"),
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 			"data-uid": "src/components/chat/ChatBubble.tsx:12:7",
 			"data-prohibitions": "[editContent]",
-			className: cn$2("relative max-w-[80%] px-4 py-2.5 rounded-2xl text-sm shadow-sm", isBot ? "bg-card text-foreground rounded-tl-none chat-tail-left" : "bg-primary text-primary-foreground rounded-tr-none chat-tail-right"),
+			className: cn$1("relative max-w-[80%] px-4 py-2.5 rounded-2xl text-sm shadow-sm", isBot ? "bg-card text-foreground rounded-tl-none chat-tail-left" : "bg-primary text-primary-foreground rounded-tr-none chat-tail-right"),
 			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 				"data-uid": "src/components/chat/ChatBubble.tsx:20:9",
 				"data-prohibitions": "[editContent]",
@@ -27168,7 +27168,7 @@ function ChatBubble({ text, isBot, time }) {
 			}), time && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
 				"data-uid": "src/components/chat/ChatBubble.tsx:22:11",
 				"data-prohibitions": "[editContent]",
-				className: cn$2("text-[10px] mt-1 block text-right opacity-70", isBot ? "text-muted-foreground" : "text-primary-foreground/80"),
+				className: cn$1("text-[10px] mt-1 block text-right opacity-70", isBot ? "text-muted-foreground" : "text-primary-foreground/80"),
 				children: time
 			})]
 		})
@@ -27849,7 +27849,7 @@ var ScrollArea = import_react.forwardRef(({ className, children, ...props }, ref
 	"data-uid": "src/components/ui/scroll-area.tsx:11:3",
 	"data-prohibitions": "[editContent]",
 	ref,
-	className: cn$2("relative overflow-hidden", className),
+	className: cn$1("relative overflow-hidden", className),
 	...props,
 	children: [
 		/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Viewport, {
@@ -27874,7 +27874,7 @@ var ScrollBar = import_react.forwardRef(({ className, orientation = "vertical", 
 	"data-prohibitions": "[editContent]",
 	ref,
 	orientation,
-	className: cn$2("flex touch-none select-none transition-colors", orientation === "vertical" && "h-full w-2.5 border-l border-l-transparent p-[1px]", orientation === "horizontal" && "h-2.5 flex-col border-t border-t-transparent p-[1px]", className),
+	className: cn$1("flex touch-none select-none transition-colors", orientation === "vertical" && "h-full w-2.5 border-l border-l-transparent p-[1px]", orientation === "horizontal" && "h-2.5 flex-col border-t border-t-transparent p-[1px]", className),
 	...props,
 	children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ScrollAreaThumb, {
 		"data-uid": "src/components/ui/scroll-area.tsx:40:5",
@@ -27959,44 +27959,44 @@ function Chat() {
 		}, 1500);
 	};
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-		"data-uid": "src/pages/Chat.tsx:100:5",
+		"data-uid": "src/pages/Chat.tsx:102:5",
 		"data-prohibitions": "[editContent]",
 		className: "grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-100px)]",
 		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Card, {
-			"data-uid": "src/pages/Chat.tsx:102:7",
+			"data-uid": "src/pages/Chat.tsx:104:7",
 			"data-prohibitions": "[editContent]",
 			className: "lg:col-span-2 flex flex-col border-border/50 bg-background overflow-hidden relative",
 			children: [
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					"data-uid": "src/pages/Chat.tsx:103:9",
+					"data-uid": "src/pages/Chat.tsx:105:9",
 					"data-prohibitions": "[]",
 					className: "h-16 border-b border-border bg-card/50 flex items-center px-4 gap-3 shrink-0",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Avatar, {
-						"data-uid": "src/pages/Chat.tsx:104:11",
+						"data-uid": "src/pages/Chat.tsx:106:11",
 						"data-prohibitions": "[]",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(AvatarImage, {
-							"data-uid": "src/pages/Chat.tsx:105:13",
+							"data-uid": "src/pages/Chat.tsx:107:13",
 							"data-prohibitions": "[editContent]",
 							src: "https://img.usecurling.com/ppl/thumbnail?gender=female&seed=8"
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AvatarFallback, {
-							"data-uid": "src/pages/Chat.tsx:106:13",
+							"data-uid": "src/pages/Chat.tsx:108:13",
 							"data-prohibitions": "[]",
 							children: "C"
 						})]
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						"data-uid": "src/pages/Chat.tsx:108:11",
+						"data-uid": "src/pages/Chat.tsx:110:11",
 						"data-prohibitions": "[]",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
-							"data-uid": "src/pages/Chat.tsx:109:13",
+							"data-uid": "src/pages/Chat.tsx:111:13",
 							"data-prohibitions": "[]",
 							className: "font-semibold text-sm",
 							children: "Novo Cliente (Automação)"
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
-							"data-uid": "src/pages/Chat.tsx:110:13",
+							"data-uid": "src/pages/Chat.tsx:112:13",
 							"data-prohibitions": "[]",
 							className: "text-xs text-secondary flex items-center gap-1",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-								"data-uid": "src/pages/Chat.tsx:111:15",
+								"data-uid": "src/pages/Chat.tsx:113:15",
 								"data-prohibitions": "[editContent]",
 								className: "size-2 rounded-full bg-secondary animate-pulse"
 							}), " Bot Ativo"]
@@ -28004,43 +28004,43 @@ function Chat() {
 					})]
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ScrollArea, {
-					"data-uid": "src/pages/Chat.tsx:116:9",
+					"data-uid": "src/pages/Chat.tsx:118:9",
 					"data-prohibitions": "[editContent]",
 					className: "flex-1 p-4",
 					ref: scrollRef,
 					children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						"data-uid": "src/pages/Chat.tsx:117:11",
+						"data-uid": "src/pages/Chat.tsx:119:11",
 						"data-prohibitions": "[editContent]",
 						className: "max-w-2xl mx-auto flex flex-col justify-end min-h-full",
 						children: [messages.map((m) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChatBubble, {
-							"data-uid": "src/pages/Chat.tsx:119:15",
+							"data-uid": "src/pages/Chat.tsx:121:15",
 							"data-prohibitions": "[editContent]",
 							text: m.text,
 							isBot: m.isBot,
 							time: m.time
 						}, m.id)), isTyping && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-							"data-uid": "src/pages/Chat.tsx:122:15",
+							"data-uid": "src/pages/Chat.tsx:124:15",
 							"data-prohibitions": "[]",
 							className: "flex w-full mb-4 justify-start",
 							children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								"data-uid": "src/pages/Chat.tsx:123:17",
+								"data-uid": "src/pages/Chat.tsx:125:17",
 								"data-prohibitions": "[]",
 								className: "bg-card px-4 py-3 rounded-2xl rounded-tl-none chat-tail-left flex gap-1 items-center",
 								children: [
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										"data-uid": "src/pages/Chat.tsx:124:19",
+										"data-uid": "src/pages/Chat.tsx:126:19",
 										"data-prohibitions": "[editContent]",
 										className: "size-2 bg-muted-foreground rounded-full animate-bounce",
 										style: { animationDelay: "0ms" }
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										"data-uid": "src/pages/Chat.tsx:128:19",
+										"data-uid": "src/pages/Chat.tsx:130:19",
 										"data-prohibitions": "[editContent]",
 										className: "size-2 bg-muted-foreground rounded-full animate-bounce",
 										style: { animationDelay: "150ms" }
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										"data-uid": "src/pages/Chat.tsx:132:19",
+										"data-uid": "src/pages/Chat.tsx:134:19",
 										"data-prohibitions": "[editContent]",
 										className: "size-2 bg-muted-foreground rounded-full animate-bounce",
 										style: { animationDelay: "300ms" }
@@ -28051,46 +28051,46 @@ function Chat() {
 					})
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					"data-uid": "src/pages/Chat.tsx:143:9",
+					"data-uid": "src/pages/Chat.tsx:145:9",
 					"data-prohibitions": "[editContent]",
 					className: "p-4 border-t border-border bg-card/30 shrink-0",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-						"data-uid": "src/pages/Chat.tsx:144:11",
+						"data-uid": "src/pages/Chat.tsx:146:11",
 						"data-prohibitions": "[]",
 						className: "text-xs text-muted-foreground mb-2 font-medium",
 						children: "Simular Resposta do Cliente:"
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						"data-uid": "src/pages/Chat.tsx:147:11",
+						"data-uid": "src/pages/Chat.tsx:149:11",
 						"data-prohibitions": "[editContent]",
 						className: "flex flex-wrap gap-2",
 						children: [
 							step === 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button$1, {
-								"data-uid": "src/pages/Chat.tsx:149:15",
+								"data-uid": "src/pages/Chat.tsx:151:15",
 								"data-prohibitions": "[]",
 								onClick: () => handleOption("Quero fazer um orçamento", 1),
 								children: "Fazer Orçamento"
 							}),
 							step === 1 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button$1, {
-								"data-uid": "src/pages/Chat.tsx:155:17",
+								"data-uid": "src/pages/Chat.tsx:157:17",
 								"data-prohibitions": "[]",
 								variant: "outline",
 								onClick: () => handleOption("Realismo, uns 15cm no braço", 2),
 								children: "Realismo, 15cm"
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button$1, {
-								"data-uid": "src/pages/Chat.tsx:161:17",
+								"data-uid": "src/pages/Chat.tsx:163:17",
 								"data-prohibitions": "[]",
 								variant: "outline",
 								onClick: () => handleOption("Blackwork pequeno, 5cm", 2),
 								children: "Blackwork, 5cm"
 							})] }),
 							step === 2 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button$1, {
-								"data-uid": "src/pages/Chat.tsx:168:17",
+								"data-uid": "src/pages/Chat.tsx:170:17",
 								"data-prohibitions": "[]",
 								variant: "outline",
 								onClick: () => handleOption("Não, tudo 100%!", 3),
 								children: "Não, tudo certo"
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button$1, {
-								"data-uid": "src/pages/Chat.tsx:171:17",
+								"data-uid": "src/pages/Chat.tsx:173:17",
 								"data-prohibitions": "[]",
 								variant: "destructive",
 								className: "bg-destructive/20 text-destructive border-destructive/50 hover:bg-destructive/30",
@@ -28098,18 +28098,18 @@ function Chat() {
 								children: "Sim, alergia a látex"
 							})] }),
 							step === 3 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button$1, {
-								"data-uid": "src/pages/Chat.tsx:181:15",
+								"data-uid": "src/pages/Chat.tsx:183:15",
 								"data-prohibitions": "[]",
 								className: "bg-secondary hover:bg-secondary/90 text-secondary-foreground",
 								onClick: () => handleOption("Sim, vou mandar o pix agora", 4),
 								children: "Pagar Sinal (PIX)"
 							}),
 							step === 4 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
-								"data-uid": "src/pages/Chat.tsx:189:15",
+								"data-uid": "src/pages/Chat.tsx:191:15",
 								"data-prohibitions": "[]",
 								className: "text-sm text-secondary font-medium flex items-center gap-2",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleCheck, {
-									"data-uid": "src/pages/Chat.tsx:190:17",
+									"data-uid": "src/pages/Chat.tsx:192:17",
 									"data-prohibitions": "[editContent]",
 									className: "size-4"
 								}), " Fluxo Concluído"]
@@ -28119,38 +28119,38 @@ function Chat() {
 				})
 			]
 		}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Card, {
-			"data-uid": "src/pages/Chat.tsx:198:7",
+			"data-uid": "src/pages/Chat.tsx:200:7",
 			"data-prohibitions": "[editContent]",
 			className: "border-border/50 bg-card/50 p-6 hidden lg:flex flex-col gap-6",
 			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
-				"data-uid": "src/pages/Chat.tsx:199:9",
+				"data-uid": "src/pages/Chat.tsx:201:9",
 				"data-prohibitions": "[]",
 				className: "font-semibold border-b border-border pb-2",
 				children: "Resumo da Ficha"
 			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				"data-uid": "src/pages/Chat.tsx:201:9",
+				"data-uid": "src/pages/Chat.tsx:203:9",
 				"data-prohibitions": "[editContent]",
 				className: "space-y-4",
 				children: [
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						"data-uid": "src/pages/Chat.tsx:202:11",
+						"data-uid": "src/pages/Chat.tsx:204:11",
 						"data-prohibitions": "[editContent]",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							"data-uid": "src/pages/Chat.tsx:203:13",
+							"data-uid": "src/pages/Chat.tsx:205:13",
 							"data-prohibitions": "[]",
 							className: "text-xs text-muted-foreground mb-1",
 							children: "Status do Funil"
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							"data-uid": "src/pages/Chat.tsx:204:13",
+							"data-uid": "src/pages/Chat.tsx:206:13",
 							"data-prohibitions": "[editContent]",
 							className: "flex items-center gap-2 text-sm font-medium",
 							children: [
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-									"data-uid": "src/pages/Chat.tsx:205:15",
+									"data-uid": "src/pages/Chat.tsx:207:15",
 									"data-prohibitions": "[]",
 									className: "flex-1 h-2 bg-muted rounded-full overflow-hidden",
 									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-										"data-uid": "src/pages/Chat.tsx:206:17",
+										"data-uid": "src/pages/Chat.tsx:208:17",
 										"data-prohibitions": "[editContent]",
 										className: "h-full bg-primary transition-all duration-500",
 										style: { width: `${Math.min(step / 4 * 100, 100)}%` }
@@ -28162,48 +28162,48 @@ function Chat() {
 						})]
 					}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						"data-uid": "src/pages/Chat.tsx:215:11",
+						"data-uid": "src/pages/Chat.tsx:217:11",
 						"data-prohibitions": "[editContent]",
 						className: "bg-background rounded-lg p-3 border border-border",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							"data-uid": "src/pages/Chat.tsx:216:13",
+							"data-uid": "src/pages/Chat.tsx:218:13",
 							"data-prohibitions": "[]",
 							className: "text-xs text-muted-foreground mb-1",
 							children: "Ideia / Estilo"
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							"data-uid": "src/pages/Chat.tsx:217:13",
+							"data-uid": "src/pages/Chat.tsx:219:13",
 							"data-prohibitions": "[editContent]",
 							className: "text-sm font-medium",
 							children: clientData.style || "Aguardando..."
 						})]
 					}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						"data-uid": "src/pages/Chat.tsx:220:11",
+						"data-uid": "src/pages/Chat.tsx:222:11",
 						"data-prohibitions": "[editContent]",
-						className: cn("rounded-lg p-3 border transition-colors", clientData.health.toLowerCase().includes("sim") ? "bg-destructive/10 border-destructive/50 animate-shake" : "bg-background border-border"),
+						className: cn$1("rounded-lg p-3 border transition-colors", clientData.health.toLowerCase().includes("sim") ? "bg-destructive/10 border-destructive/50 animate-shake" : "bg-background border-border"),
 						children: [
 							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
-								"data-uid": "src/pages/Chat.tsx:228:13",
+								"data-uid": "src/pages/Chat.tsx:230:13",
 								"data-prohibitions": "[]",
 								className: "text-xs text-muted-foreground mb-1 flex items-center gap-1",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleAlert, {
-									"data-uid": "src/pages/Chat.tsx:229:15",
+									"data-uid": "src/pages/Chat.tsx:231:15",
 									"data-prohibitions": "[editContent]",
 									className: "size-3"
 								}), " Questionário de Saúde"]
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-								"data-uid": "src/pages/Chat.tsx:231:13",
+								"data-uid": "src/pages/Chat.tsx:233:13",
 								"data-prohibitions": "[editContent]",
-								className: cn("text-sm font-medium", clientData.health.toLowerCase().includes("sim") && "text-destructive"),
+								className: cn$1("text-sm font-medium", clientData.health.toLowerCase().includes("sim") && "text-destructive"),
 								children: clientData.health || "Aguardando..."
 							}),
 							clientData.health.toLowerCase().includes("sim") && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
-								"data-uid": "src/pages/Chat.tsx:240:15",
+								"data-uid": "src/pages/Chat.tsx:242:15",
 								"data-prohibitions": "[]",
 								className: "text-xs text-destructive mt-2 flex items-start gap-1 font-bold",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ShieldAlert, {
-									"data-uid": "src/pages/Chat.tsx:241:17",
+									"data-uid": "src/pages/Chat.tsx:243:17",
 									"data-prohibitions": "[editContent]",
 									className: "size-4 shrink-0"
 								}), " ATENÇÃO REQUERIDA PELO ARTISTA"]
@@ -28211,47 +28211,47 @@ function Chat() {
 						]
 					}),
 					step >= 3 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						"data-uid": "src/pages/Chat.tsx:247:13",
+						"data-uid": "src/pages/Chat.tsx:249:13",
 						"data-prohibitions": "[]",
 						className: "bg-secondary/10 border border-secondary/30 rounded-lg p-3",
 						children: [
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-								"data-uid": "src/pages/Chat.tsx:248:15",
+								"data-uid": "src/pages/Chat.tsx:250:15",
 								"data-prohibitions": "[]",
 								className: "text-xs text-secondary mb-1 font-medium",
 								children: "Orçamento Gerado"
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								"data-uid": "src/pages/Chat.tsx:249:15",
+								"data-uid": "src/pages/Chat.tsx:251:15",
 								"data-prohibitions": "[]",
 								className: "flex justify-between text-sm mt-2",
 								children: [
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										"data-uid": "src/pages/Chat.tsx:250:17",
+										"data-uid": "src/pages/Chat.tsx:252:17",
 										"data-prohibitions": "[]",
 										children: "Valor Total:"
 									}),
 									" ",
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										"data-uid": "src/pages/Chat.tsx:250:43",
+										"data-uid": "src/pages/Chat.tsx:252:43",
 										"data-prohibitions": "[]",
 										children: "R$ 800"
 									})
 								]
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								"data-uid": "src/pages/Chat.tsx:252:15",
+								"data-uid": "src/pages/Chat.tsx:254:15",
 								"data-prohibitions": "[]",
 								className: "flex justify-between text-sm text-secondary font-bold mt-1",
 								children: [
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										"data-uid": "src/pages/Chat.tsx:253:17",
+										"data-uid": "src/pages/Chat.tsx:255:17",
 										"data-prohibitions": "[]",
 										children: "Sinal Pendente:"
 									}),
 									" ",
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										"data-uid": "src/pages/Chat.tsx:253:46",
+										"data-uid": "src/pages/Chat.tsx:255:46",
 										"data-prohibitions": "[]",
 										children: "R$ 200"
 									})
@@ -35513,38 +35513,38 @@ function Calendar({ className, classNames, showOutsideDays = true, captionLayout
 		"data-uid": "src/components/ui/calendar.tsx:24:5",
 		"data-prohibitions": "[editContent]",
 		showOutsideDays,
-		className: cn$2("bg-background group/calendar p-3 [--cell-size:2rem] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent", String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`, String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`, className),
+		className: cn$1("bg-background group/calendar p-3 [--cell-size:2rem] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent", String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`, String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`, className),
 		captionLayout,
 		formatters: {
 			formatMonthDropdown: (date) => date.toLocaleString("default", { month: "short" }),
 			...formatters
 		},
 		classNames: {
-			root: cn$2("w-fit", defaultClassNames.root),
-			months: cn$2("relative flex flex-col gap-4 md:flex-row", defaultClassNames.months),
-			month: cn$2("flex w-full flex-col gap-4", defaultClassNames.month),
-			nav: cn$2("absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1", defaultClassNames.nav),
-			button_previous: cn$2(buttonVariants({ variant: buttonVariant }), "h-[--cell-size] w-[--cell-size] select-none p-0 aria-disabled:opacity-50", defaultClassNames.button_previous),
-			button_next: cn$2(buttonVariants({ variant: buttonVariant }), "h-[--cell-size] w-[--cell-size] select-none p-0 aria-disabled:opacity-50", defaultClassNames.button_next),
-			month_caption: cn$2("flex h-[--cell-size] w-full items-center justify-center px-[--cell-size]", defaultClassNames.month_caption),
-			dropdowns: cn$2("flex h-[--cell-size] w-full items-center justify-center gap-1.5 text-sm font-medium", defaultClassNames.dropdowns),
-			dropdown_root: cn$2("has-focus:border-ring border-input shadow-xs has-focus:ring-ring/50 has-focus:ring-[3px] relative rounded-md border", defaultClassNames.dropdown_root),
-			dropdown: cn$2("absolute inset-0 opacity-0", defaultClassNames.dropdown),
-			caption_label: cn$2("select-none font-medium", captionLayout === "label" ? "text-sm" : "[&>svg]:text-muted-foreground flex h-8 items-center gap-1 rounded-md pl-2 pr-1 text-sm [&>svg]:size-3.5", defaultClassNames.caption_label),
+			root: cn$1("w-fit", defaultClassNames.root),
+			months: cn$1("relative flex flex-col gap-4 md:flex-row", defaultClassNames.months),
+			month: cn$1("flex w-full flex-col gap-4", defaultClassNames.month),
+			nav: cn$1("absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1", defaultClassNames.nav),
+			button_previous: cn$1(buttonVariants({ variant: buttonVariant }), "h-[--cell-size] w-[--cell-size] select-none p-0 aria-disabled:opacity-50", defaultClassNames.button_previous),
+			button_next: cn$1(buttonVariants({ variant: buttonVariant }), "h-[--cell-size] w-[--cell-size] select-none p-0 aria-disabled:opacity-50", defaultClassNames.button_next),
+			month_caption: cn$1("flex h-[--cell-size] w-full items-center justify-center px-[--cell-size]", defaultClassNames.month_caption),
+			dropdowns: cn$1("flex h-[--cell-size] w-full items-center justify-center gap-1.5 text-sm font-medium", defaultClassNames.dropdowns),
+			dropdown_root: cn$1("has-focus:border-ring border-input shadow-xs has-focus:ring-ring/50 has-focus:ring-[3px] relative rounded-md border", defaultClassNames.dropdown_root),
+			dropdown: cn$1("absolute inset-0 opacity-0", defaultClassNames.dropdown),
+			caption_label: cn$1("select-none font-medium", captionLayout === "label" ? "text-sm" : "[&>svg]:text-muted-foreground flex h-8 items-center gap-1 rounded-md pl-2 pr-1 text-sm [&>svg]:size-3.5", defaultClassNames.caption_label),
 			table: "w-full border-collapse",
-			weekdays: cn$2("flex", defaultClassNames.weekdays),
-			weekday: cn$2("text-muted-foreground flex-1 select-none rounded-md text-[0.8rem] font-normal", defaultClassNames.weekday),
-			week: cn$2("mt-2 flex w-full", defaultClassNames.week),
-			week_number_header: cn$2("w-[--cell-size] select-none", defaultClassNames.week_number_header),
-			week_number: cn$2("text-muted-foreground select-none text-[0.8rem]", defaultClassNames.week_number),
-			day: cn$2("group/day relative aspect-square h-full w-full select-none p-0 text-center [&:first-child[data-selected=true]_button]:rounded-l-md [&:last-child[data-selected=true]_button]:rounded-r-md", defaultClassNames.day),
-			range_start: cn$2("bg-accent rounded-l-md", defaultClassNames.range_start),
-			range_middle: cn$2("rounded-none", defaultClassNames.range_middle),
-			range_end: cn$2("bg-accent rounded-r-md", defaultClassNames.range_end),
-			today: cn$2("bg-accent text-accent-foreground rounded-md data-[selected=true]:rounded-none", defaultClassNames.today),
-			outside: cn$2("text-muted-foreground aria-selected:text-muted-foreground", defaultClassNames.outside),
-			disabled: cn$2("text-muted-foreground opacity-50", defaultClassNames.disabled),
-			hidden: cn$2("invisible", defaultClassNames.hidden),
+			weekdays: cn$1("flex", defaultClassNames.weekdays),
+			weekday: cn$1("text-muted-foreground flex-1 select-none rounded-md text-[0.8rem] font-normal", defaultClassNames.weekday),
+			week: cn$1("mt-2 flex w-full", defaultClassNames.week),
+			week_number_header: cn$1("w-[--cell-size] select-none", defaultClassNames.week_number_header),
+			week_number: cn$1("text-muted-foreground select-none text-[0.8rem]", defaultClassNames.week_number),
+			day: cn$1("group/day relative aspect-square h-full w-full select-none p-0 text-center [&:first-child[data-selected=true]_button]:rounded-l-md [&:last-child[data-selected=true]_button]:rounded-r-md", defaultClassNames.day),
+			range_start: cn$1("bg-accent rounded-l-md", defaultClassNames.range_start),
+			range_middle: cn$1("rounded-none", defaultClassNames.range_middle),
+			range_end: cn$1("bg-accent rounded-r-md", defaultClassNames.range_end),
+			today: cn$1("bg-accent text-accent-foreground rounded-md data-[selected=true]:rounded-none", defaultClassNames.today),
+			outside: cn$1("text-muted-foreground aria-selected:text-muted-foreground", defaultClassNames.outside),
+			disabled: cn$1("text-muted-foreground opacity-50", defaultClassNames.disabled),
+			hidden: cn$1("invisible", defaultClassNames.hidden),
 			...classNames
 		},
 		components: {
@@ -35554,7 +35554,7 @@ function Calendar({ className, classNames, showOutsideDays = true, captionLayout
 					"data-prohibitions": "[editContent]",
 					"data-slot": "calendar",
 					ref: rootRef,
-					className: cn$2(className),
+					className: cn$1(className),
 					...props
 				});
 			},
@@ -35562,19 +35562,19 @@ function Calendar({ className, classNames, showOutsideDays = true, captionLayout
 				if (orientation === "left") return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronLeft, {
 					"data-uid": "src/components/ui/calendar.tsx:112:20",
 					"data-prohibitions": "[editContent]",
-					className: cn$2("size-4", className),
+					className: cn$1("size-4", className),
 					...props
 				});
 				if (orientation === "right") return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronRight, {
 					"data-uid": "src/components/ui/calendar.tsx:116:20",
 					"data-prohibitions": "[editContent]",
-					className: cn$2("size-4", className),
+					className: cn$1("size-4", className),
 					...props
 				});
 				return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronDown, {
 					"data-uid": "src/components/ui/calendar.tsx:119:18",
 					"data-prohibitions": "[editContent]",
-					className: cn$2("size-4", className),
+					className: cn$1("size-4", className),
 					...props
 				});
 			},
@@ -35614,7 +35614,7 @@ function CalendarDayButton({ className, day, modifiers, ...props }) {
 		"data-range-start": modifiers.range_start,
 		"data-range-end": modifiers.range_end,
 		"data-range-middle": modifiers.range_middle,
-		className: cn$2("data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-ring/50 flex aspect-square h-auto w-full min-w-[--cell-size] flex-col gap-1 font-normal leading-none data-[range-end=true]:rounded-md data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-md group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:ring-[3px] [&>span]:text-xs [&>span]:opacity-70", defaultClassNames.day, className),
+		className: cn$1("data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-ring/50 flex aspect-square h-auto w-full min-w-[--cell-size] flex-col gap-1 font-normal leading-none data-[range-end=true]:rounded-md data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-md group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:ring-[3px] [&>span]:text-xs [&>span]:opacity-70", defaultClassNames.day, className),
 		...props
 	});
 }
@@ -35633,7 +35633,7 @@ function Badge({ className, variant, ...props }) {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 		"data-uid": "src/components/ui/badge.tsx:30:10",
 		"data-prohibitions": "[editContent]",
-		className: cn$2(badgeVariants({ variant }), className),
+		className: cn$1(badgeVariants({ variant }), className),
 		...props
 	});
 }
@@ -35725,7 +35725,7 @@ function Agenda() {
 										"data-uid": "src/pages/Agenda.tsx:76:23",
 										"data-prohibitions": "[editContent]",
 										onClick: () => handleSlotClick(app),
-										className: cn$2("absolute inset-x-2 top-2 rounded-lg p-3 cursor-pointer shadow-sm border transition-all hover:scale-[1.01]", app.status === "confirmed" ? "bg-primary/20 border-primary/30" : "bg-card border-border", client.healthAlerts.length > 0 && "border-l-4 border-l-destructive"),
+										className: cn$1("absolute inset-x-2 top-2 rounded-lg p-3 cursor-pointer shadow-sm border transition-all hover:scale-[1.01]", app.status === "confirmed" ? "bg-primary/20 border-primary/30" : "bg-card border-border", client.healthAlerts.length > 0 && "border-l-4 border-l-destructive"),
 										style: {
 											height: `calc(${app.duration * 80}px - 16px)`,
 											zIndex: 10
@@ -35992,7 +35992,7 @@ var Table = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE
 		"data-uid": "src/components/ui/table.tsx:9:7",
 		"data-prohibitions": "[editContent]",
 		ref,
-		className: cn$2("w-full caption-bottom text-sm", className),
+		className: cn$1("w-full caption-bottom text-sm", className),
 		...props
 	})
 }));
@@ -36001,7 +36001,7 @@ var TableHeader = import_react.forwardRef(({ className, ...props }, ref) => /* @
 	"data-uid": "src/components/ui/table.tsx:19:3",
 	"data-prohibitions": "[editContent]",
 	ref,
-	className: cn$2("[&_tr]:border-b", className),
+	className: cn$1("[&_tr]:border-b", className),
 	...props
 }));
 TableHeader.displayName = "TableHeader";
@@ -36009,7 +36009,7 @@ var TableBody = import_react.forwardRef(({ className, ...props }, ref) => /* @__
 	"data-uid": "src/components/ui/table.tsx:27:3",
 	"data-prohibitions": "[editContent]",
 	ref,
-	className: cn$2("[&_tr:last-child]:border-0", className),
+	className: cn$1("[&_tr:last-child]:border-0", className),
 	...props
 }));
 TableBody.displayName = "TableBody";
@@ -36017,7 +36017,7 @@ var TableFooter = import_react.forwardRef(({ className, ...props }, ref) => /* @
 	"data-uid": "src/components/ui/table.tsx:35:3",
 	"data-prohibitions": "[editContent]",
 	ref,
-	className: cn$2("border-t bg-muted/50 font-medium [&>tr]:last:border-b-0", className),
+	className: cn$1("border-t bg-muted/50 font-medium [&>tr]:last:border-b-0", className),
 	...props
 }));
 TableFooter.displayName = "TableFooter";
@@ -36025,7 +36025,7 @@ var TableRow = import_react.forwardRef(({ className, ...props }, ref) => /* @__P
 	"data-uid": "src/components/ui/table.tsx:45:5",
 	"data-prohibitions": "[editContent]",
 	ref,
-	className: cn$2("border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted", className),
+	className: cn$1("border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted", className),
 	...props
 }));
 TableRow.displayName = "TableRow";
@@ -36033,7 +36033,7 @@ var TableHead = import_react.forwardRef(({ className, ...props }, ref) => /* @__
 	"data-uid": "src/components/ui/table.tsx:61:3",
 	"data-prohibitions": "[editContent]",
 	ref,
-	className: cn$2("h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0", className),
+	className: cn$1("h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0", className),
 	...props
 }));
 TableHead.displayName = "TableHead";
@@ -36041,7 +36041,7 @@ var TableCell = import_react.forwardRef(({ className, ...props }, ref) => /* @__
 	"data-uid": "src/components/ui/table.tsx:76:3",
 	"data-prohibitions": "[editContent]",
 	ref,
-	className: cn$2("p-4 align-middle [&:has([role=checkbox])]:pr-0", className),
+	className: cn$1("p-4 align-middle [&:has([role=checkbox])]:pr-0", className),
 	...props
 }));
 TableCell.displayName = "TableCell";
@@ -36049,7 +36049,7 @@ var TableCaption = import_react.forwardRef(({ className, ...props }, ref) => /* 
 	"data-uid": "src/components/ui/table.tsx:88:3",
 	"data-prohibitions": "[editContent]",
 	ref,
-	className: cn$2("mt-4 text-sm text-muted-foreground", className),
+	className: cn$1("mt-4 text-sm text-muted-foreground", className),
 	...props
 }));
 TableCaption.displayName = "TableCaption";
@@ -36061,7 +36061,7 @@ var DialogOverlay = import_react.forwardRef(({ className, ...props }, ref) => /*
 	"data-uid": "src/components/ui/dialog.tsx:20:3",
 	"data-prohibitions": "[editContent]",
 	ref,
-	className: cn$2("fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0", className),
+	className: cn$1("fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0", className),
 	...props
 }));
 DialogOverlay.displayName = Overlay.displayName;
@@ -36075,7 +36075,7 @@ var DialogContent = import_react.forwardRef(({ className, children, ...props }, 
 		"data-uid": "src/components/ui/dialog.tsx:37:5",
 		"data-prohibitions": "[editContent]",
 		ref,
-		className: cn$2("fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg overflow-y-auto max-h-screen", className),
+		className: cn$1("fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg overflow-y-auto max-h-screen", className),
 		...props,
 		children: [children, /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Close, {
 			"data-uid": "src/components/ui/dialog.tsx:46:7",
@@ -36098,14 +36098,14 @@ DialogContent.displayName = Content.displayName;
 var DialogHeader = ({ className, ...props }) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 	"data-uid": "src/components/ui/dialog.tsx:56:3",
 	"data-prohibitions": "[editContent]",
-	className: cn$2("flex flex-col space-y-1.5 text-center sm:text-left", className),
+	className: cn$1("flex flex-col space-y-1.5 text-center sm:text-left", className),
 	...props
 });
 DialogHeader.displayName = "DialogHeader";
 var DialogFooter = ({ className, ...props }) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 	"data-uid": "src/components/ui/dialog.tsx:61:3",
 	"data-prohibitions": "[editContent]",
-	className: cn$2("flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2", className),
+	className: cn$1("flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2", className),
 	...props
 });
 DialogFooter.displayName = "DialogFooter";
@@ -36113,7 +36113,7 @@ var DialogTitle = import_react.forwardRef(({ className, ...props }, ref) => /* @
 	"data-uid": "src/components/ui/dialog.tsx:72:3",
 	"data-prohibitions": "[editContent]",
 	ref,
-	className: cn$2("text-lg font-semibold leading-none tracking-tight", className),
+	className: cn$1("text-lg font-semibold leading-none tracking-tight", className),
 	...props
 }));
 DialogTitle.displayName = Title.displayName;
@@ -36121,7 +36121,7 @@ var DialogDescription = import_react.forwardRef(({ className, ...props }, ref) =
 	"data-uid": "src/components/ui/dialog.tsx:84:3",
 	"data-prohibitions": "[editContent]",
 	ref,
-	className: cn$2("text-sm text-muted-foreground", className),
+	className: cn$1("text-sm text-muted-foreground", className),
 	...props
 }));
 DialogDescription.displayName = Description.displayName;
@@ -36406,7 +36406,7 @@ var Label = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE
 	"data-uid": "src/components/ui/label.tsx:16:3",
 	"data-prohibitions": "[editContent]",
 	ref,
-	className: cn$2(labelVariants(), className),
+	className: cn$1(labelVariants(), className),
 	...props
 }));
 Label.displayName = Root$1.displayName;
@@ -36539,13 +36539,13 @@ var Thumb = SwitchThumb;
 var Switch = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Root, {
 	"data-uid": "src/components/ui/switch.tsx:11:3",
 	"data-prohibitions": "[editContent]",
-	className: cn$2("peer inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=unchecked]:bg-input", className),
+	className: cn$1("peer inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=unchecked]:bg-input", className),
 	...props,
 	ref,
 	children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Thumb, {
 		"data-uid": "src/components/ui/switch.tsx:19:5",
 		"data-prohibitions": "[editContent]",
-		className: cn$2("pointer-events-none block h-5 w-5 rounded-full bg-background shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0")
+		className: cn$1("pointer-events-none block h-5 w-5 rounded-full bg-background shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0")
 	})
 }));
 Switch.displayName = Root.displayName;
@@ -36861,4 +36861,4 @@ var App = () => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AppProvider, {
 }));
 //#endregion
 
-//# sourceMappingURL=index-DOK-l5x2.js.map
+//# sourceMappingURL=index-C7BzJno7.js.map
