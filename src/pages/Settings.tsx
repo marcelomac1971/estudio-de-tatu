@@ -4,9 +4,12 @@ import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
+import useAppStore from '@/stores/useAppStore'
+import { Lock } from 'lucide-react'
 
 export default function Settings() {
   const { toast } = useToast()
+  const { subscriptionStatus, setSubscriptionStatus } = useAppStore()
 
   const handleSave = () => {
     toast({
@@ -66,6 +69,30 @@ export default function Settings() {
           <div className="space-y-2">
             <Label>Chave PIX para recebimento</Label>
             <Input defaultValue="CNPJ: 12.345.678/0001-90" className="bg-background" />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="border-border/50 bg-card/50 border-destructive/20">
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Lock className="size-4 text-destructive" />
+            Status da Assinatura
+          </CardTitle>
+          <CardDescription>Gerencie o plano de acesso à automação.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label className="text-base">Assinatura Ativa</Label>
+              <p className="text-sm text-muted-foreground">
+                Desativar a assinatura bloqueará o acesso ao sistema imediatamente.
+              </p>
+            </div>
+            <Switch
+              checked={subscriptionStatus === 'ativo'}
+              onCheckedChange={(checked) => setSubscriptionStatus(checked ? 'ativo' : 'inativo')}
+            />
           </div>
         </CardContent>
       </Card>

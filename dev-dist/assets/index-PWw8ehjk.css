@@ -887,6 +887,11 @@ section[aria-label='Notifications alt+T'] {
   height: 3rem;
 }
 
+.size-16{
+  width: 4rem;
+  height: 4rem;
+}
+
 .size-2{
   width: 0.5rem;
   height: 0.5rem;
@@ -1248,6 +1253,10 @@ section[aria-label='Notifications alt+T'] {
 .max-w-max{
   max-width: -moz-max-content;
   max-width: max-content;
+}
+
+.max-w-md{
+  max-width: 28rem;
 }
 
 .flex-1{
@@ -1636,6 +1645,10 @@ section[aria-label='Notifications alt+T'] {
   border-radius: calc(var(--radius) - 4px);
 }
 
+.rounded-xl{
+  border-radius: 0.75rem;
+}
+
 .rounded-l-md{
   border-top-left-radius: calc(var(--radius) - 2px);
   border-bottom-left-radius: calc(var(--radius) - 2px);
@@ -1722,6 +1735,10 @@ section[aria-label='Notifications alt+T'] {
 
 .border-destructive{
   border-color: hsl(var(--destructive));
+}
+
+.border-destructive\/20{
+  border-color: hsl(var(--destructive) / 0.2);
 }
 
 .border-destructive\/30{
@@ -1916,6 +1933,10 @@ section[aria-label='Notifications alt+T'] {
 
 .p-6{
   padding: 1.5rem;
+}
+
+.p-8{
+  padding: 2rem;
 }
 
 .p-\[1px\]{
@@ -2277,6 +2298,12 @@ section[aria-label='Notifications alt+T'] {
 .shadow-\[0_0_0_1px_hsl\(var\(--sidebar-border\)\)\]{
   --tw-shadow: 0 0 0 1px hsl(var(--sidebar-border));
   --tw-shadow-colored: 0 0 0 1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.shadow-elevation{
+  --tw-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  --tw-shadow-colored: 0 4px 20px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 

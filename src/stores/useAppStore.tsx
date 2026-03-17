@@ -1,11 +1,15 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react'
 import { Client, Appointment, MOCK_CLIENTS, MOCK_APPOINTMENTS } from '@/lib/mockData'
 
+type SubscriptionStatus = 'ativo' | 'inativo'
+
 type AppStore = {
   clients: Client[]
   appointments: Appointment[]
   addAppointment: (app: Appointment) => void
   updateClient: (client: Client) => void
+  subscriptionStatus: SubscriptionStatus
+  setSubscriptionStatus: (status: SubscriptionStatus) => void
   metrics: {
     leads: number
     todayAppointments: number
@@ -19,6 +23,9 @@ const AppContext = createContext<AppStore | null>(null)
 export function AppProvider({ children }: { children: ReactNode }) {
   const [clients, setClients] = useState<Client[]>(MOCK_CLIENTS)
   const [appointments, setAppointments] = useState<Appointment[]>(MOCK_APPOINTMENTS)
+  const [subscriptionStatus, setSubStatus] = useState<SubscriptionStatus>(() => {
+    return (localStorage.getItem('studio_subscription_status') as SubscriptionStatus) || 'ativo'
+  })
 
   const addAppointment = (app: Appointment) => {
     setAppointments((prev) => [...prev, app])
@@ -26,6 +33,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const updateClient = (updated: Client) => {
     setClients((prev) => prev.map((c) => (c.id === updated.id ? updated : c)))
+  }
+
+  const setSubscriptionStatus = (status: SubscriptionStatus) => {
+    localStorage.setItem('studio_subscription_status', status)
+    setSubStatus(status)
   }
 
   // Calculate metrics based on data
@@ -42,7 +54,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   return React.createElement(
     AppContext.Provider,
-    { value: { clients, appointments, addAppointment, updateClient, metrics } },
+    {
+      value: {
+        clients,
+        appointments,
+        addAppointment,
+        updateClient,
+        subscriptionStatus,
+        setSubscriptionStatus,
+        metrics,
+      },
+    },
     children,
   )
 }

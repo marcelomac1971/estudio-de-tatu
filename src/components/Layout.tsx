@@ -10,11 +10,39 @@ import {
   SidebarTrigger,
 } from '@/components/ui/sidebar'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Bell, Calendar, Home, MessageSquare, Settings, Users } from 'lucide-react'
+import { Bell, Calendar, Home, MessageSquare, Settings, Users, Lock } from 'lucide-react'
 import { Button } from './ui/button'
+import useAppStore from '@/stores/useAppStore'
 
 export default function Layout() {
   const location = useLocation()
+  const { subscriptionStatus, setSubscriptionStatus } = useAppStore()
+
+  if (subscriptionStatus === 'inativo') {
+    return (
+      <div className="flex min-h-screen w-full items-center justify-center bg-background p-4 animate-fade-in">
+        <div className="max-w-md w-full border border-border/50 bg-card p-8 rounded-xl flex flex-col items-center text-center space-y-6 shadow-elevation">
+          <div className="size-16 rounded-full bg-destructive/10 flex items-center justify-center">
+            <Lock className="size-8 text-destructive" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground mb-2">assinatura expirada</h1>
+            <p className="text-sm text-muted-foreground">
+              O acesso aos recursos de automação, agenda e base de clientes do estúdio foi
+              bloqueado.
+            </p>
+          </div>
+          <Button
+            onClick={() => setSubscriptionStatus('ativo')}
+            variant="outline"
+            className="w-full"
+          >
+            [Demo] Reativar Assinatura
+          </Button>
+        </div>
+      </div>
+    )
+  }
 
   const navItems = [
     { name: 'Dashboard', path: '/', icon: Home },
