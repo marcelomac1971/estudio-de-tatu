@@ -6,6 +6,8 @@ export type Client = {
   history: string[]
   healthAlerts: string[]
   totalSpent: number
+  referenceType?: string
+  referenceImage?: string
 }
 
 export type Appointment = {
@@ -29,6 +31,8 @@ export const MOCK_CLIENTS: Client[] = [
     history: ['https://img.usecurling.com/p/200/200?q=wolf%20tattoo&color=black'],
     healthAlerts: ['Alergia a Dipirona'],
     totalSpent: 1200,
+    referenceType: 'Imagem autoral',
+    referenceImage: 'https://img.usecurling.com/p/200/200?q=wolf%20drawing&color=black',
   },
   {
     id: 'c2',
@@ -47,6 +51,8 @@ export const MOCK_CLIENTS: Client[] = [
     history: ['https://img.usecurling.com/p/200/200?q=skull%20tattoo&color=black'],
     healthAlerts: ['Pressão Alta (Controlada)'],
     totalSpent: 850,
+    referenceType: 'Foto de parente',
+    referenceImage: 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=10',
   },
 ]
 

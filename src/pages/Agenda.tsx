@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/sheet'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
-import { CheckCircle2, Clock, MapPin, AlertTriangle } from 'lucide-react'
+import { CheckCircle2, Clock, MapPin, AlertTriangle, Image as ImageIcon } from 'lucide-react'
 import useAppStore from '@/stores/useAppStore'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
@@ -166,6 +166,34 @@ export default function Agenda() {
                         <Clock className="size-4" /> Duração estimada: {selectedApp.duration} horas
                       </div>
                     </div>
+
+                    {client?.referenceType && (
+                      <>
+                        <Separator className="bg-border" />
+                        <div>
+                          <h4 className="text-sm font-medium text-muted-foreground mb-3 flex items-center gap-2">
+                            <ImageIcon className="size-4" /> Referência Visual
+                          </h4>
+                          <div className="bg-muted/50 rounded-lg p-4 border border-border flex items-start gap-4">
+                            {client.referenceImage && (
+                              <img
+                                src={client.referenceImage}
+                                alt="Ref"
+                                className="size-20 rounded-md object-cover border border-border shrink-0 bg-card"
+                              />
+                            )}
+                            <div>
+                              <Badge variant="outline" className="mb-2 bg-background">
+                                {client.referenceType}
+                              </Badge>
+                              <p className="text-xs text-muted-foreground">
+                                Modelo anexado na triagem automática
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </>
+                    )}
 
                     <Separator className="bg-border" />
 

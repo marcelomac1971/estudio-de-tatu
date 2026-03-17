@@ -4,7 +4,16 @@ import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ChatBubble } from '@/components/chat/ChatBubble'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { AlertCircle, CheckCircle2, ShieldAlert } from 'lucide-react'
+import {
+  AlertCircle,
+  CheckCircle2,
+  ShieldAlert,
+  Upload,
+  Users,
+  Trophy,
+  PenTool,
+  Image as ImageIcon,
+} from 'lucide-react'
 import useAppStore from '@/stores/useAppStore'
 import { toast } from '@/components/ui/use-toast'
 import { cn } from '@/lib/utils'
@@ -15,9 +24,15 @@ export default function Chat() {
   const [messages, setMessages] = useState<Message[]>([])
   const [step, setStep] = useState(0)
   const [isTyping, setIsTyping] = useState(false)
-  const [clientData, setClientData] = useState({ style: '', size: '', health: '' })
+  const [clientData, setClientData] = useState({
+    style: '',
+    size: '',
+    health: '',
+    referenceType: '',
+    referenceImage: '',
+  })
   const scrollRef = useRef<HTMLDivElement>(null)
-  const { addAppointment } = useAppStore()
+  const { addAppointment, clients, updateClient } = useAppStore()
 
   const now = () => new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
 
@@ -26,14 +41,12 @@ export default function Chat() {
   }
 
   useEffect(() => {
-    // Initial Greeting
     if (step === 0 && messages.length === 0) {
       addMsg(
         'Olá! Bem-vindo ao atendimento automatizado do Studio Noir. Como posso te ajudar hoje?',
         true,
       )
     }
-    // Auto-scroll
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight
     }
@@ -42,7 +55,7 @@ export default function Chat() {
   const handleOption = (text: string, nextStep: number) => {
     addMsg(text, false)
     setIsTyping(true)
-    setStep(-1) // Disable buttons temporarily
+    setStep(-1)
 
     setTimeout(() => {
       setIsTyping(false)
@@ -58,11 +71,25 @@ export default function Chat() {
         case 2:
           setClientData((prev) => ({ ...prev, style: text }))
           addMsg(
-            'Legal! Anotei o estilo. Antes de prosseguir, é obrigatório passarmos por uma rápida checagem de saúde.\n\nVocê possui alguma alergia (ex: látex, agulha, pigmento) ou faz uso de medicação contínua?',
+            'Legal! Anotei o estilo. Qual o modelo da sua tatuagem? Selecione uma das categorias abaixo:',
             true,
           )
           break
-        case 3: {
+        case 3:
+          setClientData((prev) => ({ ...prev, referenceType: text }))
+          addMsg(
+            `Categoria "${text}" selecionada. Por favor, anexe a imagem de referência para que o artista possa avaliar.`,
+            true,
+          )
+          break
+        case 4:
+          setClientData((prev) => ({ ...prev, referenceImage: text }))
+          addMsg(
+            'Imagem recebida! Antes de prosseguir, é obrigatório passarmos por uma rápida checagem de saúde.\n\nVocê possui alguma alergia (ex: látex, agulha, pigmento) ou faz uso de medicação contínua?',
+            true,
+          )
+          break
+        case 5: {
           setClientData((prev) => ({ ...prev, health: text }))
           const hasAlert = text.toLowerCase().includes('sim')
           addMsg(
@@ -73,15 +100,28 @@ export default function Chat() {
           )
           break
         }
-        case 4:
+        case 6: {
           addMsg(
             'Sinal confirmado! 🎉 Seu agendamento foi pré-confirmado na agenda do artista. Em breve ele entrará em contato para definir a data e horário exatos. Obrigado!',
             true,
           )
           toast({
             title: 'Agendamento Criado',
-            description: 'O bot registrou um novo agendamento com sinal pago.',
+            description: 'O bot registrou um novo agendamento com sinal pago e anexo visual.',
           })
+
+          const targetClient = clients.find((c) => c.id === 'c2')
+          if (targetClient) {
+            updateClient({
+              ...targetClient,
+              referenceType: clientData.referenceType,
+              referenceImage: clientData.referenceImage,
+              healthAlerts: clientData.health.toLowerCase().includes('sim')
+                ? [clientData.health]
+                : [],
+            })
+          }
+
           addAppointment({
             id: `a-${Date.now()}`,
             clientId: 'c2',
@@ -94,13 +134,13 @@ export default function Chat() {
             status: 'pending',
           })
           break
+        }
       }
     }, 1500)
   }
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-100px)]">
-      {/* Chat Area */}
       <Card className="lg:col-span-2 flex flex-col border-border/50 bg-background overflow-hidden relative">
         <div className="h-16 border-b border-border bg-card/50 flex items-center px-4 gap-3 shrink-0">
           <Avatar>
@@ -141,7 +181,6 @@ export default function Chat() {
           </div>
         </ScrollArea>
 
-        {/* Action Buttons mimicking user input */}
         <div className="p-4 border-t border-border bg-card/30 shrink-0">
           <p className="text-xs text-muted-foreground mb-2 font-medium">
             Simular Resposta do Cliente:
@@ -167,27 +206,56 @@ export default function Chat() {
             )}
             {step === 2 && (
               <>
-                <Button variant="outline" onClick={() => handleOption('Não, tudo 100%!', 3)}>
-                  Não, tudo certo
+                <Button variant="outline" onClick={() => handleOption('Foto de parente', 3)}>
+                  <Users className="size-4 mr-2" /> Foto de parente
                 </Button>
-                <Button
-                  variant="destructive"
-                  className="bg-destructive/20 text-destructive border-destructive/50 hover:bg-destructive/30"
-                  onClick={() => handleOption('Sim, tenho alergia a látex', 3)}
-                >
-                  Sim, alergia a látex
+                <Button variant="outline" onClick={() => handleOption('Time de futebol', 3)}>
+                  <Trophy className="size-4 mr-2" /> Time de futebol
+                </Button>
+                <Button variant="outline" onClick={() => handleOption('Imagem autoral', 3)}>
+                  <PenTool className="size-4 mr-2" /> Imagem autoral
+                </Button>
+                <Button variant="outline" onClick={() => handleOption('Outra referência', 3)}>
+                  <ImageIcon className="size-4 mr-2" /> Outra referência
                 </Button>
               </>
             )}
             {step === 3 && (
               <Button
+                onClick={() =>
+                  handleOption(
+                    'https://img.usecurling.com/p/300/300?q=tattoo%20model&color=gray',
+                    4,
+                  )
+                }
+                className="bg-primary text-primary-foreground"
+              >
+                <Upload className="size-4 mr-2" /> Anexar Imagem de Referência
+              </Button>
+            )}
+            {step === 4 && (
+              <>
+                <Button variant="outline" onClick={() => handleOption('Não, tudo 100%!', 5)}>
+                  Não, tudo certo
+                </Button>
+                <Button
+                  variant="destructive"
+                  className="bg-destructive/20 text-destructive border-destructive/50 hover:bg-destructive/30"
+                  onClick={() => handleOption('Sim, tenho alergia a látex', 5)}
+                >
+                  Sim, alergia a látex
+                </Button>
+              </>
+            )}
+            {step === 5 && (
+              <Button
                 className="bg-secondary hover:bg-secondary/90 text-secondary-foreground"
-                onClick={() => handleOption('Sim, vou mandar o pix agora', 4)}
+                onClick={() => handleOption('Sim, vou mandar o pix agora', 6)}
               >
                 Pagar Sinal (PIX)
               </Button>
             )}
-            {step === 4 && (
+            {step === 6 && (
               <p className="text-sm text-secondary font-medium flex items-center gap-2">
                 <CheckCircle2 className="size-4" /> Fluxo Concluído
               </p>
@@ -196,7 +264,6 @@ export default function Chat() {
         </div>
       </Card>
 
-      {/* Client Details Sidebar */}
       <Card className="border-border/50 bg-card/50 p-6 hidden lg:flex flex-col gap-6">
         <h3 className="font-semibold border-b border-border pb-2">Resumo da Ficha</h3>
 
@@ -207,16 +274,34 @@ export default function Chat() {
               <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
                 <div
                   className="h-full bg-primary transition-all duration-500"
-                  style={{ width: `${Math.min((step / 4) * 100, 100)}%` }}
+                  style={{ width: `${Math.min((step / 6) * 100, 100)}%` }}
                 />
               </div>
-              {Math.min(step, 4)}/4
+              {Math.min(step, 6)}/6
             </div>
           </div>
 
           <div className="bg-background rounded-lg p-3 border border-border">
             <p className="text-xs text-muted-foreground mb-1">Ideia / Estilo</p>
             <p className="text-sm font-medium">{clientData.style || 'Aguardando...'}</p>
+          </div>
+
+          <div className="bg-background rounded-lg p-3 border border-border">
+            <p className="text-xs text-muted-foreground mb-1">Modelo / Referência</p>
+            {clientData.referenceType ? (
+              <div className="flex flex-col gap-2 mt-1">
+                <span className="text-sm font-medium">{clientData.referenceType}</span>
+                {clientData.referenceImage && (
+                  <img
+                    src={clientData.referenceImage}
+                    alt="Ref"
+                    className="w-full h-24 object-cover rounded-md border border-border"
+                  />
+                )}
+              </div>
+            ) : (
+              <p className="text-sm font-medium">Aguardando...</p>
+            )}
           </div>
 
           <div
@@ -245,7 +330,7 @@ export default function Chat() {
             )}
           </div>
 
-          {step >= 3 && (
+          {step >= 5 && (
             <div className="bg-secondary/10 border border-secondary/30 rounded-lg p-3">
               <p className="text-xs text-secondary mb-1 font-medium">Orçamento Gerado</p>
               <div className="flex justify-between text-sm mt-2">

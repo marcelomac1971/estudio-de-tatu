@@ -11,7 +11,7 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Badge } from '@/components/ui/badge'
 import useAppStore from '@/stores/useAppStore'
-import { AlertTriangle, ImageIcon, User } from 'lucide-react'
+import { AlertTriangle, ImageIcon, User, Image as IconImage } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export default function Clients() {
@@ -100,6 +100,31 @@ export default function Clients() {
                         <li key={i}>{alert}</li>
                       ))}
                     </ul>
+                  </div>
+                )}
+
+                {selectedClient.referenceType && (
+                  <div>
+                    <h4 className="text-sm font-medium text-muted-foreground flex items-center gap-2 mb-3">
+                      <IconImage className="size-4" /> Referência Visual
+                    </h4>
+                    <div className="bg-background rounded-lg p-4 border border-border flex items-start gap-4">
+                      {selectedClient.referenceImage && (
+                        <img
+                          src={selectedClient.referenceImage}
+                          alt="Ref"
+                          className="size-20 rounded-md object-cover border border-border bg-muted shrink-0"
+                        />
+                      )}
+                      <div>
+                        <Badge variant="secondary" className="mb-2">
+                          {selectedClient.referenceType}
+                        </Badge>
+                        <p className="text-xs text-muted-foreground leading-relaxed">
+                          Modelo anexado pelo cliente durante a triagem automática.
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 )}
 

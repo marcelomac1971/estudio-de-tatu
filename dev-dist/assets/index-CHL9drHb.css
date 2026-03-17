@@ -892,6 +892,11 @@ section[aria-label='Notifications alt+T'] {
   height: 0.5rem;
 }
 
+.size-20{
+  width: 5rem;
+  height: 5rem;
+}
+
 .size-3{
   width: 0.75rem;
   height: 0.75rem;
@@ -947,6 +952,10 @@ section[aria-label='Notifications alt+T'] {
 
 .h-2\.5{
   height: 0.625rem;
+}
+
+.h-24{
+  height: 6rem;
 }
 
 .h-3{
@@ -3583,6 +3592,10 @@ section[aria-label='Notifications alt+T'] {
 
   .sm\:flex{
     display: flex;
+  }
+
+  .sm\:max-w-\[200px\]{
+    max-width: 200px;
   }
 
   .sm\:max-w-\[500px\]{

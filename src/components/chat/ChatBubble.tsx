@@ -7,6 +7,8 @@ interface ChatBubbleProps {
 }
 
 export function ChatBubble({ text, isBot, time }: ChatBubbleProps) {
+  const isImage = text.startsWith('http') && text.includes('usecurling.com')
+
   return (
     <div className={cn('flex w-full mb-4', isBot ? 'justify-start' : 'justify-end')}>
       <div
@@ -17,7 +19,15 @@ export function ChatBubble({ text, isBot, time }: ChatBubbleProps) {
             : 'bg-primary text-primary-foreground rounded-tr-none chat-tail-right',
         )}
       >
-        <p className="whitespace-pre-wrap leading-relaxed">{text}</p>
+        {isImage ? (
+          <img
+            src={text}
+            alt="Anexo de referência"
+            className="rounded-md w-full sm:max-w-[200px] h-auto object-cover"
+          />
+        ) : (
+          <p className="whitespace-pre-wrap leading-relaxed">{text}</p>
+        )}
         {time && (
           <span
             className={cn(
