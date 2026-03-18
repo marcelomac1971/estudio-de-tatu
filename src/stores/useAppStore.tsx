@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, ReactNode } from 'react'
 import { Client, Appointment, MOCK_CLIENTS, MOCK_APPOINTMENTS } from '@/lib/mockData'
 
 type SubscriptionStatus = 'ativo' | 'inativo'
+type WhatsappStatus = 'connected' | 'disconnected' | 'connecting'
 
 type AppStore = {
   clients: Client[]
@@ -10,6 +11,10 @@ type AppStore = {
   updateClient: (client: Client) => void
   subscriptionStatus: SubscriptionStatus
   setSubscriptionStatus: (status: SubscriptionStatus) => void
+  whatsappStatus: WhatsappStatus
+  setWhatsappStatus: (status: WhatsappStatus) => void
+  whatsappNumber: string | null
+  setWhatsappNumber: (num: string | null) => void
   metrics: {
     leads: number
     todayAppointments: number
@@ -23,6 +28,9 @@ const AppContext = createContext<AppStore | null>(null)
 export function AppProvider({ children }: { children: ReactNode }) {
   const [clients, setClients] = useState<Client[]>(MOCK_CLIENTS)
   const [appointments, setAppointments] = useState<Appointment[]>(MOCK_APPOINTMENTS)
+  const [whatsappStatus, setWhatsappStatus] = useState<WhatsappStatus>('disconnected')
+  const [whatsappNumber, setWhatsappNumber] = useState<string | null>(null)
+
   const [subscriptionStatus, setSubStatus] = useState<SubscriptionStatus>(() => {
     return (localStorage.getItem('studio_subscription_status') as SubscriptionStatus) || 'ativo'
   })
@@ -40,16 +48,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setSubStatus(status)
   }
 
-  // Calculate metrics based on data
   const today = new Date().toISOString().split('T')[0]
   const todayApps = appointments.filter((a) => a.date === today)
   const totalDeposits = todayApps.reduce((acc, a) => acc + a.depositPaid, 0)
 
   const metrics = {
-    leads: 12, // Mocked for demo
+    leads: 12,
     todayAppointments: todayApps.length,
     totalDeposits,
-    activeChats: 3, // Mocked
+    activeChats: 3,
   }
 
   return React.createElement(
@@ -62,6 +69,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
         updateClient,
         subscriptionStatus,
         setSubscriptionStatus,
+        whatsappStatus,
+        setWhatsappStatus,
+        whatsappNumber,
+        setWhatsappNumber,
         metrics,
       },
     },

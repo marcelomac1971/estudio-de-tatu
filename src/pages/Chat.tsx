@@ -32,7 +32,7 @@ export default function Chat() {
     referenceImage: '',
   })
   const scrollRef = useRef<HTMLDivElement>(null)
-  const { addAppointment, clients, updateClient } = useAppStore()
+  const { addAppointment, clients, updateClient, whatsappStatus } = useAppStore()
 
   const now = () => new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
 
@@ -142,6 +142,21 @@ export default function Chat() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-100px)]">
       <Card className="lg:col-span-2 flex flex-col border-border/50 bg-background overflow-hidden relative">
+        {whatsappStatus !== 'connected' && (
+          <div className="bg-destructive/10 border-b border-destructive/20 p-3 shrink-0 flex items-start gap-3 z-10 animate-fade-in-down">
+            <AlertCircle className="size-5 text-destructive shrink-0 mt-0.5" />
+            <div>
+              <h4 className="text-sm font-semibold text-destructive">
+                Aviso: WhatsApp Desconectado
+              </h4>
+              <p className="text-xs text-destructive-foreground mt-1">
+                O painel está rodando em modo simulação. Conecte seu aparelho nas{' '}
+                <strong>Configurações</strong> para enviar mensagens reais aos clientes.
+              </p>
+            </div>
+          </div>
+        )}
+
         <div className="h-16 border-b border-border bg-card/50 flex items-center px-4 gap-3 shrink-0">
           <Avatar>
             <AvatarImage src="https://img.usecurling.com/ppl/thumbnail?gender=female&seed=8" />

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
 import useAppStore from '@/stores/useAppStore'
 import { Lock } from 'lucide-react'
+import { WhatsAppConnection } from '@/components/WhatsAppConnection'
 
 export default function Settings() {
   const { toast } = useToast()
@@ -26,6 +27,8 @@ export default function Settings() {
           Gerencie o comportamento do seu bot e regras de negócio.
         </p>
       </div>
+
+      <WhatsAppConnection />
 
       <Card className="border-border/50 bg-card/50">
         <CardHeader>
@@ -97,8 +100,10 @@ export default function Settings() {
         </CardContent>
       </Card>
 
-      <div className="flex justify-end">
-        <Button onClick={handleSave}>Salvar Alterações</Button>
+      <div className="flex justify-end pb-12">
+        <Button onClick={handleSave} size="lg">
+          Salvar Alterações
+        </Button>
       </div>
     </div>
   )

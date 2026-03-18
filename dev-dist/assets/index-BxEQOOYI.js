@@ -19162,6 +19162,20 @@ var Lock = createLucideIcon("lock", [["rect", {
 	d: "M7 11V7a5 5 0 0 1 10 0v4",
 	key: "fwvmzm"
 }]]);
+var LogOut = createLucideIcon("log-out", [
+	["path", {
+		d: "m16 17 5-5-5-5",
+		key: "1bji2h"
+	}],
+	["path", {
+		d: "M21 12H9",
+		key: "dn1m92"
+	}],
+	["path", {
+		d: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4",
+		key: "1uf3rs"
+	}]
+]);
 var MessageSquare = createLucideIcon("message-square", [["path", {
 	d: "M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z",
 	key: "18887p"
@@ -19197,6 +19211,28 @@ var PenTool = createLucideIcon("pen-tool", [
 		key: "xmgehs"
 	}]
 ]);
+var Phone = createLucideIcon("phone", [["path", {
+	d: "M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384",
+	key: "9njp5v"
+}]]);
+var RefreshCw = createLucideIcon("refresh-cw", [
+	["path", {
+		d: "M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8",
+		key: "v9h5vc"
+	}],
+	["path", {
+		d: "M21 3v5h-5",
+		key: "1q7to0"
+	}],
+	["path", {
+		d: "M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16",
+		key: "3uifl3"
+	}],
+	["path", {
+		d: "M8 16H3v5",
+		key: "1cv678"
+	}]
+]);
 var Settings$1 = createLucideIcon("settings", [["path", {
 	d: "M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915",
 	key: "1i5ecw"
@@ -19220,6 +19256,18 @@ var ShieldAlert = createLucideIcon("shield-alert", [
 		key: "1drbdi"
 	}]
 ]);
+var Smartphone = createLucideIcon("smartphone", [["rect", {
+	width: "14",
+	height: "20",
+	x: "5",
+	y: "2",
+	rx: "2",
+	ry: "2",
+	key: "1yt0o3"
+}], ["path", {
+	d: "M12 18h.01",
+	key: "mhygvu"
+}]]);
 var TriangleAlert = createLucideIcon("triangle-alert", [
 	["path", {
 		d: "m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3",
@@ -26689,6 +26737,8 @@ var AppContext = (0, import_react.createContext)(null);
 function AppProvider({ children }) {
 	const [clients, setClients] = (0, import_react.useState)(MOCK_CLIENTS);
 	const [appointments, setAppointments] = (0, import_react.useState)(MOCK_APPOINTMENTS);
+	const [whatsappStatus, setWhatsappStatus] = (0, import_react.useState)("disconnected");
+	const [whatsappNumber, setWhatsappNumber] = (0, import_react.useState)(null);
 	const [subscriptionStatus, setSubStatus] = (0, import_react.useState)(() => {
 		return localStorage.getItem("studio_subscription_status") || "ativo";
 	});
@@ -26718,6 +26768,10 @@ function AppProvider({ children }) {
 		updateClient,
 		subscriptionStatus,
 		setSubscriptionStatus,
+		whatsappStatus,
+		setWhatsappStatus,
+		whatsappNumber,
+		setWhatsappNumber,
 		metrics
 	} }, children);
 }
@@ -28035,7 +28089,7 @@ function Chat() {
 		referenceImage: ""
 	});
 	const scrollRef = (0, import_react.useRef)(null);
-	const { addAppointment, clients, updateClient } = useAppStore();
+	const { addAppointment, clients, updateClient, whatsappStatus } = useAppStore();
 	const now = () => (/* @__PURE__ */ new Date()).toLocaleTimeString("pt-BR", {
 		hour: "2-digit",
 		minute: "2-digit"
@@ -28129,36 +28183,69 @@ function Chat() {
 			"data-prohibitions": "[editContent]",
 			className: "lg:col-span-2 flex flex-col border-border/50 bg-background overflow-hidden relative",
 			children: [
+				whatsappStatus !== "connected" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					"data-uid": "src/pages/Chat.tsx:146:11",
+					"data-prohibitions": "[]",
+					className: "bg-destructive/10 border-b border-destructive/20 p-3 shrink-0 flex items-start gap-3 z-10 animate-fade-in-down",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleAlert, {
+						"data-uid": "src/pages/Chat.tsx:147:13",
+						"data-prohibitions": "[editContent]",
+						className: "size-5 text-destructive shrink-0 mt-0.5"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						"data-uid": "src/pages/Chat.tsx:148:13",
+						"data-prohibitions": "[]",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h4", {
+							"data-uid": "src/pages/Chat.tsx:149:15",
+							"data-prohibitions": "[]",
+							className: "text-sm font-semibold text-destructive",
+							children: "Aviso: WhatsApp Desconectado"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+							"data-uid": "src/pages/Chat.tsx:152:15",
+							"data-prohibitions": "[]",
+							className: "text-xs text-destructive-foreground mt-1",
+							children: [
+								"O painel está rodando em modo simulação. Conecte seu aparelho nas",
+								" ",
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
+									"data-uid": "src/pages/Chat.tsx:154:17",
+									"data-prohibitions": "[]",
+									children: "Configurações"
+								}),
+								" para enviar mensagens reais aos clientes."
+							]
+						})]
+					})]
+				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					"data-uid": "src/pages/Chat.tsx:145:9",
+					"data-uid": "src/pages/Chat.tsx:160:9",
 					"data-prohibitions": "[]",
 					className: "h-16 border-b border-border bg-card/50 flex items-center px-4 gap-3 shrink-0",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Avatar, {
-						"data-uid": "src/pages/Chat.tsx:146:11",
+						"data-uid": "src/pages/Chat.tsx:161:11",
 						"data-prohibitions": "[]",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(AvatarImage, {
-							"data-uid": "src/pages/Chat.tsx:147:13",
+							"data-uid": "src/pages/Chat.tsx:162:13",
 							"data-prohibitions": "[editContent]",
 							src: "https://img.usecurling.com/ppl/thumbnail?gender=female&seed=8"
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AvatarFallback, {
-							"data-uid": "src/pages/Chat.tsx:148:13",
+							"data-uid": "src/pages/Chat.tsx:163:13",
 							"data-prohibitions": "[]",
 							children: "C"
 						})]
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						"data-uid": "src/pages/Chat.tsx:150:11",
+						"data-uid": "src/pages/Chat.tsx:165:11",
 						"data-prohibitions": "[]",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
-							"data-uid": "src/pages/Chat.tsx:151:13",
+							"data-uid": "src/pages/Chat.tsx:166:13",
 							"data-prohibitions": "[]",
 							className: "font-semibold text-sm",
 							children: "Novo Cliente (Automação)"
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
-							"data-uid": "src/pages/Chat.tsx:152:13",
+							"data-uid": "src/pages/Chat.tsx:167:13",
 							"data-prohibitions": "[]",
 							className: "text-xs text-secondary flex items-center gap-1",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-								"data-uid": "src/pages/Chat.tsx:153:15",
+								"data-uid": "src/pages/Chat.tsx:168:15",
 								"data-prohibitions": "[editContent]",
 								className: "size-2 rounded-full bg-secondary animate-pulse"
 							}), " Bot Ativo"]
@@ -28166,43 +28253,43 @@ function Chat() {
 					})]
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ScrollArea, {
-					"data-uid": "src/pages/Chat.tsx:158:9",
+					"data-uid": "src/pages/Chat.tsx:173:9",
 					"data-prohibitions": "[editContent]",
 					className: "flex-1 p-4",
 					ref: scrollRef,
 					children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						"data-uid": "src/pages/Chat.tsx:159:11",
+						"data-uid": "src/pages/Chat.tsx:174:11",
 						"data-prohibitions": "[editContent]",
 						className: "max-w-2xl mx-auto flex flex-col justify-end min-h-full",
 						children: [messages.map((m) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChatBubble, {
-							"data-uid": "src/pages/Chat.tsx:161:15",
+							"data-uid": "src/pages/Chat.tsx:176:15",
 							"data-prohibitions": "[editContent]",
 							text: m.text,
 							isBot: m.isBot,
 							time: m.time
 						}, m.id)), isTyping && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-							"data-uid": "src/pages/Chat.tsx:164:15",
+							"data-uid": "src/pages/Chat.tsx:179:15",
 							"data-prohibitions": "[]",
 							className: "flex w-full mb-4 justify-start",
 							children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								"data-uid": "src/pages/Chat.tsx:165:17",
+								"data-uid": "src/pages/Chat.tsx:180:17",
 								"data-prohibitions": "[]",
 								className: "bg-card px-4 py-3 rounded-2xl rounded-tl-none chat-tail-left flex gap-1 items-center",
 								children: [
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										"data-uid": "src/pages/Chat.tsx:166:19",
+										"data-uid": "src/pages/Chat.tsx:181:19",
 										"data-prohibitions": "[editContent]",
 										className: "size-2 bg-muted-foreground rounded-full animate-bounce",
 										style: { animationDelay: "0ms" }
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										"data-uid": "src/pages/Chat.tsx:170:19",
+										"data-uid": "src/pages/Chat.tsx:185:19",
 										"data-prohibitions": "[editContent]",
 										className: "size-2 bg-muted-foreground rounded-full animate-bounce",
 										style: { animationDelay: "150ms" }
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										"data-uid": "src/pages/Chat.tsx:174:19",
+										"data-uid": "src/pages/Chat.tsx:189:19",
 										"data-prohibitions": "[editContent]",
 										className: "size-2 bg-muted-foreground rounded-full animate-bounce",
 										style: { animationDelay: "300ms" }
@@ -28213,33 +28300,33 @@ function Chat() {
 					})
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					"data-uid": "src/pages/Chat.tsx:184:9",
+					"data-uid": "src/pages/Chat.tsx:199:9",
 					"data-prohibitions": "[editContent]",
 					className: "p-4 border-t border-border bg-card/30 shrink-0",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-						"data-uid": "src/pages/Chat.tsx:185:11",
+						"data-uid": "src/pages/Chat.tsx:200:11",
 						"data-prohibitions": "[]",
 						className: "text-xs text-muted-foreground mb-2 font-medium",
 						children: "Simular Resposta do Cliente:"
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						"data-uid": "src/pages/Chat.tsx:188:11",
+						"data-uid": "src/pages/Chat.tsx:203:11",
 						"data-prohibitions": "[editContent]",
 						className: "flex flex-wrap gap-2",
 						children: [
 							step === 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button$1, {
-								"data-uid": "src/pages/Chat.tsx:190:15",
+								"data-uid": "src/pages/Chat.tsx:205:15",
 								"data-prohibitions": "[]",
 								onClick: () => handleOption("Quero fazer um orçamento", 1),
 								children: "Fazer Orçamento"
 							}),
 							step === 1 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button$1, {
-								"data-uid": "src/pages/Chat.tsx:196:17",
+								"data-uid": "src/pages/Chat.tsx:211:17",
 								"data-prohibitions": "[]",
 								variant: "outline",
 								onClick: () => handleOption("Realismo, uns 15cm no braço", 2),
 								children: "Realismo, 15cm"
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button$1, {
-								"data-uid": "src/pages/Chat.tsx:202:17",
+								"data-uid": "src/pages/Chat.tsx:217:17",
 								"data-prohibitions": "[]",
 								variant: "outline",
 								onClick: () => handleOption("Blackwork pequeno, 5cm", 2),
@@ -28247,69 +28334,69 @@ function Chat() {
 							})] }),
 							step === 2 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
 								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button$1, {
-									"data-uid": "src/pages/Chat.tsx:209:17",
+									"data-uid": "src/pages/Chat.tsx:224:17",
 									"data-prohibitions": "[]",
 									variant: "outline",
 									onClick: () => handleOption("Foto de parente", 3),
 									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Users, {
-										"data-uid": "src/pages/Chat.tsx:210:19",
+										"data-uid": "src/pages/Chat.tsx:225:19",
 										"data-prohibitions": "[editContent]",
 										className: "size-4 mr-2"
 									}), " Foto de parente"]
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button$1, {
-									"data-uid": "src/pages/Chat.tsx:212:17",
+									"data-uid": "src/pages/Chat.tsx:227:17",
 									"data-prohibitions": "[]",
 									variant: "outline",
 									onClick: () => handleOption("Time de futebol", 3),
 									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trophy, {
-										"data-uid": "src/pages/Chat.tsx:213:19",
+										"data-uid": "src/pages/Chat.tsx:228:19",
 										"data-prohibitions": "[editContent]",
 										className: "size-4 mr-2"
 									}), " Time de futebol"]
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button$1, {
-									"data-uid": "src/pages/Chat.tsx:215:17",
+									"data-uid": "src/pages/Chat.tsx:230:17",
 									"data-prohibitions": "[]",
 									variant: "outline",
 									onClick: () => handleOption("Imagem autoral", 3),
 									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PenTool, {
-										"data-uid": "src/pages/Chat.tsx:216:19",
+										"data-uid": "src/pages/Chat.tsx:231:19",
 										"data-prohibitions": "[editContent]",
 										className: "size-4 mr-2"
 									}), " Imagem autoral"]
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button$1, {
-									"data-uid": "src/pages/Chat.tsx:218:17",
+									"data-uid": "src/pages/Chat.tsx:233:17",
 									"data-prohibitions": "[]",
 									variant: "outline",
 									onClick: () => handleOption("Outra referência", 3),
 									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Image$1, {
-										"data-uid": "src/pages/Chat.tsx:219:19",
+										"data-uid": "src/pages/Chat.tsx:234:19",
 										"data-prohibitions": "[editContent]",
 										className: "size-4 mr-2"
 									}), " Outra referência"]
 								})
 							] }),
 							step === 3 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button$1, {
-								"data-uid": "src/pages/Chat.tsx:224:15",
+								"data-uid": "src/pages/Chat.tsx:239:15",
 								"data-prohibitions": "[]",
 								onClick: () => handleOption("https://img.usecurling.com/p/300/300?q=tattoo%20model&color=gray", 4),
 								className: "bg-primary text-primary-foreground",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Upload, {
-									"data-uid": "src/pages/Chat.tsx:233:17",
+									"data-uid": "src/pages/Chat.tsx:248:17",
 									"data-prohibitions": "[editContent]",
 									className: "size-4 mr-2"
 								}), " Anexar Imagem de Referência"]
 							}),
 							step === 4 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button$1, {
-								"data-uid": "src/pages/Chat.tsx:238:17",
+								"data-uid": "src/pages/Chat.tsx:253:17",
 								"data-prohibitions": "[]",
 								variant: "outline",
 								onClick: () => handleOption("Não, tudo 100%!", 5),
 								children: "Não, tudo certo"
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button$1, {
-								"data-uid": "src/pages/Chat.tsx:241:17",
+								"data-uid": "src/pages/Chat.tsx:256:17",
 								"data-prohibitions": "[]",
 								variant: "destructive",
 								className: "bg-destructive/20 text-destructive border-destructive/50 hover:bg-destructive/30",
@@ -28317,18 +28404,18 @@ function Chat() {
 								children: "Sim, alergia a látex"
 							})] }),
 							step === 5 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button$1, {
-								"data-uid": "src/pages/Chat.tsx:251:15",
+								"data-uid": "src/pages/Chat.tsx:266:15",
 								"data-prohibitions": "[]",
 								className: "bg-secondary hover:bg-secondary/90 text-secondary-foreground",
 								onClick: () => handleOption("Sim, vou mandar o pix agora", 6),
 								children: "Pagar Sinal (PIX)"
 							}),
 							step === 6 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
-								"data-uid": "src/pages/Chat.tsx:259:15",
+								"data-uid": "src/pages/Chat.tsx:274:15",
 								"data-prohibitions": "[]",
 								className: "text-sm text-secondary font-medium flex items-center gap-2",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleCheck, {
-									"data-uid": "src/pages/Chat.tsx:260:17",
+									"data-uid": "src/pages/Chat.tsx:275:17",
 									"data-prohibitions": "[editContent]",
 									className: "size-4"
 								}), " Fluxo Concluído"]
@@ -28338,38 +28425,38 @@ function Chat() {
 				})
 			]
 		}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Card, {
-			"data-uid": "src/pages/Chat.tsx:267:7",
+			"data-uid": "src/pages/Chat.tsx:282:7",
 			"data-prohibitions": "[editContent]",
 			className: "border-border/50 bg-card/50 p-6 hidden lg:flex flex-col gap-6",
 			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
-				"data-uid": "src/pages/Chat.tsx:268:9",
+				"data-uid": "src/pages/Chat.tsx:283:9",
 				"data-prohibitions": "[]",
 				className: "font-semibold border-b border-border pb-2",
 				children: "Resumo da Ficha"
 			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				"data-uid": "src/pages/Chat.tsx:270:9",
+				"data-uid": "src/pages/Chat.tsx:285:9",
 				"data-prohibitions": "[editContent]",
 				className: "space-y-4",
 				children: [
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						"data-uid": "src/pages/Chat.tsx:271:11",
+						"data-uid": "src/pages/Chat.tsx:286:11",
 						"data-prohibitions": "[editContent]",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							"data-uid": "src/pages/Chat.tsx:272:13",
+							"data-uid": "src/pages/Chat.tsx:287:13",
 							"data-prohibitions": "[]",
 							className: "text-xs text-muted-foreground mb-1",
 							children: "Status do Funil"
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							"data-uid": "src/pages/Chat.tsx:273:13",
+							"data-uid": "src/pages/Chat.tsx:288:13",
 							"data-prohibitions": "[editContent]",
 							className: "flex items-center gap-2 text-sm font-medium",
 							children: [
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-									"data-uid": "src/pages/Chat.tsx:274:15",
+									"data-uid": "src/pages/Chat.tsx:289:15",
 									"data-prohibitions": "[]",
 									className: "flex-1 h-2 bg-muted rounded-full overflow-hidden",
 									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-										"data-uid": "src/pages/Chat.tsx:275:17",
+										"data-uid": "src/pages/Chat.tsx:290:17",
 										"data-prohibitions": "[editContent]",
 										className: "h-full bg-primary transition-all duration-500",
 										style: { width: `${Math.min(step / 6 * 100, 100)}%` }
@@ -28381,80 +28468,80 @@ function Chat() {
 						})]
 					}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						"data-uid": "src/pages/Chat.tsx:284:11",
+						"data-uid": "src/pages/Chat.tsx:299:11",
 						"data-prohibitions": "[editContent]",
 						className: "bg-background rounded-lg p-3 border border-border",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							"data-uid": "src/pages/Chat.tsx:285:13",
+							"data-uid": "src/pages/Chat.tsx:300:13",
 							"data-prohibitions": "[]",
 							className: "text-xs text-muted-foreground mb-1",
 							children: "Ideia / Estilo"
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							"data-uid": "src/pages/Chat.tsx:286:13",
+							"data-uid": "src/pages/Chat.tsx:301:13",
 							"data-prohibitions": "[editContent]",
 							className: "text-sm font-medium",
 							children: clientData.style || "Aguardando..."
 						})]
 					}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						"data-uid": "src/pages/Chat.tsx:289:11",
+						"data-uid": "src/pages/Chat.tsx:304:11",
 						"data-prohibitions": "[editContent]",
 						className: "bg-background rounded-lg p-3 border border-border",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							"data-uid": "src/pages/Chat.tsx:290:13",
+							"data-uid": "src/pages/Chat.tsx:305:13",
 							"data-prohibitions": "[]",
 							className: "text-xs text-muted-foreground mb-1",
 							children: "Modelo / Referência"
 						}), clientData.referenceType ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							"data-uid": "src/pages/Chat.tsx:292:15",
+							"data-uid": "src/pages/Chat.tsx:307:15",
 							"data-prohibitions": "[editContent]",
 							className: "flex flex-col gap-2 mt-1",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-								"data-uid": "src/pages/Chat.tsx:293:17",
+								"data-uid": "src/pages/Chat.tsx:308:17",
 								"data-prohibitions": "[editContent]",
 								className: "text-sm font-medium",
 								children: clientData.referenceType
 							}), clientData.referenceImage && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
-								"data-uid": "src/pages/Chat.tsx:295:19",
+								"data-uid": "src/pages/Chat.tsx:310:19",
 								"data-prohibitions": "[editContent]",
 								src: clientData.referenceImage,
 								alt: "Ref",
 								className: "w-full h-24 object-cover rounded-md border border-border"
 							})]
 						}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							"data-uid": "src/pages/Chat.tsx:303:15",
+							"data-uid": "src/pages/Chat.tsx:318:15",
 							"data-prohibitions": "[]",
 							className: "text-sm font-medium",
 							children: "Aguardando..."
 						})]
 					}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						"data-uid": "src/pages/Chat.tsx:307:11",
+						"data-uid": "src/pages/Chat.tsx:322:11",
 						"data-prohibitions": "[editContent]",
 						className: cn$1("rounded-lg p-3 border transition-colors", clientData.health.toLowerCase().includes("sim") ? "bg-destructive/10 border-destructive/50 animate-shake" : "bg-background border-border"),
 						children: [
 							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
-								"data-uid": "src/pages/Chat.tsx:315:13",
+								"data-uid": "src/pages/Chat.tsx:330:13",
 								"data-prohibitions": "[]",
 								className: "text-xs text-muted-foreground mb-1 flex items-center gap-1",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleAlert, {
-									"data-uid": "src/pages/Chat.tsx:316:15",
+									"data-uid": "src/pages/Chat.tsx:331:15",
 									"data-prohibitions": "[editContent]",
 									className: "size-3"
 								}), " Questionário de Saúde"]
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-								"data-uid": "src/pages/Chat.tsx:318:13",
+								"data-uid": "src/pages/Chat.tsx:333:13",
 								"data-prohibitions": "[editContent]",
 								className: cn$1("text-sm font-medium", clientData.health.toLowerCase().includes("sim") && "text-destructive"),
 								children: clientData.health || "Aguardando..."
 							}),
 							clientData.health.toLowerCase().includes("sim") && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
-								"data-uid": "src/pages/Chat.tsx:327:15",
+								"data-uid": "src/pages/Chat.tsx:342:15",
 								"data-prohibitions": "[]",
 								className: "text-xs text-destructive mt-2 flex items-start gap-1 font-bold",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ShieldAlert, {
-									"data-uid": "src/pages/Chat.tsx:328:17",
+									"data-uid": "src/pages/Chat.tsx:343:17",
 									"data-prohibitions": "[editContent]",
 									className: "size-4 shrink-0"
 								}), " ATENÇÃO REQUERIDA PELO ARTISTA"]
@@ -28462,47 +28549,47 @@ function Chat() {
 						]
 					}),
 					step >= 5 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						"data-uid": "src/pages/Chat.tsx:334:13",
+						"data-uid": "src/pages/Chat.tsx:349:13",
 						"data-prohibitions": "[]",
 						className: "bg-secondary/10 border border-secondary/30 rounded-lg p-3",
 						children: [
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-								"data-uid": "src/pages/Chat.tsx:335:15",
+								"data-uid": "src/pages/Chat.tsx:350:15",
 								"data-prohibitions": "[]",
 								className: "text-xs text-secondary mb-1 font-medium",
 								children: "Orçamento Gerado"
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								"data-uid": "src/pages/Chat.tsx:336:15",
+								"data-uid": "src/pages/Chat.tsx:351:15",
 								"data-prohibitions": "[]",
 								className: "flex justify-between text-sm mt-2",
 								children: [
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										"data-uid": "src/pages/Chat.tsx:337:17",
+										"data-uid": "src/pages/Chat.tsx:352:17",
 										"data-prohibitions": "[]",
 										children: "Valor Total:"
 									}),
 									" ",
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										"data-uid": "src/pages/Chat.tsx:337:43",
+										"data-uid": "src/pages/Chat.tsx:352:43",
 										"data-prohibitions": "[]",
 										children: "R$ 800"
 									})
 								]
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								"data-uid": "src/pages/Chat.tsx:339:15",
+								"data-uid": "src/pages/Chat.tsx:354:15",
 								"data-prohibitions": "[]",
 								className: "flex justify-between text-sm text-secondary font-bold mt-1",
 								children: [
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										"data-uid": "src/pages/Chat.tsx:340:17",
+										"data-uid": "src/pages/Chat.tsx:355:17",
 										"data-prohibitions": "[]",
 										children: "Sinal Pendente:"
 									}),
 									" ",
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										"data-uid": "src/pages/Chat.tsx:340:46",
+										"data-uid": "src/pages/Chat.tsx:355:46",
 										"data-prohibitions": "[]",
 										children: "R$ 200"
 									})
@@ -36885,6 +36972,601 @@ var Switch = import_react.forwardRef(({ className, ...props }, ref) => /* @__PUR
 }));
 Switch.displayName = Root.displayName;
 //#endregion
+//#region src/components/WhatsAppConnection.tsx
+var QR_PATTERN = [
+	[
+		1,
+		1,
+		1,
+		1,
+		1,
+		1,
+		1,
+		0,
+		1,
+		0,
+		1,
+		1,
+		1,
+		1,
+		1,
+		1,
+		1
+	],
+	[
+		1,
+		0,
+		0,
+		0,
+		0,
+		0,
+		1,
+		0,
+		0,
+		1,
+		1,
+		0,
+		0,
+		0,
+		0,
+		0,
+		1
+	],
+	[
+		1,
+		0,
+		1,
+		1,
+		1,
+		0,
+		1,
+		0,
+		1,
+		0,
+		1,
+		0,
+		1,
+		1,
+		1,
+		0,
+		1
+	],
+	[
+		1,
+		0,
+		1,
+		1,
+		1,
+		0,
+		1,
+		1,
+		0,
+		0,
+		1,
+		0,
+		1,
+		1,
+		1,
+		0,
+		1
+	],
+	[
+		1,
+		0,
+		1,
+		1,
+		1,
+		0,
+		1,
+		0,
+		1,
+		1,
+		1,
+		0,
+		1,
+		1,
+		1,
+		0,
+		1
+	],
+	[
+		1,
+		0,
+		0,
+		0,
+		0,
+		0,
+		1,
+		0,
+		0,
+		0,
+		1,
+		0,
+		0,
+		0,
+		0,
+		0,
+		1
+	],
+	[
+		1,
+		1,
+		1,
+		1,
+		1,
+		1,
+		1,
+		0,
+		1,
+		0,
+		1,
+		1,
+		1,
+		1,
+		1,
+		1,
+		1
+	],
+	[
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		1,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0
+	],
+	[
+		1,
+		0,
+		1,
+		0,
+		1,
+		0,
+		1,
+		1,
+		1,
+		1,
+		0,
+		1,
+		1,
+		0,
+		1,
+		0,
+		1
+	],
+	[
+		0,
+		1,
+		0,
+		1,
+		0,
+		1,
+		0,
+		1,
+		0,
+		1,
+		1,
+		0,
+		1,
+		1,
+		0,
+		1,
+		0
+	],
+	[
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		1,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0
+	],
+	[
+		1,
+		1,
+		1,
+		1,
+		1,
+		1,
+		1,
+		0,
+		1,
+		1,
+		0,
+		1,
+		0,
+		1,
+		0,
+		1,
+		1
+	],
+	[
+		1,
+		0,
+		0,
+		0,
+		0,
+		0,
+		1,
+		0,
+		0,
+		1,
+		1,
+		0,
+		0,
+		1,
+		1,
+		0,
+		0
+	],
+	[
+		1,
+		0,
+		1,
+		1,
+		1,
+		0,
+		1,
+		0,
+		1,
+		0,
+		1,
+		1,
+		1,
+		0,
+		0,
+		1,
+		1
+	],
+	[
+		1,
+		0,
+		1,
+		1,
+		1,
+		0,
+		1,
+		0,
+		0,
+		1,
+		0,
+		0,
+		1,
+		1,
+		0,
+		1,
+		0
+	],
+	[
+		1,
+		0,
+		0,
+		0,
+		0,
+		0,
+		1,
+		0,
+		1,
+		1,
+		1,
+		0,
+		0,
+		0,
+		1,
+		0,
+		1
+	],
+	[
+		1,
+		1,
+		1,
+		1,
+		1,
+		1,
+		1,
+		0,
+		1,
+		0,
+		1,
+		0,
+		1,
+		1,
+		1,
+		1,
+		1
+	]
+];
+function WhatsAppConnection() {
+	const { whatsappStatus, whatsappNumber, setWhatsappStatus, setWhatsappNumber } = useAppStore();
+	const [isRefreshing, setIsRefreshing] = (0, import_react.useState)(false);
+	const [qrExpired, setQrExpired] = (0, import_react.useState)(false);
+	(0, import_react.useEffect)(() => {
+		if (whatsappStatus === "disconnected" && !isRefreshing && !qrExpired) {
+			const timer = setTimeout(() => setQrExpired(true), 2e4);
+			return () => clearTimeout(timer);
+		}
+	}, [
+		whatsappStatus,
+		isRefreshing,
+		qrExpired
+	]);
+	const handleRefresh = () => {
+		setIsRefreshing(true);
+		setQrExpired(false);
+		setTimeout(() => setIsRefreshing(false), 1500);
+	};
+	const simulateConnection = () => {
+		setWhatsappStatus("connecting");
+		setTimeout(() => {
+			setWhatsappStatus("connected");
+			setWhatsappNumber("+55 11 99999-9999");
+		}, 2500);
+	};
+	const handleDisconnect = () => {
+		setWhatsappStatus("disconnected");
+		setWhatsappNumber(null);
+		setQrExpired(false);
+	};
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Card, {
+		"data-uid": "src/components/WhatsAppConnection.tsx:64:5",
+		"data-prohibitions": "[editContent]",
+		className: cn$1("border-border/50 transition-all duration-300", whatsappStatus === "connected" ? "bg-primary/5 border-primary/20" : "bg-card/50"),
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(CardHeader, {
+			"data-uid": "src/components/WhatsAppConnection.tsx:70:7",
+			"data-prohibitions": "[editContent]",
+			className: "flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				"data-uid": "src/components/WhatsAppConnection.tsx:71:9",
+				"data-prohibitions": "[]",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(CardTitle, {
+					"data-uid": "src/components/WhatsAppConnection.tsx:72:11",
+					"data-prohibitions": "[]",
+					className: "text-lg flex items-center gap-2",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Smartphone, {
+						"data-uid": "src/components/WhatsAppConnection.tsx:73:13",
+						"data-prohibitions": "[editContent]",
+						className: "size-5"
+					}), "Conexão WhatsApp"]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardDescription, {
+					"data-uid": "src/components/WhatsAppConnection.tsx:76:11",
+					"data-prohibitions": "[]",
+					children: "Vincule seu dispositivo para automação real com seus clientes."
+				})]
+			}), whatsappStatus === "connected" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Badge, {
+				"data-uid": "src/components/WhatsAppConnection.tsx:81:11",
+				"data-prohibitions": "[]",
+				className: "bg-primary/20 text-primary hover:bg-primary/30 border-none shrink-0 flex gap-1.5 items-center px-3 py-1 text-sm",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+					"data-uid": "src/components/WhatsAppConnection.tsx:82:13",
+					"data-prohibitions": "[editContent]",
+					className: "size-2 rounded-full bg-primary animate-pulse"
+				}), " Status: Conectado"]
+			}) : whatsappStatus === "connecting" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Badge, {
+				"data-uid": "src/components/WhatsAppConnection.tsx:85:11",
+				"data-prohibitions": "[]",
+				variant: "outline",
+				className: "shrink-0 flex gap-1.5 items-center px-3 py-1 text-sm bg-background",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(RefreshCw, {
+					"data-uid": "src/components/WhatsAppConnection.tsx:89:13",
+					"data-prohibitions": "[editContent]",
+					className: "size-3 animate-spin"
+				}), " Conectando..."]
+			}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Badge, {
+				"data-uid": "src/components/WhatsAppConnection.tsx:92:11",
+				"data-prohibitions": "[]",
+				variant: "destructive",
+				className: "bg-destructive/10 text-destructive hover:bg-destructive/20 border-none shrink-0 flex gap-1.5 items-center px-3 py-1 text-sm",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+					"data-uid": "src/components/WhatsAppConnection.tsx:96:13",
+					"data-prohibitions": "[editContent]",
+					className: "size-2 rounded-full bg-destructive"
+				}), " Status: Desconectado"]
+			})]
+		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardContent, {
+			"data-uid": "src/components/WhatsAppConnection.tsx:100:7",
+			"data-prohibitions": "[editContent]",
+			children: whatsappStatus === "connected" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				"data-uid": "src/components/WhatsAppConnection.tsx:102:11",
+				"data-prohibitions": "[editContent]",
+				className: "flex flex-col sm:flex-row items-center justify-between bg-background border border-border rounded-xl p-4 sm:p-6 animate-fade-in gap-4",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					"data-uid": "src/components/WhatsAppConnection.tsx:103:13",
+					"data-prohibitions": "[editContent]",
+					className: "flex items-center gap-4",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						"data-uid": "src/components/WhatsAppConnection.tsx:104:15",
+						"data-prohibitions": "[]",
+						className: "size-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleCheck, {
+							"data-uid": "src/components/WhatsAppConnection.tsx:105:17",
+							"data-prohibitions": "[editContent]",
+							className: "size-6 text-primary"
+						})
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						"data-uid": "src/components/WhatsAppConnection.tsx:107:15",
+						"data-prohibitions": "[editContent]",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							"data-uid": "src/components/WhatsAppConnection.tsx:108:17",
+							"data-prohibitions": "[]",
+							className: "font-semibold text-foreground flex items-center gap-2",
+							children: "Aparelho Vinculado"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+							"data-uid": "src/components/WhatsAppConnection.tsx:111:17",
+							"data-prohibitions": "[editContent]",
+							className: "text-sm text-muted-foreground mt-1 flex items-center gap-1.5 font-medium",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Phone, {
+									"data-uid": "src/components/WhatsAppConnection.tsx:112:19",
+									"data-prohibitions": "[editContent]",
+									className: "size-3.5"
+								}),
+								" ",
+								whatsappNumber
+							]
+						})]
+					})]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button$1, {
+					"data-uid": "src/components/WhatsAppConnection.tsx:116:13",
+					"data-prohibitions": "[]",
+					variant: "outline",
+					className: "w-full sm:w-auto text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/20 transition-colors",
+					onClick: handleDisconnect,
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(LogOut, {
+						"data-uid": "src/components/WhatsAppConnection.tsx:121:15",
+						"data-prohibitions": "[editContent]",
+						className: "size-4 mr-2"
+					}), " Desconectar Conta"]
+				})]
+			}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				"data-uid": "src/components/WhatsAppConnection.tsx:125:11",
+				"data-prohibitions": "[editContent]",
+				className: "flex flex-col md:flex-row gap-6 md:gap-8 items-center md:items-start animate-fade-in",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					"data-uid": "src/components/WhatsAppConnection.tsx:126:13",
+					"data-prohibitions": "[editContent]",
+					className: "relative shrink-0 flex flex-col items-center gap-3",
+					children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						"data-uid": "src/components/WhatsAppConnection.tsx:127:15",
+						"data-prohibitions": "[editContent]",
+						className: cn$1("p-4 bg-white rounded-xl relative overflow-hidden transition-opacity duration-300 ring-4 ring-background shadow-lg", (isRefreshing || qrExpired || whatsappStatus === "connecting") && "opacity-40"),
+						children: [qrExpired && !isRefreshing && whatsappStatus !== "connecting" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							"data-uid": "src/components/WhatsAppConnection.tsx:134:19",
+							"data-prohibitions": "[]",
+							className: "absolute inset-0 bg-background/90 backdrop-blur-sm flex flex-col items-center justify-center z-10 p-4 text-center",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+								"data-uid": "src/components/WhatsAppConnection.tsx:135:21",
+								"data-prohibitions": "[]",
+								className: "text-sm font-semibold mb-3 text-foreground",
+								children: "QR Code Expirado"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Button$1, {
+								"data-uid": "src/components/WhatsAppConnection.tsx:138:21",
+								"data-prohibitions": "[]",
+								size: "sm",
+								onClick: handleRefresh,
+								className: "rounded-full shadow-md",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(RefreshCw, {
+									"data-uid": "src/components/WhatsAppConnection.tsx:139:23",
+									"data-prohibitions": "[editContent]",
+									className: "size-4 mr-2"
+								}), " Recarregar QR Code"]
+							})]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							"data-uid": "src/components/WhatsAppConnection.tsx:143:17",
+							"data-prohibitions": "[editContent]",
+							className: "grid grid-cols-[repeat(17,minmax(0,1fr))] gap-[2px] w-48 h-48 md:w-52 md:h-52",
+							children: QR_PATTERN.map((row, i) => row.map((cell, j) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								"data-uid": "src/components/WhatsAppConnection.tsx:146:23",
+								"data-prohibitions": "[editContent]",
+								className: cn$1("w-full h-full rounded-[1px]", cell ? "bg-zinc-900" : "bg-transparent")
+							}, `${i}-${j}`)))
+						})]
+					})
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					"data-uid": "src/components/WhatsAppConnection.tsx:158:13",
+					"data-prohibitions": "[editContent]",
+					className: "space-y-5 flex-1 w-full text-center md:text-left",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						"data-uid": "src/components/WhatsAppConnection.tsx:159:15",
+						"data-prohibitions": "[]",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h4", {
+							"data-uid": "src/components/WhatsAppConnection.tsx:160:17",
+							"data-prohibitions": "[]",
+							className: "font-semibold text-foreground mb-3 text-base",
+							children: "Como vincular seu aparelho:"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("ol", {
+							"data-uid": "src/components/WhatsAppConnection.tsx:163:17",
+							"data-prohibitions": "[]",
+							className: "space-y-3 text-sm text-muted-foreground text-left max-w-md mx-auto md:mx-0 list-decimal list-inside marker:text-primary marker:font-bold",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", {
+									"data-uid": "src/components/WhatsAppConnection.tsx:164:19",
+									"data-prohibitions": "[]",
+									children: "Abra o WhatsApp no seu celular."
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", {
+									"data-uid": "src/components/WhatsAppConnection.tsx:165:19",
+									"data-prohibitions": "[]",
+									children: [
+										"Toque em ",
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
+											"data-uid": "src/components/WhatsAppConnection.tsx:166:30",
+											"data-prohibitions": "[]",
+											className: "text-foreground",
+											children: "Menu"
+										}),
+										" (três pontos) ou",
+										" ",
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
+											"data-uid": "src/components/WhatsAppConnection.tsx:167:21",
+											"data-prohibitions": "[]",
+											className: "text-foreground",
+											children: "Configurações"
+										}),
+										" e selecione \"Aparelhos Conectados\"."
+									]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", {
+									"data-uid": "src/components/WhatsAppConnection.tsx:170:19",
+									"data-prohibitions": "[]",
+									children: [
+										"Toque em ",
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
+											"data-uid": "src/components/WhatsAppConnection.tsx:171:30",
+											"data-prohibitions": "[]",
+											className: "text-foreground",
+											children: "Conectar um Aparelho"
+										}),
+										"."
+									]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", {
+									"data-uid": "src/components/WhatsAppConnection.tsx:173:19",
+									"data-prohibitions": "[]",
+									children: "Aponte a câmera do seu celular para esta tela para escanear o QR Code."
+								})
+							]
+						})]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						"data-uid": "src/components/WhatsAppConnection.tsx:176:15",
+						"data-prohibitions": "[editContent]",
+						className: "pt-2 flex justify-center md:justify-start",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button$1, {
+							"data-uid": "src/components/WhatsAppConnection.tsx:177:17",
+							"data-prohibitions": "[editContent]",
+							variant: "secondary",
+							onClick: simulateConnection,
+							disabled: whatsappStatus === "connecting" || qrExpired,
+							children: whatsappStatus === "connecting" ? "Aguardando confirmação..." : "[Demo] Simular Leitura do QR"
+						})
+					})]
+				})]
+			})
+		})]
+	});
+}
+//#endregion
 //#region src/pages/Settings.tsx
 function Settings() {
 	const { toast } = useToast();
@@ -36896,81 +37578,85 @@ function Settings() {
 		});
 	};
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-		"data-uid": "src/pages/Settings.tsx:22:5",
+		"data-uid": "src/pages/Settings.tsx:23:5",
 		"data-prohibitions": "[]",
 		className: "max-w-2xl mx-auto space-y-6 animate-fade-in",
 		children: [
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				"data-uid": "src/pages/Settings.tsx:23:7",
+				"data-uid": "src/pages/Settings.tsx:24:7",
 				"data-prohibitions": "[]",
 				className: "mb-8",
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-					"data-uid": "src/pages/Settings.tsx:24:9",
+					"data-uid": "src/pages/Settings.tsx:25:9",
 					"data-prohibitions": "[]",
 					className: "text-2xl font-bold tracking-tight",
 					children: "Configurações do Studio"
 				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-					"data-uid": "src/pages/Settings.tsx:25:9",
+					"data-uid": "src/pages/Settings.tsx:26:9",
 					"data-prohibitions": "[]",
 					className: "text-muted-foreground",
 					children: "Gerencie o comportamento do seu bot e regras de negócio."
 				})]
 			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(WhatsAppConnection, {
+				"data-uid": "src/pages/Settings.tsx:31:7",
+				"data-prohibitions": "[editContent]"
+			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Card, {
-				"data-uid": "src/pages/Settings.tsx:30:7",
+				"data-uid": "src/pages/Settings.tsx:33:7",
 				"data-prohibitions": "[]",
 				className: "border-border/50 bg-card/50",
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(CardHeader, {
-					"data-uid": "src/pages/Settings.tsx:31:9",
+					"data-uid": "src/pages/Settings.tsx:34:9",
 					"data-prohibitions": "[]",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardTitle, {
-						"data-uid": "src/pages/Settings.tsx:32:11",
+						"data-uid": "src/pages/Settings.tsx:35:11",
 						"data-prohibitions": "[]",
 						className: "text-lg",
 						children: "Bot de Atendimento"
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardDescription, {
-						"data-uid": "src/pages/Settings.tsx:33:11",
+						"data-uid": "src/pages/Settings.tsx:36:11",
 						"data-prohibitions": "[]",
 						children: "Ajuste o comportamento do simulador de WhatsApp."
 					})]
 				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(CardContent, {
-					"data-uid": "src/pages/Settings.tsx:35:9",
+					"data-uid": "src/pages/Settings.tsx:38:9",
 					"data-prohibitions": "[]",
 					className: "space-y-6",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						"data-uid": "src/pages/Settings.tsx:36:11",
+						"data-uid": "src/pages/Settings.tsx:39:11",
 						"data-prohibitions": "[]",
 						className: "flex items-center justify-between",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							"data-uid": "src/pages/Settings.tsx:37:13",
+							"data-uid": "src/pages/Settings.tsx:40:13",
 							"data-prohibitions": "[]",
 							className: "space-y-0.5",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label, {
-								"data-uid": "src/pages/Settings.tsx:38:15",
+								"data-uid": "src/pages/Settings.tsx:41:15",
 								"data-prohibitions": "[]",
 								className: "text-base",
 								children: "Automação Ativa"
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-								"data-uid": "src/pages/Settings.tsx:39:15",
+								"data-uid": "src/pages/Settings.tsx:42:15",
 								"data-prohibitions": "[]",
 								className: "text-sm text-muted-foreground",
 								children: "O bot responderá automaticamente novos leads."
 							})]
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Switch, {
-							"data-uid": "src/pages/Settings.tsx:43:13",
+							"data-uid": "src/pages/Settings.tsx:46:13",
 							"data-prohibitions": "[editContent]",
 							defaultChecked: true
 						})]
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						"data-uid": "src/pages/Settings.tsx:46:11",
+						"data-uid": "src/pages/Settings.tsx:49:11",
 						"data-prohibitions": "[]",
 						className: "space-y-2 pt-4 border-t border-border",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label, {
-							"data-uid": "src/pages/Settings.tsx:47:13",
+							"data-uid": "src/pages/Settings.tsx:50:13",
 							"data-prohibitions": "[]",
 							children: "Mensagem de Boas-Vindas"
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
-							"data-uid": "src/pages/Settings.tsx:48:13",
+							"data-uid": "src/pages/Settings.tsx:51:13",
 							"data-prohibitions": "[editContent]",
 							defaultValue: "Olá! Bem-vindo ao atendimento automatizado do Studio Noir. Como posso te ajudar hoje?",
 							className: "bg-background"
@@ -36979,61 +37665,61 @@ function Settings() {
 				})]
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Card, {
-				"data-uid": "src/pages/Settings.tsx:56:7",
+				"data-uid": "src/pages/Settings.tsx:59:7",
 				"data-prohibitions": "[]",
 				className: "border-border/50 bg-card/50",
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(CardHeader, {
-					"data-uid": "src/pages/Settings.tsx:57:9",
+					"data-uid": "src/pages/Settings.tsx:60:9",
 					"data-prohibitions": "[]",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardTitle, {
-						"data-uid": "src/pages/Settings.tsx:58:11",
+						"data-uid": "src/pages/Settings.tsx:61:11",
 						"data-prohibitions": "[]",
 						className: "text-lg",
 						children: "Regras Financeiras"
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardDescription, {
-						"data-uid": "src/pages/Settings.tsx:59:11",
+						"data-uid": "src/pages/Settings.tsx:62:11",
 						"data-prohibitions": "[]",
 						children: "Defina as regras padrão para orçamentos e sinais."
 					})]
 				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(CardContent, {
-					"data-uid": "src/pages/Settings.tsx:61:9",
+					"data-uid": "src/pages/Settings.tsx:64:9",
 					"data-prohibitions": "[]",
 					className: "space-y-6",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						"data-uid": "src/pages/Settings.tsx:62:11",
+						"data-uid": "src/pages/Settings.tsx:65:11",
 						"data-prohibitions": "[]",
 						className: "space-y-2",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label, {
-							"data-uid": "src/pages/Settings.tsx:63:13",
+							"data-uid": "src/pages/Settings.tsx:66:13",
 							"data-prohibitions": "[]",
 							children: "Porcentagem padrão de Sinal (Entrada)"
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							"data-uid": "src/pages/Settings.tsx:64:13",
+							"data-uid": "src/pages/Settings.tsx:67:13",
 							"data-prohibitions": "[]",
 							className: "flex items-center gap-2",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
-								"data-uid": "src/pages/Settings.tsx:65:15",
+								"data-uid": "src/pages/Settings.tsx:68:15",
 								"data-prohibitions": "[editContent]",
 								type: "number",
 								defaultValue: "25",
 								className: "w-24 bg-background"
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-								"data-uid": "src/pages/Settings.tsx:66:15",
+								"data-uid": "src/pages/Settings.tsx:69:15",
 								"data-prohibitions": "[]",
 								className: "text-muted-foreground",
 								children: "% do valor total"
 							})]
 						})]
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						"data-uid": "src/pages/Settings.tsx:69:11",
+						"data-uid": "src/pages/Settings.tsx:72:11",
 						"data-prohibitions": "[]",
 						className: "space-y-2",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label, {
-							"data-uid": "src/pages/Settings.tsx:70:13",
+							"data-uid": "src/pages/Settings.tsx:73:13",
 							"data-prohibitions": "[]",
 							children: "Chave PIX para recebimento"
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
-							"data-uid": "src/pages/Settings.tsx:71:13",
+							"data-uid": "src/pages/Settings.tsx:74:13",
 							"data-prohibitions": "[editContent]",
 							defaultValue: "CNPJ: 12.345.678/0001-90",
 							className: "bg-background"
@@ -37042,51 +37728,51 @@ function Settings() {
 				})]
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Card, {
-				"data-uid": "src/pages/Settings.tsx:76:7",
+				"data-uid": "src/pages/Settings.tsx:79:7",
 				"data-prohibitions": "[]",
 				className: "border-border/50 bg-card/50 border-destructive/20",
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(CardHeader, {
-					"data-uid": "src/pages/Settings.tsx:77:9",
+					"data-uid": "src/pages/Settings.tsx:80:9",
 					"data-prohibitions": "[]",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(CardTitle, {
-						"data-uid": "src/pages/Settings.tsx:78:11",
+						"data-uid": "src/pages/Settings.tsx:81:11",
 						"data-prohibitions": "[]",
 						className: "text-lg flex items-center gap-2",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Lock, {
-							"data-uid": "src/pages/Settings.tsx:79:13",
+							"data-uid": "src/pages/Settings.tsx:82:13",
 							"data-prohibitions": "[editContent]",
 							className: "size-4 text-destructive"
 						}), "Status da Assinatura"]
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardDescription, {
-						"data-uid": "src/pages/Settings.tsx:82:11",
+						"data-uid": "src/pages/Settings.tsx:85:11",
 						"data-prohibitions": "[]",
 						children: "Gerencie o plano de acesso à automação."
 					})]
 				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardContent, {
-					"data-uid": "src/pages/Settings.tsx:84:9",
+					"data-uid": "src/pages/Settings.tsx:87:9",
 					"data-prohibitions": "[]",
 					className: "space-y-6",
 					children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						"data-uid": "src/pages/Settings.tsx:85:11",
+						"data-uid": "src/pages/Settings.tsx:88:11",
 						"data-prohibitions": "[]",
 						className: "flex items-center justify-between",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							"data-uid": "src/pages/Settings.tsx:86:13",
+							"data-uid": "src/pages/Settings.tsx:89:13",
 							"data-prohibitions": "[]",
 							className: "space-y-0.5",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label, {
-								"data-uid": "src/pages/Settings.tsx:87:15",
+								"data-uid": "src/pages/Settings.tsx:90:15",
 								"data-prohibitions": "[]",
 								className: "text-base",
 								children: "Assinatura Ativa"
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-								"data-uid": "src/pages/Settings.tsx:88:15",
+								"data-uid": "src/pages/Settings.tsx:91:15",
 								"data-prohibitions": "[]",
 								className: "text-sm text-muted-foreground",
 								children: "Desativar a assinatura bloqueará o acesso ao sistema imediatamente."
 							})]
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Switch, {
-							"data-uid": "src/pages/Settings.tsx:92:13",
+							"data-uid": "src/pages/Settings.tsx:95:13",
 							"data-prohibitions": "[editContent]",
 							checked: subscriptionStatus === "ativo",
 							onCheckedChange: (checked) => setSubscriptionStatus(checked ? "ativo" : "inativo")
@@ -37095,13 +37781,14 @@ function Settings() {
 				})]
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-				"data-uid": "src/pages/Settings.tsx:100:7",
+				"data-uid": "src/pages/Settings.tsx:103:7",
 				"data-prohibitions": "[]",
-				className: "flex justify-end",
+				className: "flex justify-end pb-12",
 				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button$1, {
-					"data-uid": "src/pages/Settings.tsx:101:9",
+					"data-uid": "src/pages/Settings.tsx:104:9",
 					"data-prohibitions": "[]",
 					onClick: handleSave,
+					size: "lg",
 					children: "Salvar Alterações"
 				})
 			})
@@ -37250,4 +37937,4 @@ var App = () => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AppProvider, {
 }));
 //#endregion
 
-//# sourceMappingURL=index-JArMhxqS.js.map
+//# sourceMappingURL=index-BxEQOOYI.js.map

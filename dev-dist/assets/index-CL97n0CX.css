@@ -825,6 +825,10 @@ section[aria-label='Notifications alt+T'] {
   margin-right: 0.5rem;
 }
 
+.mt-0\.5{
+  margin-top: 0.125rem;
+}
+
 .mt-1{
   margin-top: 0.25rem;
 }
@@ -907,6 +911,11 @@ section[aria-label='Notifications alt+T'] {
   height: 0.75rem;
 }
 
+.size-3\.5{
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
 .size-4{
   width: 1rem;
   height: 1rem;
@@ -915,6 +924,11 @@ section[aria-label='Notifications alt+T'] {
 .size-5{
   width: 1.25rem;
   height: 1.25rem;
+}
+
+.size-6{
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 .size-8{
@@ -973,6 +987,10 @@ section[aria-label='Notifications alt+T'] {
 
 .h-4{
   height: 1rem;
+}
+
+.h-48{
+  height: 12rem;
 }
 
 .h-5{
@@ -1126,6 +1144,10 @@ section[aria-label='Notifications alt+T'] {
 
 .w-4{
   width: 1rem;
+}
+
+.w-48{
+  width: 12rem;
 }
 
 .w-5{
@@ -1399,6 +1421,17 @@ section[aria-label='Notifications alt+T'] {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
+@keyframes spin{
+
+  to{
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin{
+  animation: spin 1s linear infinite;
+}
+
 .cursor-default{
   cursor: default;
 }
@@ -1421,6 +1454,10 @@ section[aria-label='Notifications alt+T'] {
   list-style-position: inside;
 }
 
+.list-decimal{
+  list-style-type: decimal;
+}
+
 .list-disc{
   list-style-type: disc;
 }
@@ -1435,6 +1472,10 @@ section[aria-label='Notifications alt+T'] {
 
 .grid-cols-3{
   grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.grid-cols-\[repeat\(17\2c minmax\(0\2c 1fr\)\)\]{
+  grid-template-columns: repeat(17,minmax(0,1fr));
 }
 
 .flex-row{
@@ -1517,6 +1558,10 @@ section[aria-label='Notifications alt+T'] {
   gap: 2rem;
 }
 
+.gap-\[2px\]{
+  gap: 2px;
+}
+
 .space-x-1 > :not([hidden]) ~ :not([hidden]){
   --tw-space-x-reverse: 0;
   margin-right: calc(0.25rem * var(--tw-space-x-reverse));
@@ -1547,10 +1592,22 @@ section[aria-label='Notifications alt+T'] {
   margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
 }
 
+.space-y-3 > :not([hidden]) ~ :not([hidden]){
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.75rem * var(--tw-space-y-reverse));
+}
+
 .space-y-4 > :not([hidden]) ~ :not([hidden]){
   --tw-space-y-reverse: 0;
   margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1rem * var(--tw-space-y-reverse));
+}
+
+.space-y-5 > :not([hidden]) ~ :not([hidden]){
+  --tw-space-y-reverse: 0;
+  margin-top: calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(1.25rem * var(--tw-space-y-reverse));
 }
 
 .space-y-6 > :not([hidden]) ~ :not([hidden]){
@@ -1615,6 +1672,10 @@ section[aria-label='Notifications alt+T'] {
 
 .rounded-2xl{
   border-radius: 1rem;
+}
+
+.rounded-\[1px\]{
+  border-radius: 1px;
 }
 
 .rounded-\[2px\]{
@@ -1801,6 +1862,10 @@ section[aria-label='Notifications alt+T'] {
   background-color: hsl(var(--background));
 }
 
+.bg-background\/90{
+  background-color: hsl(var(--background) / 0.9);
+}
+
 .bg-background\/95{
   background-color: hsl(var(--background) / 0.95);
 }
@@ -1878,6 +1943,10 @@ section[aria-label='Notifications alt+T'] {
   background-color: hsl(var(--primary) / 0.2);
 }
 
+.bg-primary\/5{
+  background-color: hsl(var(--primary) / 0.05);
+}
+
 .bg-secondary{
   background-color: hsl(var(--secondary));
 }
@@ -1900,6 +1969,16 @@ section[aria-label='Notifications alt+T'] {
 
 .bg-transparent{
   background-color: transparent;
+}
+
+.bg-white{
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
+}
+
+.bg-zinc-900{
+  --tw-bg-opacity: 1;
+  background-color: rgb(24 24 27 / var(--tw-bg-opacity, 1));
 }
 
 .fill-current{
@@ -2028,6 +2107,10 @@ section[aria-label='Notifications alt+T'] {
   padding-bottom: 1.5rem;
 }
 
+.pb-12{
+  padding-bottom: 3rem;
+}
+
 .pb-2{
   padding-bottom: 0.5rem;
 }
@@ -2074,6 +2157,10 @@ section[aria-label='Notifications alt+T'] {
 
 .pt-0{
   padding-top: 0px;
+}
+
+.pt-2{
+  padding-top: 0.5rem;
 }
 
 .pt-3{
@@ -2275,6 +2362,10 @@ section[aria-label='Notifications alt+T'] {
   opacity: 0;
 }
 
+.opacity-40{
+  opacity: 0.4;
+}
+
 .opacity-50{
   opacity: 0.5;
 }
@@ -2358,6 +2449,16 @@ section[aria-label='Notifications alt+T'] {
   box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
 }
 
+.ring-4{
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(4px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+}
+
+.ring-background{
+  --tw-ring-color: hsl(var(--background));
+}
+
 .ring-primary\/20{
   --tw-ring-color: hsl(var(--primary) / 0.2);
 }
@@ -2380,6 +2481,11 @@ section[aria-label='Notifications alt+T'] {
 
 .backdrop-blur{
   --tw-backdrop-blur: blur(8px);
+  backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
+}
+
+.backdrop-blur-sm{
+  --tw-backdrop-blur: blur(4px);
   backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
 }
 
@@ -2445,6 +2551,10 @@ section[aria-label='Notifications alt+T'] {
   transition-duration: 200ms;
 }
 
+.duration-300{
+  transition-duration: 300ms;
+}
+
 .duration-500{
   transition-duration: 500ms;
 }
@@ -2501,6 +2611,10 @@ section[aria-label='Notifications alt+T'] {
 
 .duration-200{
   animation-duration: 200ms;
+}
+
+.duration-300{
+  animation-duration: 300ms;
 }
 
 .duration-500{
@@ -2575,6 +2689,22 @@ section[aria-label='Notifications alt+T'] {
 
 .\[--cell-size\:2rem\]{
   --cell-size: 2rem;
+}
+
+.marker\:font-bold *::marker{
+  font-weight: 700;
+}
+
+.marker\:text-primary *::marker{
+  color: hsl(var(--primary));
+}
+
+.marker\:font-bold::marker{
+  font-weight: 700;
+}
+
+.marker\:text-primary::marker{
+  color: hsl(var(--primary));
 }
 
 .file\:border-0::file-selector-button{
@@ -2673,6 +2803,14 @@ section[aria-label='Notifications alt+T'] {
   background-color: hsl(var(--accent));
 }
 
+.hover\:bg-destructive\/10:hover{
+  background-color: hsl(var(--destructive) / 0.1);
+}
+
+.hover\:bg-destructive\/20:hover{
+  background-color: hsl(var(--destructive) / 0.2);
+}
+
 .hover\:bg-destructive\/30:hover{
   background-color: hsl(var(--destructive) / 0.3);
 }
@@ -2695,6 +2833,10 @@ section[aria-label='Notifications alt+T'] {
 
 .hover\:bg-muted\/50:hover{
   background-color: hsl(var(--muted) / 0.5);
+}
+
+.hover\:bg-primary\/30:hover{
+  background-color: hsl(var(--primary) / 0.3);
 }
 
 .hover\:bg-primary\/80:hover{
@@ -2732,6 +2874,10 @@ section[aria-label='Notifications alt+T'] {
 .hover\:text-blue-700:hover{
   --tw-text-opacity: 1;
   color: rgb(29 78 216 / var(--tw-text-opacity, 1));
+}
+
+.hover\:text-destructive:hover{
+  color: hsl(var(--destructive));
 }
 
 .hover\:text-foreground:hover{
@@ -3621,6 +3767,10 @@ section[aria-label='Notifications alt+T'] {
     display: flex;
   }
 
+  .sm\:w-auto{
+    width: auto;
+  }
+
   .sm\:max-w-\[200px\]{
     max-width: 200px;
   }
@@ -3647,6 +3797,10 @@ section[aria-label='Notifications alt+T'] {
 
   .sm\:flex-col{
     flex-direction: column;
+  }
+
+  .sm\:items-center{
+    align-items: center;
   }
 
   .sm\:justify-end{
@@ -3686,12 +3840,25 @@ section[aria-label='Notifications alt+T'] {
     position: absolute;
   }
 
+  .md\:mx-0{
+    margin-left: 0px;
+    margin-right: 0px;
+  }
+
   .md\:block{
     display: block;
   }
 
   .md\:flex{
     display: flex;
+  }
+
+  .md\:h-52{
+    height: 13rem;
+  }
+
+  .md\:w-52{
+    width: 13rem;
   }
 
   .md\:w-\[var\(--radix-navigation-menu-viewport-width\)\]{
@@ -3708,6 +3875,22 @@ section[aria-label='Notifications alt+T'] {
 
   .md\:flex-row{
     flex-direction: row;
+  }
+
+  .md\:items-start{
+    align-items: flex-start;
+  }
+
+  .md\:justify-start{
+    justify-content: flex-start;
+  }
+
+  .md\:gap-8{
+    gap: 2rem;
+  }
+
+  .md\:text-left{
+    text-align: left;
   }
 
   .md\:text-sm{
