@@ -3,41 +3,31 @@ import { cn } from '@/lib/utils'
 interface ChatBubbleProps {
   text: string
   isBot: boolean
-  time?: string
+  time: string
 }
 
 export function ChatBubble({ text, isBot, time }: ChatBubbleProps) {
-  const isImage = text.startsWith('http') && text.includes('usecurling.com')
-
   return (
-    <div className={cn('flex w-full mb-4', isBot ? 'justify-start' : 'justify-end')}>
+    <div
+      className={cn('flex w-full mb-4', isBot ? 'justify-start' : 'justify-end animate-fade-in-up')}
+    >
       <div
         className={cn(
-          'relative max-w-[80%] px-4 py-2.5 rounded-2xl text-sm shadow-sm',
+          'max-w-[80%] px-4 py-3 rounded-2xl relative group',
           isBot
-            ? 'bg-card text-foreground rounded-tl-none chat-tail-left'
+            ? 'bg-card border border-border text-card-foreground rounded-tl-none chat-tail-left'
             : 'bg-primary text-primary-foreground rounded-tr-none chat-tail-right',
         )}
       >
-        {isImage ? (
-          <img
-            src={text}
-            alt="Anexo de referência"
-            className="rounded-md w-full sm:max-w-[200px] h-auto object-cover"
-          />
-        ) : (
-          <p className="whitespace-pre-wrap leading-relaxed">{text}</p>
-        )}
-        {time && (
-          <span
-            className={cn(
-              'text-[10px] mt-1 block text-right opacity-70',
-              isBot ? 'text-muted-foreground' : 'text-primary-foreground/80',
-            )}
-          >
-            {time}
-          </span>
-        )}
+        <p className="text-sm whitespace-pre-wrap leading-relaxed">{text}</p>
+        <span
+          className={cn(
+            'text-[10px] absolute -bottom-5 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap',
+            isBot ? 'left-1 text-muted-foreground' : 'right-1 text-muted-foreground',
+          )}
+        >
+          {time} {isBot ? '• Bot Automático' : '• Cliente'}
+        </span>
       </div>
     </div>
   )

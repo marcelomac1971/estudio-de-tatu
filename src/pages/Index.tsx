@@ -1,7 +1,8 @@
-import { Users, Calendar, Wallet, Activity, ArrowRight } from 'lucide-react'
+import { Users, Calendar, Wallet, Activity, ArrowRight, Ban, AlertCircle } from 'lucide-react'
 import { MetricCard } from '@/components/MetricCard'
 import useAppStore from '@/stores/useAppStore'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Link } from 'react-router-dom'
 import { format } from 'date-fns'
@@ -11,13 +12,27 @@ export default function Index() {
   const { metrics, appointments } = useAppStore()
   const today = new Date().toISOString().split('T')[0]
   const upcoming = appointments
-    .filter((a) => a.date >= today)
+    .filter((a) => a.date >= today && a.status !== 'cancelled')
     .sort((a, b) => a.time.localeCompare(b.time))
     .slice(0, 4)
 
+  const pendingConfirmations = appointments.filter((a) => a.status === 'pending_confirmation')
+
   return (
     <div className="max-w-6xl mx-auto space-y-8 animate-fade-in-up">
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {pendingConfirmations.length > 0 && (
+        <Alert className="bg-orange-500/10 border-orange-500/20 text-orange-600 animate-fade-in">
+          <AlertCircle className="h-4 w-4 stroke-orange-600" />
+          <AlertTitle className="font-bold">Atenção Requerida (Automação de Agenda)</AlertTitle>
+          <AlertDescription className="mt-1">
+            Existem <strong>{pendingConfirmations.length} agendamentos</strong> aguardando
+            confirmação do cliente (Lembrete T-24h disparado). Se não houver resposta, o horário
+            poderá ficar disponível na agenda.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
         <MetricCard
           title="Novos Leads"
           value={metrics.leads}
@@ -39,6 +54,12 @@ export default function Index() {
           icon={Activity}
           className="border-primary/20 relative"
         />
+        <MetricCard
+          title="Retenções (Sinais)"
+          value={`R$ ${metrics.retainedDeposits}`}
+          icon={Ban}
+          className="border-destructive/20 relative bg-destructive/5"
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -56,18 +77,18 @@ export default function Index() {
               {[
                 {
                   time: 'Há 5 min',
-                  text: 'Cliente Mariana Costa finalizou o questionário de saúde.',
-                  type: 'health',
+                  text: 'Lembrete T-48h enviado para agendamento de Mariana Costa.',
+                  type: 'reminder',
                 },
                 {
                   time: 'Há 12 min',
-                  text: 'Novo sinal de R$ 150 recebido de Pedro Alves.',
-                  type: 'payment',
+                  text: 'Cliente aceitou os termos de Saúde (LGPD) e Direitos de Imagem.',
+                  type: 'legal',
                 },
                 {
                   time: 'Há 1 hora',
-                  text: 'Nova conversa iniciada: "Orçamento Realismo Costas".',
-                  type: 'lead',
+                  text: 'Cancelamento < 24h detectado. Compensação de Agenda aplicada ao sinal (R$ 50).',
+                  type: 'finance',
                 },
               ].map((activity, i) => (
                 <div key={i} className="flex gap-4 items-start">
@@ -105,8 +126,20 @@ export default function Index() {
                       </p>
                     </div>
                     <div className="text-right">
-                      <span className="text-xs font-medium px-2 py-1 rounded bg-secondary/10 text-secondary">
-                        {app.status === 'confirmed' ? 'Confirmado' : 'Concluído'}
+                      <span
+                        className={`text-xs font-medium px-2 py-1 rounded ${
+                          app.status === 'confirmed'
+                            ? 'bg-secondary/10 text-secondary'
+                            : app.status === 'pending_confirmation'
+                              ? 'bg-orange-500/10 text-orange-600'
+                              : 'bg-muted text-muted-foreground'
+                        }`}
+                      >
+                        {app.status === 'confirmed'
+                          ? 'Confirmado'
+                          : app.status === 'pending_confirmation'
+                            ? 'Aguardando (24h)'
+                            : 'Concluído'}
                       </span>
                     </div>
                   </div>

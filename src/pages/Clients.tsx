@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import {
   Table,
   TableBody,
@@ -11,8 +11,7 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Badge } from '@/components/ui/badge'
 import useAppStore from '@/stores/useAppStore'
-import { AlertTriangle, ImageIcon, User, Image as IconImage } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { AlertTriangle, ImageIcon, User, Image as IconImage, FileCheck, Camera } from 'lucide-react'
 
 export default function Clients() {
   const { clients } = useAppStore()
@@ -33,6 +32,7 @@ export default function Clients() {
                 <TableHead>Contato</TableHead>
                 <TableHead>Total Gasto</TableHead>
                 <TableHead>Status Saúde</TableHead>
+                <TableHead>Termos</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -62,6 +62,28 @@ export default function Clients() {
                       </Badge>
                     )}
                   </TableCell>
+                  <TableCell>
+                    <div className="flex gap-1">
+                      {client.healthDataConsent && (
+                        <Badge
+                          variant="outline"
+                          className="text-[10px] text-green-500 border-green-500/30"
+                          title="LGPD Aceita"
+                        >
+                          LGPD
+                        </Badge>
+                      )}
+                      {client.imageRights && (
+                        <Badge
+                          variant="outline"
+                          className="text-[10px] text-primary border-primary/30"
+                          title="Uso de Imagem Autorizado"
+                        >
+                          Imagem
+                        </Badge>
+                      )}
+                    </div>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -90,6 +112,27 @@ export default function Clients() {
               </DialogHeader>
 
               <div className="space-y-6 pt-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-background rounded-lg p-3 border border-border flex items-start gap-3">
+                    <FileCheck className="size-4 text-green-500 shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-xs text-muted-foreground mb-0.5">Consentimento LGPD</p>
+                      <p className="text-sm font-medium">
+                        {selectedClient.healthDataConsent ? 'Aceito Digitalmente' : 'Pendente'}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="bg-background rounded-lg p-3 border border-border flex items-start gap-3">
+                    <Camera className="size-4 text-primary shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-xs text-muted-foreground mb-0.5">Uso de Imagem</p>
+                      <p className="text-sm font-medium">
+                        {selectedClient.imageRights ? 'Autorizado' : 'Não Autorizado'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
                 {selectedClient.healthAlerts.length > 0 && (
                   <div className="bg-destructive/10 border border-destructive/50 rounded-lg p-4 animate-shake">
                     <h4 className="flex items-center gap-2 text-destructive font-bold text-sm mb-2">

@@ -5,7 +5,7 @@ import { Switch } from '@/components/ui/switch'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
 import useAppStore from '@/stores/useAppStore'
-import { Lock } from 'lucide-react'
+import { Lock, Calculator, ShieldCheck, BellRing } from 'lucide-react'
 import { WhatsAppConnection } from '@/components/WhatsAppConnection'
 
 export default function Settings() {
@@ -15,7 +15,7 @@ export default function Settings() {
   const handleSave = () => {
     toast({
       title: 'Configurações salvas',
-      description: 'As preferências da automação foram atualizadas com sucesso.',
+      description: 'As preferências da automação e regras do estúdio foram atualizadas.',
     })
   }
 
@@ -24,7 +24,7 @@ export default function Settings() {
       <div className="mb-8">
         <h2 className="text-2xl font-bold tracking-tight">Configurações do Studio</h2>
         <p className="text-muted-foreground">
-          Gerencie o comportamento do seu bot e regras de negócio.
+          Gerencie regras financeiras, automações e compliance do seu estúdio.
         </p>
       </div>
 
@@ -32,46 +32,101 @@ export default function Settings() {
 
       <Card className="border-border/50 bg-card/50">
         <CardHeader>
-          <CardTitle className="text-lg">Bot de Atendimento</CardTitle>
-          <CardDescription>Ajuste o comportamento do simulador de WhatsApp.</CardDescription>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Calculator className="size-4" />
+            Precificação e Orçamento
+          </CardTitle>
+          <CardDescription>Ajuste o comportamento do motor de cálculo automático.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
-              <Label className="text-base">Automação Ativa</Label>
+              <Label className="text-base">Motor Automático Ativo</Label>
               <p className="text-sm text-muted-foreground">
-                O bot responderá automaticamente novos leads.
+                Fornece estimativas baseadas em estilo, tamanho e local.
               </p>
             </div>
             <Switch defaultChecked />
           </div>
 
           <div className="space-y-2 pt-4 border-t border-border">
-            <Label>Mensagem de Boas-Vindas</Label>
-            <Input
-              defaultValue="Olá! Bem-vindo ao atendimento automatizado do Studio Noir. Como posso te ajudar hoje?"
-              className="bg-background"
-            />
+            <Label>Valor Base (Tamanho Mínimo)</Label>
+            <div className="flex items-center gap-2">
+              <span className="text-muted-foreground">R$</span>
+              <Input type="number" defaultValue="300" className="w-32 bg-background" />
+            </div>
           </div>
         </CardContent>
       </Card>
 
       <Card className="border-border/50 bg-card/50">
         <CardHeader>
-          <CardTitle className="text-lg">Regras Financeiras</CardTitle>
-          <CardDescription>Defina as regras padrão para orçamentos e sinais.</CardDescription>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <ShieldCheck className="size-4" />
+            Termos Legais e Financeiros
+          </CardTitle>
+          <CardDescription>Configure retenção de sinal e consentimentos.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label className="text-base">Coleta de Consentimento LGPD</Label>
+              <p className="text-sm text-muted-foreground">
+                Exige botão "Aceito" antes de perguntas médicas.
+              </p>
+            </div>
+            <Switch defaultChecked />
+          </div>
+
+          <div className="flex items-center justify-between pt-4 border-t border-border">
+            <div className="space-y-0.5">
+              <Label className="text-base">Autorização de Direitos de Imagem</Label>
+              <p className="text-sm text-muted-foreground">
+                Inclui no fluxo a pergunta para postagem em redes sociais.
+              </p>
+            </div>
+            <Switch defaultChecked />
+          </div>
+
+          <div className="space-y-2 pt-4 border-t border-border">
             <Label>Porcentagem padrão de Sinal (Entrada)</Label>
             <div className="flex items-center gap-2">
               <Input type="number" defaultValue="25" className="w-24 bg-background" />
               <span className="text-muted-foreground">% do valor total</span>
             </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Este valor será retido sob "Compensação de Agenda" caso cancelem {'<'} 24h.
+            </p>
           </div>
-          <div className="space-y-2">
-            <Label>Chave PIX para recebimento</Label>
-            <Input defaultValue="CNPJ: 12.345.678/0001-90" className="bg-background" />
+        </CardContent>
+      </Card>
+
+      <Card className="border-border/50 bg-card/50">
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <BellRing className="size-4" />
+            Lembretes Automáticos (Anti-Idle)
+          </CardTitle>
+          <CardDescription>Fluxo de comunicação pré-sessão para reduzir faltas.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label className="text-base">Aviso T-48h (Preparação)</Label>
+              <p className="text-sm text-muted-foreground">
+                Envia instruções sobre alimentação e hidratação.
+              </p>
+            </div>
+            <Switch defaultChecked />
+          </div>
+          <div className="flex items-center justify-between pt-4 border-t border-border">
+            <div className="space-y-0.5">
+              <Label className="text-base">Confirmação T-24h (Obrigatória)</Label>
+              <p className="text-sm text-muted-foreground">
+                Exige o clique no botão "Confirmar Agendamento".
+              </p>
+            </div>
+            <Switch defaultChecked />
           </div>
         </CardContent>
       </Card>
@@ -89,7 +144,7 @@ export default function Settings() {
             <div className="space-y-0.5">
               <Label className="text-base">Assinatura Ativa</Label>
               <p className="text-sm text-muted-foreground">
-                Desativar a assinatura bloqueará o acesso ao sistema imediatamente.
+                Desativar a assinatura bloqueia o acesso ao sistema imediatamente.
               </p>
             </div>
             <Switch

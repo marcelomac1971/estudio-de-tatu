@@ -8,6 +8,7 @@ type AppStore = {
   clients: Client[]
   appointments: Appointment[]
   addAppointment: (app: Appointment) => void
+  updateAppointment: (app: Appointment) => void
   updateClient: (client: Client) => void
   subscriptionStatus: SubscriptionStatus
   setSubscriptionStatus: (status: SubscriptionStatus) => void
@@ -20,6 +21,7 @@ type AppStore = {
     todayAppointments: number
     totalDeposits: number
     activeChats: number
+    retainedDeposits: number
   }
 }
 
@@ -39,6 +41,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setAppointments((prev) => [...prev, app])
   }
 
+  const updateAppointment = (updated: Appointment) => {
+    setAppointments((prev) => prev.map((a) => (a.id === updated.id ? updated : a)))
+  }
+
   const updateClient = (updated: Client) => {
     setClients((prev) => prev.map((c) => (c.id === updated.id ? updated : c)))
   }
@@ -49,14 +55,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }
 
   const today = new Date().toISOString().split('T')[0]
-  const todayApps = appointments.filter((a) => a.date === today)
+  const todayApps = appointments.filter((a) => a.date === today && a.status !== 'cancelled')
   const totalDeposits = todayApps.reduce((acc, a) => acc + a.depositPaid, 0)
+
+  const retainedDeposits = appointments
+    .filter((a) => a.financialStatus === 'Compensação de Agenda')
+    .reduce((acc, a) => acc + a.depositPaid, 0)
 
   const metrics = {
     leads: 12,
     todayAppointments: todayApps.length,
     totalDeposits,
     activeChats: 3,
+    retainedDeposits,
   }
 
   return React.createElement(
@@ -66,6 +77,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         clients,
         appointments,
         addAppointment,
+        updateAppointment,
         updateClient,
         subscriptionStatus,
         setSubscriptionStatus,
