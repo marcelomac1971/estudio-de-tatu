@@ -9,14 +9,36 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from '@/components/ui/sidebar'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Bell, Calendar, Home, MessageSquare, Settings, Users, Lock } from 'lucide-react'
+import {
+  Bell,
+  Calendar,
+  Home,
+  MessageSquare,
+  Settings,
+  Users,
+  Lock,
+  BarChart3,
+  ChevronsUpDown,
+} from 'lucide-react'
 import { Button } from './ui/button'
 import useAppStore from '@/stores/useAppStore'
 
 export default function Layout() {
   const location = useLocation()
-  const { subscriptionStatus, setSubscriptionStatus } = useAppStore()
+  const {
+    subscriptionStatus,
+    setSubscriptionStatus,
+    studios,
+    currentStudioId,
+    setCurrentStudioId,
+  } = useAppStore()
 
   if (subscriptionStatus === 'inativo') {
     return (
@@ -44,11 +66,14 @@ export default function Layout() {
     )
   }
 
+  const currentStudio = studios.find((s) => s.id === currentStudioId)
+
   const navItems = [
     { name: 'Dashboard', path: '/', icon: Home },
     { name: 'Conversas', path: '/conversas', icon: MessageSquare, badge: '3' },
     { name: 'Agenda', path: '/agenda', icon: Calendar },
     { name: 'Clientes', path: '/clientes', icon: Users },
+    { name: 'Relatórios', path: '/relatorios', icon: BarChart3 },
     { name: 'Configurações', path: '/configuracoes', icon: Settings },
   ]
 
@@ -56,15 +81,46 @@ export default function Layout() {
     <SidebarProvider>
       <div className="flex h-screen w-full overflow-hidden bg-background">
         <Sidebar variant="sidebar" collapsible="icon" className="border-r border-border">
-          <SidebarHeader className="flex h-14 items-center justify-center border-b border-border px-4 py-0">
-            <div className="flex items-center gap-2 overflow-hidden w-full">
-              <div className="size-8 rounded-full bg-primary flex items-center justify-center font-bold text-primary-foreground shrink-0">
-                N
-              </div>
-              <span className="font-bold text-lg truncate group-data-[collapsible=icon]:hidden">
-                Studio Noir
-              </span>
-            </div>
+          <SidebarHeader className="flex flex-col border-b border-border px-2 py-2">
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <SidebarMenuButton
+                      size="lg"
+                      className="w-full justify-between hover:bg-accent hover:text-accent-foreground group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:justify-center transition-all"
+                    >
+                      <div className="flex items-center gap-2 overflow-hidden w-full">
+                        <div className="size-8 rounded-md bg-primary flex items-center justify-center font-bold text-primary-foreground shrink-0 shadow-sm">
+                          {currentStudio?.name.charAt(0) || 'S'}
+                        </div>
+                        <div className="flex flex-col gap-0.5 leading-none truncate group-data-[collapsible=icon]:hidden text-left">
+                          <span className="font-bold text-sm truncate">{currentStudio?.name}</span>
+                          <span className="text-[10px] text-muted-foreground truncate uppercase font-semibold tracking-wider">
+                            Multi-tenant
+                          </span>
+                        </div>
+                      </div>
+                      <ChevronsUpDown className="size-4 shrink-0 opacity-50 group-data-[collapsible=icon]:hidden" />
+                    </SidebarMenuButton>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56" align="start" side="bottom" sideOffset={8}>
+                    {studios.map((s) => (
+                      <DropdownMenuItem
+                        key={s.id}
+                        onClick={() => setCurrentStudioId(s.id)}
+                        className="cursor-pointer font-medium"
+                      >
+                        {s.name}
+                        {s.id === currentStudioId && (
+                          <span className="ml-auto flex size-2 rounded-full bg-primary" />
+                        )}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </SidebarMenuItem>
+            </SidebarMenu>
           </SidebarHeader>
           <SidebarContent className="p-2">
             <SidebarMenu>

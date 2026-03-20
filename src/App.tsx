@@ -7,7 +7,9 @@ import Index from './pages/Index'
 import Chat from './pages/Chat'
 import Agenda from './pages/Agenda'
 import Clients from './pages/Clients'
+import Reports from './pages/Reports'
 import Settings from './pages/Settings'
+import Checkout from './pages/Checkout'
 import NotFound from './pages/NotFound'
 import { AppProvider } from './stores/useAppStore'
 
@@ -18,11 +20,13 @@ const App = () => (
         <Toaster />
         <Sonner />
         <Routes>
+          <Route path="/checkout/:id" element={<Checkout />} />
           <Route element={<Layout />}>
             <Route path="/" element={<Index />} />
             <Route path="/conversas" element={<Chat />} />
             <Route path="/agenda" element={<Agenda />} />
             <Route path="/clientes" element={<Clients />} />
+            <Route path="/relatorios" element={<Reports />} />
             <Route path="/configuracoes" element={<Settings />} />
           </Route>
           <Route path="*" element={<NotFound />} />

@@ -3,14 +3,29 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { Button } from '@/components/ui/button'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { useToast } from '@/components/ui/use-toast'
 import useAppStore from '@/stores/useAppStore'
-import { Lock, Calculator, ShieldCheck, BellRing } from 'lucide-react'
+import { Lock, Calculator, ShieldCheck, BellRing, Building2, CreditCard } from 'lucide-react'
 import { WhatsAppConnection } from '@/components/WhatsAppConnection'
 
 export default function Settings() {
   const { toast } = useToast()
-  const { subscriptionStatus, setSubscriptionStatus } = useAppStore()
+  const {
+    subscriptionStatus,
+    setSubscriptionStatus,
+    studios,
+    currentStudioId,
+    setCurrentStudioId,
+  } = useAppStore()
+
+  const currentStudio = studios.find((s) => s.id === currentStudioId)
 
   const handleSave = () => {
     toast({
@@ -28,7 +43,61 @@ export default function Settings() {
         </p>
       </div>
 
+      <Card className="border-border/50 bg-card/50">
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Building2 className="size-4" /> Gestão de Estúdios (Multi-tenant)
+          </CardTitle>
+          <CardDescription>
+            Alterne entre filiais e configure as chaves de forma independente.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label>Estúdio Ativo</Label>
+            <Select value={currentStudioId} onValueChange={setCurrentStudioId}>
+              <SelectTrigger className="w-full bg-background">
+                <SelectValue placeholder="Selecione o estúdio" />
+              </SelectTrigger>
+              <SelectContent>
+                {studios.map((s) => (
+                  <SelectItem key={s.id} value={s.id}>
+                    {s.name} - {s.location}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
+      </Card>
+
       <WhatsAppConnection />
+
+      <Card className="border-border/50 bg-card/50">
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2 text-[#009EE3]">
+            <CreditCard className="size-4" /> Integração Mercado Pago
+          </CardTitle>
+          <CardDescription>
+            Configure suas credenciais para recebimento automatizado de sinais no checkout.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label>Access Token (Produção)</Label>
+            <Input
+              type="password"
+              defaultValue={currentStudio?.mpAccessToken || ''}
+              placeholder="APP_USR-..."
+              className="bg-background"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Public Key</Label>
+            <Input type="text" defaultValue="APP_USR-..." className="bg-background" />
+          </div>
+        </CardContent>
+      </Card>
 
       <Card className="border-border/50 bg-card/50">
         <CardHeader>
@@ -72,7 +141,7 @@ export default function Settings() {
             <div className="space-y-0.5">
               <Label className="text-base">Coleta de Consentimento LGPD</Label>
               <p className="text-sm text-muted-foreground">
-                Exige botão "Aceito" antes de perguntas médicas.
+                Exige assinatura digital (IP e Timestamp) antes de avançar.
               </p>
             </div>
             <Switch defaultChecked />

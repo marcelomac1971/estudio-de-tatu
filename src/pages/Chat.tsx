@@ -7,14 +7,12 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   AlertCircle,
   CheckCircle2,
-  ShieldAlert,
   Upload,
   Users,
-  Trophy,
   PenTool,
-  Image as ImageIcon,
   Calculator,
   FileCheck,
+  CreditCard,
 } from 'lucide-react'
 import useAppStore from '@/stores/useAppStore'
 import { toast } from '@/components/ui/use-toast'
@@ -26,6 +24,7 @@ export default function Chat() {
   const [messages, setMessages] = useState<Message[]>([])
   const [step, setStep] = useState(0)
   const [isTyping, setIsTyping] = useState(false)
+  const [lastAppId, setLastAppId] = useState<string | null>(null)
 
   const [clientData, setClientData] = useState({
     style: '',
@@ -37,10 +36,19 @@ export default function Chat() {
     imageRights: false,
     referenceType: '',
     referenceImage: '',
+    signatureIp: '',
+    signatureTime: '',
   })
 
   const scrollRef = useRef<HTMLDivElement>(null)
-  const { addAppointment, clients, updateClient, whatsappStatus } = useAppStore()
+  const {
+    addAppointment,
+    activeClients,
+    updateClient,
+    whatsappStatus,
+    currentStudioId,
+    activeAppointments,
+  } = useAppStore()
 
   const now = () => new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
 
@@ -48,6 +56,7 @@ export default function Chat() {
     setMessages((prev) => [...prev, { id: Math.random().toString(), text, isBot, time: now() }])
   }
 
+  // Initial bot message
   useEffect(() => {
     if (step === 0 && messages.length === 0) {
       addMsg(
@@ -59,6 +68,28 @@ export default function Chat() {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight
     }
   }, [messages, step])
+
+  // Check if checkout was completed on the background/other tab
+  useEffect(() => {
+    if (lastAppId && step === 7) {
+      const app = activeAppointments.find((a) => a.id === lastAppId)
+      if (app && app.paymentStatus === 'approved') {
+        setStep(8)
+        setIsTyping(true)
+        setTimeout(() => {
+          setIsTyping(false)
+          addMsg(
+            'Pagamento aprovado via Mercado Pago! 🎉\n\nSeu agendamento foi oficialmente confirmado e os dados enviados para a agenda do estúdio. Um lembrete será enviado 48 horas antes da sessão. Muito obrigado pela preferência!',
+            true,
+          )
+          toast({
+            title: 'Checkout Concluído',
+            description: 'O bot detectou a aprovação do Mercado Pago e confirmou a agenda.',
+          })
+        }, 1500)
+      }
+    }
+  }, [activeAppointments, lastAppId, step])
 
   const calculateEstimate = (text: string) => {
     let base = 300
@@ -113,20 +144,38 @@ export default function Chat() {
         case 4:
           setClientData((prev) => ({ ...prev, referenceImage: text }))
           addMsg(
-            'Imagem recebida e anexada à ficha! 📄\n\nAntes de passarmos para a triagem médica, precisamos do seu consentimento digital para tratar dados de saúde, em total conformidade com a LGPD.',
+            'Imagem recebida e anexada à ficha! 📄\n\nAntes de passarmos para a triagem médica, precisamos do seu **consentimento digital** (Termos e LGPD) para tratar dados de saúde e uso de imagem.\n\nPor favor, confirme abaixo para assinar digitalmente.',
             true,
           )
           break
         case 5: {
-          if (text === 'Aceito') {
-            setClientData((prev) => ({ ...prev, healthConsent: true }))
+          if (text === 'Li e Aceito') {
+            const ip = `189.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.1`
+            const timestamp = new Date().toLocaleString('pt-BR')
+            setClientData((prev) => ({
+              ...prev,
+              healthConsent: true,
+              signatureIp: ip,
+              signatureTime: timestamp,
+            }))
             addMsg(
-              'Consentimento registrado com sucesso ✔️\n\nVocê possui alguma alergia (ex: látex, agulha, pigmento) ou faz uso de medicação contínua?',
+              `Assinatura eletrônica registrada com sucesso ✔️\n[IP: ${ip} - Data: ${timestamp}]\n\nVocê possui alguma alergia (ex: látex, agulha, pigmento) ou faz uso de medicação contínua?`,
               true,
             )
+
+            // Update mock client with digital signature
+            const targetClient = activeClients.find((c) => c.id === 'c2')
+            if (targetClient) {
+              updateClient({
+                ...targetClient,
+                healthDataConsent: true,
+                consentIp: ip,
+                consentTimestamp: timestamp,
+              })
+            }
           } else {
             addMsg(
-              'Sem o consentimento não podemos prosseguir com o agendamento por questões de segurança e normas legais.',
+              'Sem a assinatura do termo LGPD não podemos prosseguir com o agendamento por questões de segurança e normas legais.',
               true,
             )
             setStep(99) // End flow
@@ -148,40 +197,14 @@ export default function Chat() {
         case 7: {
           setClientData((prev) => ({ ...prev, imageRights: text === 'Sim, autorizo' }))
           const deposit = 200
-          addMsg(
-            `Suas preferências foram salvas! 📝\n\nO valor base foi fixado em R$ ${clientData.priceEstimate || 800}.\n\nPara oficializar o agendamento, solicitamos um SINAL de R$ ${deposit} via PIX (Compensação de Agenda em caso de cancelamento com menos de 24h). Deseja gerar a chave PIX?`,
-            true,
-          )
-          break
-        }
-        case 8: {
-          addMsg(
-            'Sinal de R$ 200 confirmado! 🎉 Seu agendamento automático foi concluído e os dados enviados para a agenda administrativa. Um lembrete será enviado 48 horas antes da sessão. Obrigado!',
-            true,
-          )
-          toast({
-            title: 'Agendamento Criado',
-            description: 'O bot finalizou as regras financeiras, consentimentos e precificação.',
-          })
 
-          const targetClient = clients.find((c) => c.id === 'c2')
-          if (targetClient) {
-            updateClient({
-              ...targetClient,
-              referenceType: clientData.referenceType,
-              referenceImage: clientData.referenceImage,
-              healthDataConsent: clientData.healthConsent,
-              imageRights: clientData.imageRights,
-              healthAlerts: clientData.health.toLowerCase().includes('sim')
-                ? [clientData.health]
-                : [],
-            })
-          }
-
+          // Generate a temp pending appointment
+          const newAppId = `app-${Date.now()}`
           addAppointment({
-            id: `a-${Date.now()}`,
-            clientId: 'c2',
-            date: new Date().toISOString().split('T')[0],
+            id: newAppId,
+            studioId: currentStudioId,
+            clientId: 'c2', // assuming Mariana Costa mock
+            date: new Date().toISOString().split('T')[0], // just for UI placement
             time: 'A definir',
             duration: 3,
             description: `Tattoo ${clientData.style || 'A definir'} - ${clientData.location}`,
@@ -189,9 +212,21 @@ export default function Chat() {
             size: clientData.size,
             bodyLocation: clientData.location,
             totalValue: clientData.priceEstimate || 800,
-            depositPaid: 200,
-            status: 'confirmed',
-            financialStatus: 'regular',
+            depositPaid: deposit,
+            status: 'pending',
+            paymentStatus: 'pending',
+          })
+
+          setLastAppId(newAppId)
+
+          addMsg(
+            `Suas preferências foram salvas! 📝\n\nO valor base foi fixado em R$ ${clientData.priceEstimate || 800}.\n\nPara oficializar o agendamento, solicitamos um SINAL de R$ ${deposit} via Mercado Pago. O link seguro de checkout foi gerado exclusivamente para você:\n\n[CHECKOUT_LINK:${newAppId}]`,
+            true,
+          )
+
+          toast({
+            title: 'Checkout Gerado',
+            description: 'O bot enviou o link do Mercado Pago e está aguardando o pagamento.',
           })
           break
         }
@@ -211,7 +246,7 @@ export default function Chat() {
               </h4>
               <p className="text-xs text-destructive-foreground mt-1">
                 O painel está rodando em modo simulação. Conecte seu aparelho nas{' '}
-                <strong>Configurações</strong> para enviar mensagens reais aos clientes.
+                <strong>Configurações</strong> para enviar mensagens reais.
               </p>
             </div>
           </div>
@@ -237,7 +272,7 @@ export default function Chat() {
             ))}
             {isTyping && (
               <div className="flex w-full mb-4 justify-start">
-                <div className="bg-card px-4 py-3 rounded-2xl rounded-tl-none chat-tail-left flex gap-1 items-center">
+                <div className="bg-card px-4 py-3 rounded-2xl rounded-tl-none border border-border flex gap-1 items-center">
                   <span
                     className="size-2 bg-muted-foreground rounded-full animate-bounce"
                     style={{ animationDelay: '0ms' }}
@@ -257,9 +292,7 @@ export default function Chat() {
         </ScrollArea>
 
         <div className="p-4 border-t border-border bg-card/30 shrink-0">
-          <p className="text-xs text-muted-foreground mb-2 font-medium">
-            Simular Resposta do Cliente:
-          </p>
+          <p className="text-xs text-muted-foreground mb-2 font-medium">Simular Ação do Cliente:</p>
           <div className="flex flex-wrap gap-2">
             {step === 0 && (
               <Button onClick={() => handleOption('Quero fazer um orçamento', 1)}>
@@ -302,10 +335,10 @@ export default function Chat() {
             {step === 4 && (
               <>
                 <Button
-                  onClick={() => handleOption('Aceito', 5)}
+                  onClick={() => handleOption('Li e Aceito', 5)}
                   className="bg-green-600 hover:bg-green-700 text-white"
                 >
-                  <FileCheck className="size-4 mr-2" /> Aceito
+                  <FileCheck className="size-4 mr-2" /> Li e Aceito (Assinar)
                 </Button>
                 <Button variant="outline" onClick={() => handleOption('Não aceito', 5)}>
                   Não aceito
@@ -337,16 +370,13 @@ export default function Chat() {
               </>
             )}
             {step === 7 && (
-              <Button
-                className="bg-secondary hover:bg-secondary/90 text-secondary-foreground"
-                onClick={() => handleOption('Sim, vou mandar o pix agora', 8)}
-              >
-                Pagar Sinal e Confirmar
-              </Button>
+              <p className="text-sm text-yellow-500 font-medium flex items-center gap-2 px-2 py-1 bg-yellow-500/10 rounded-md">
+                <CreditCard className="size-4" /> Aguardando clique no checkout (Mercado Pago)...
+              </p>
             )}
             {step === 8 && (
-              <p className="text-sm text-secondary font-medium flex items-center gap-2">
-                <CheckCircle2 className="size-4" /> Automação Concluída
+              <p className="text-sm text-secondary font-medium flex items-center gap-2 px-2 py-1 bg-secondary/10 rounded-md">
+                <CheckCircle2 className="size-4" /> Automação Concluída (Agendado)
               </p>
             )}
           </div>
@@ -393,21 +423,27 @@ export default function Chat() {
 
           <div className="bg-background rounded-lg p-3 border border-border">
             <p className="text-xs text-muted-foreground mb-2 flex justify-between">
-              <span>Direitos e LGPD</span>
+              <span>Compliance e Assinatura</span>
             </p>
             <div className="space-y-2">
               <div className="flex justify-between items-center text-sm">
-                <span>Dados de Saúde:</span>
+                <span>LGPD e Saúde:</span>
                 <span
                   className={cn(
                     'font-semibold',
                     step > 4 ? 'text-green-500' : 'text-muted-foreground',
                   )}
                 >
-                  {step > 4 ? (clientData.healthConsent ? 'Aceito' : 'Negado') : 'Pendente'}
+                  {step > 4 ? (clientData.healthConsent ? 'Assinado ✓' : 'Negado') : 'Pendente'}
                 </span>
               </div>
-              <div className="flex justify-between items-center text-sm">
+              {clientData.healthConsent && (
+                <div className="text-[10px] text-muted-foreground bg-muted p-1.5 rounded font-mono">
+                  IP: {clientData.signatureIp} <br />
+                  Data: {clientData.signatureTime}
+                </div>
+              )}
+              <div className="flex justify-between items-center text-sm mt-2">
                 <span>Uso de Imagem:</span>
                 <span
                   className={cn(
@@ -449,7 +485,7 @@ export default function Chat() {
           {step >= 2 && (
             <div className="bg-secondary/10 border border-secondary/30 rounded-lg p-3 animate-fade-in-up">
               <p className="text-xs text-secondary mb-1 font-medium flex items-center gap-1">
-                <Calculator className="size-3" /> Motor de Precificação
+                <Calculator className="size-3" /> Precificação e Checkout
               </p>
               <div className="flex justify-between text-sm mt-2">
                 <span>Valor Calculado:</span>{' '}
@@ -458,12 +494,15 @@ export default function Chat() {
               {step >= 7 && (
                 <>
                   <div className="border-t border-secondary/20 my-2" />
-                  <div className="flex justify-between text-sm text-secondary font-bold mt-1">
-                    <span>Sinal Requerido:</span> <span>R$ 200</span>
+                  <div className="flex justify-between text-sm text-secondary font-bold mt-1 items-center">
+                    <span>Sinal Mercado Pago:</span> <span>R$ 200</span>
                   </div>
-                  <p className="text-[10px] text-secondary/80 mt-1">
-                    *Retido como Compensação de Agenda se cancelado em {'<'} 24h.
-                  </p>
+                  <div className="mt-2 text-xs flex items-center gap-1">
+                    Status:{' '}
+                    <span className={step >= 8 ? 'text-secondary font-bold' : 'text-yellow-500'}>
+                      {step >= 8 ? 'Pago e Confirmado' : 'Pendente no Link'}
+                    </span>
+                  </div>
                 </>
               )}
             </div>

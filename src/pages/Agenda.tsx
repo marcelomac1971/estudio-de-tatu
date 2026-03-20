@@ -17,10 +17,10 @@ import {
   Clock,
   Ban,
   AlertTriangle,
-  Image as ImageIcon,
   BellRing,
   ShieldAlert,
   Copy,
+  CreditCard,
 } from 'lucide-react'
 import useAppStore from '@/stores/useAppStore'
 import { format } from 'date-fns'
@@ -30,11 +30,11 @@ import { cn } from '@/lib/utils'
 export default function Agenda() {
   const [date, setDate] = useState<Date | undefined>(new Date())
   const [selectedApp, setSelectedApp] = useState<any>(null)
-  const { appointments, clients, updateAppointment } = useAppStore()
+  const { activeAppointments, activeClients, updateAppointment } = useAppStore()
   const { toast } = useToast()
 
   const selectedDateStr = date ? date.toISOString().split('T')[0] : ''
-  const dayApps = appointments
+  const dayApps = activeAppointments
     .filter((a) => a.date === selectedDateStr)
     .sort((a, b) => a.time.localeCompare(b.time))
 
@@ -45,7 +45,7 @@ export default function Agenda() {
     if (app) setSelectedApp(app)
   }
 
-  const getClientInfo = (id: string) => clients.find((c) => c.id === id)
+  const getClientInfo = (id: string) => activeClients.find((c) => c.id === id)
 
   const handleRemind = (app: any, type: string) => {
     if (type === '48h') {
@@ -138,9 +138,11 @@ export default function Agenda() {
                             ? 'bg-primary/20 border-primary/30'
                             : app.status === 'pending_confirmation'
                               ? 'bg-orange-500/10 border-orange-500/30'
-                              : app.status === 'cancelled'
-                                ? 'bg-muted border-border/50 opacity-60'
-                                : 'bg-card border-border',
+                              : app.status === 'pending'
+                                ? 'bg-yellow-500/10 border-yellow-500/30'
+                                : app.status === 'cancelled'
+                                  ? 'bg-muted border-border/50 opacity-60'
+                                  : 'bg-card border-border',
                           client.healthAlerts.length > 0 && 'border-l-4 border-l-destructive',
                         )}
                         style={{ height: `calc(${app.duration * 80}px - 16px)`, zIndex: 10 }}
@@ -167,12 +169,20 @@ export default function Agenda() {
                               Pend. Confirmação
                             </Badge>
                           )}
+                          {app.status === 'pending' && (
+                            <Badge
+                              variant="outline"
+                              className="text-[10px] border-yellow-500/50 text-yellow-600 bg-yellow-500/10"
+                            >
+                              Aguardando Pgto
+                            </Badge>
+                          )}
                           {app.financialStatus === 'Compensação de Agenda' && (
                             <Badge variant="destructive" className="text-[10px] px-1.5">
                               Retido
                             </Badge>
                           )}
-                          {app.status !== 'pending_confirmation' &&
+                          {app.paymentStatus === 'approved' &&
                             app.status !== 'cancelled' &&
                             app.depositPaid > 0 && (
                               <Badge
@@ -213,6 +223,7 @@ export default function Agenda() {
                       <SheetDescription>
                         {format(date!, "d 'de' MMMM", { locale: ptBR })} às {selectedApp.time}
                         {selectedApp.status === 'cancelled' && ' (Cancelado)'}
+                        {selectedApp.status === 'pending' && ' (Aguardando Pagamento do Sinal)'}
                       </SheetDescription>
                     </SheetHeader>
                   </div>
@@ -286,7 +297,7 @@ export default function Agenda() {
 
                     <div>
                       <h4 className="text-sm font-medium text-muted-foreground mb-3 flex items-center gap-2">
-                        Financeiro
+                        Financeiro (Mercado Pago)
                       </h4>
                       {selectedApp.financialStatus === 'Compensação de Agenda' ? (
                         <div className="bg-destructive/10 border border-destructive/30 text-destructive p-4 rounded-lg">
@@ -305,12 +316,31 @@ export default function Agenda() {
                             <span>Valor Total Acordado</span>
                             <span className="font-medium">R$ {selectedApp.totalValue}</span>
                           </div>
-                          <div className="flex justify-between text-sm text-secondary">
-                            <span className="flex items-center gap-1">
-                              <CheckCircle2 className="size-3" /> Sinal Recebido (Bot)
+                          <div className="flex justify-between text-sm items-center">
+                            <span className="flex items-center gap-1 text-secondary">
+                              {selectedApp.paymentStatus === 'approved' ? (
+                                <CheckCircle2 className="size-3" />
+                              ) : (
+                                <Clock className="size-3 text-yellow-500" />
+                              )}
+                              Sinal Checkout
                             </span>
-                            <span className="font-bold">- R$ {selectedApp.depositPaid}</span>
+                            <span
+                              className={cn(
+                                'font-bold',
+                                selectedApp.paymentStatus === 'approved'
+                                  ? 'text-secondary'
+                                  : 'text-yellow-500',
+                              )}
+                            >
+                              - R$ {selectedApp.depositPaid}
+                            </span>
                           </div>
+                          {selectedApp.paymentStatus === 'approved' && (
+                            <p className="text-[10px] text-muted-foreground mt-1 flex items-center gap-1">
+                              <CreditCard className="size-3" /> Pago via Mercado Pago
+                            </p>
+                          )}
                           <Separator className="my-2 bg-border/50" />
                           <div className="flex justify-between text-base font-bold text-primary">
                             <span>Restante a Receber</span>
@@ -320,7 +350,7 @@ export default function Agenda() {
                       )}
                     </div>
 
-                    {selectedApp.status !== 'completed' && (
+                    {selectedApp.status !== 'completed' && selectedApp.status !== 'pending' && (
                       <>
                         <Separator className="bg-border" />
                         <div>

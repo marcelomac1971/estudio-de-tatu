@@ -1,12 +1,22 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react'
-import { Client, Appointment, MOCK_CLIENTS, MOCK_APPOINTMENTS } from '@/lib/mockData'
+import {
+  Client,
+  Appointment,
+  Studio,
+  MOCK_CLIENTS,
+  MOCK_APPOINTMENTS,
+  MOCK_STUDIOS,
+} from '@/lib/mockData'
 
 type SubscriptionStatus = 'ativo' | 'inativo'
 type WhatsappStatus = 'connected' | 'disconnected' | 'connecting'
 
 type AppStore = {
-  clients: Client[]
-  appointments: Appointment[]
+  studios: Studio[]
+  currentStudioId: string
+  setCurrentStudioId: (id: string) => void
+  activeClients: Client[]
+  activeAppointments: Appointment[]
   addAppointment: (app: Appointment) => void
   updateAppointment: (app: Appointment) => void
   updateClient: (client: Client) => void
@@ -28,6 +38,9 @@ type AppStore = {
 const AppContext = createContext<AppStore | null>(null)
 
 export function AppProvider({ children }: { children: ReactNode }) {
+  const [studios] = useState<Studio[]>(MOCK_STUDIOS)
+  const [currentStudioId, setCurrentStudioId] = useState<string>('s1')
+
   const [clients, setClients] = useState<Client[]>(MOCK_CLIENTS)
   const [appointments, setAppointments] = useState<Appointment[]>(MOCK_APPOINTMENTS)
   const [whatsappStatus, setWhatsappStatus] = useState<WhatsappStatus>('disconnected')
@@ -38,7 +51,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   })
 
   const addAppointment = (app: Appointment) => {
-    setAppointments((prev) => [...prev, app])
+    setAppointments((prev) => [...prev, { ...app, studioId: app.studioId || currentStudioId }])
   }
 
   const updateAppointment = (updated: Appointment) => {
@@ -54,19 +67,22 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setSubStatus(status)
   }
 
+  const activeAppointments = appointments.filter((a) => a.studioId === currentStudioId)
+  const activeClients = clients.filter((c) => c.studioId === currentStudioId)
+
   const today = new Date().toISOString().split('T')[0]
-  const todayApps = appointments.filter((a) => a.date === today && a.status !== 'cancelled')
+  const todayApps = activeAppointments.filter((a) => a.date === today && a.status !== 'cancelled')
   const totalDeposits = todayApps.reduce((acc, a) => acc + a.depositPaid, 0)
 
-  const retainedDeposits = appointments
+  const retainedDeposits = activeAppointments
     .filter((a) => a.financialStatus === 'Compensação de Agenda')
     .reduce((acc, a) => acc + a.depositPaid, 0)
 
   const metrics = {
-    leads: 12,
+    leads: activeClients.length * 3 + 12,
     todayAppointments: todayApps.length,
     totalDeposits,
-    activeChats: 3,
+    activeChats: currentStudioId === 's1' ? 3 : 1,
     retainedDeposits,
   }
 
@@ -74,8 +90,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
     AppContext.Provider,
     {
       value: {
-        clients,
-        appointments,
+        studios,
+        currentStudioId,
+        setCurrentStudioId,
+        activeClients,
+        activeAppointments,
         addAppointment,
         updateAppointment,
         updateClient,

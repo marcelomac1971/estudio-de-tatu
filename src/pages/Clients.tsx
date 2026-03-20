@@ -11,10 +11,18 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Badge } from '@/components/ui/badge'
 import useAppStore from '@/stores/useAppStore'
-import { AlertTriangle, ImageIcon, User, Image as IconImage, FileCheck, Camera } from 'lucide-react'
+import {
+  AlertTriangle,
+  ImageIcon,
+  User,
+  Image as IconImage,
+  FileCheck,
+  Camera,
+  Fingerprint,
+} from 'lucide-react'
 
 export default function Clients() {
-  const { clients } = useAppStore()
+  const { activeClients } = useAppStore()
   const [selectedClient, setSelectedClient] = useState<any>(null)
 
   return (
@@ -36,7 +44,7 @@ export default function Clients() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {clients.map((client) => (
+              {activeClients.map((client) => (
                 <TableRow
                   key={client.id}
                   className="border-border cursor-pointer hover:bg-muted/50 transition-colors"
@@ -67,10 +75,10 @@ export default function Clients() {
                       {client.healthDataConsent && (
                         <Badge
                           variant="outline"
-                          className="text-[10px] text-green-500 border-green-500/30"
+                          className="text-[10px] text-green-500 border-green-500/30 bg-green-500/5"
                           title="LGPD Aceita"
                         >
-                          LGPD
+                          LGPD ✓
                         </Badge>
                       )}
                       {client.imageRights && (
@@ -86,6 +94,13 @@ export default function Clients() {
                   </TableCell>
                 </TableRow>
               ))}
+              {activeClients.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                    Nenhum cliente registrado neste estúdio.
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </CardContent>
@@ -113,16 +128,32 @@ export default function Clients() {
 
               <div className="space-y-6 pt-4">
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-background rounded-lg p-3 border border-border flex items-start gap-3">
-                    <FileCheck className="size-4 text-green-500 shrink-0 mt-0.5" />
-                    <div>
-                      <p className="text-xs text-muted-foreground mb-0.5">Consentimento LGPD</p>
-                      <p className="text-sm font-medium">
-                        {selectedClient.healthDataConsent ? 'Aceito Digitalmente' : 'Pendente'}
-                      </p>
+                  <div className="bg-background rounded-lg p-3 border border-border flex flex-col gap-2">
+                    <div className="flex items-start gap-3">
+                      <FileCheck className="size-4 text-green-500 shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-xs text-muted-foreground mb-0.5">Consentimento LGPD</p>
+                        <p className="text-sm font-medium">
+                          {selectedClient.healthDataConsent ? 'Aceito Digitalmente' : 'Pendente'}
+                        </p>
+                      </div>
                     </div>
+                    {selectedClient.consentTimestamp && (
+                      <div className="bg-muted/50 rounded p-2 mt-1 flex flex-col gap-1 border border-border/50">
+                        <div className="flex items-center gap-1.5">
+                          <Fingerprint className="size-3 text-green-500" />
+                          <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                            Assinatura Eletrônica
+                          </span>
+                        </div>
+                        <div className="text-[10px] text-muted-foreground space-y-0.5 font-mono">
+                          <p>Registro: {selectedClient.consentTimestamp}</p>
+                          <p>IP: {selectedClient.consentIp}</p>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  <div className="bg-background rounded-lg p-3 border border-border flex items-start gap-3">
+                  <div className="bg-background rounded-lg p-3 border border-border flex items-start gap-3 h-fit">
                     <Camera className="size-4 text-primary shrink-0 mt-0.5" />
                     <div>
                       <p className="text-xs text-muted-foreground mb-0.5">Uso de Imagem</p>

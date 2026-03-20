@@ -5,18 +5,16 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Link } from 'react-router-dom'
-import { format } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
 
 export default function Index() {
-  const { metrics, appointments } = useAppStore()
+  const { metrics, activeAppointments } = useAppStore()
   const today = new Date().toISOString().split('T')[0]
-  const upcoming = appointments
+  const upcoming = activeAppointments
     .filter((a) => a.date >= today && a.status !== 'cancelled')
     .sort((a, b) => a.time.localeCompare(b.time))
     .slice(0, 4)
 
-  const pendingConfirmations = appointments.filter((a) => a.status === 'pending_confirmation')
+  const pendingConfirmations = activeAppointments.filter((a) => a.status === 'pending_confirmation')
 
   return (
     <div className="max-w-6xl mx-auto space-y-8 animate-fade-in-up">
@@ -77,12 +75,12 @@ export default function Index() {
               {[
                 {
                   time: 'Há 5 min',
-                  text: 'Lembrete T-48h enviado para agendamento de Mariana Costa.',
+                  text: 'Cliente assinou o termo LGPD digitalmente e pagou o sinal via Mercado Pago.',
                   type: 'reminder',
                 },
                 {
                   time: 'Há 12 min',
-                  text: 'Cliente aceitou os termos de Saúde (LGPD) e Direitos de Imagem.',
+                  text: 'Novo agendamento gerado automaticamente para Mariana Costa.',
                   type: 'legal',
                 },
                 {
@@ -127,7 +125,7 @@ export default function Index() {
                     </div>
                     <div className="text-right">
                       <span
-                        className={`text-xs font-medium px-2 py-1 rounded ${
+                        className={`text-[10px] font-medium px-2 py-1 rounded ${
                           app.status === 'confirmed'
                             ? 'bg-secondary/10 text-secondary'
                             : app.status === 'pending_confirmation'
@@ -146,7 +144,7 @@ export default function Index() {
                 ))
               ) : (
                 <p className="text-sm text-muted-foreground text-center py-4">
-                  Nenhuma sessão próxima.
+                  Nenhuma sessão próxima no estúdio atual.
                 </p>
               )}
               <Button variant="outline" className="w-full mt-4" asChild>
