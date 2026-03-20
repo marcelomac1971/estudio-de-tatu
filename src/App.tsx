@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { useEffect } from 'react'
 import { Toaster } from '@/components/ui/toaster'
 import { Toaster as Sonner } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
@@ -11,10 +12,16 @@ import Reports from './pages/Reports'
 import Settings from './pages/Settings'
 import Checkout from './pages/Checkout'
 import NotFound from './pages/NotFound'
+import AdminDashboard from './pages/AdminDashboard'
+import AdminStudios from './pages/AdminStudios'
 import { AppProvider } from './stores/useAppStore'
 
-const App = () => (
-  <AppProvider>
+const AppContent = () => {
+  useEffect(() => {
+    document.documentElement.classList.add('dark')
+  }, [])
+
+  return (
     <BrowserRouter future={{ v7_startTransition: false, v7_relativeSplatPath: false }}>
       <TooltipProvider>
         <Toaster />
@@ -28,11 +35,19 @@ const App = () => (
             <Route path="/clientes" element={<Clients />} />
             <Route path="/relatorios" element={<Reports />} />
             <Route path="/configuracoes" element={<Settings />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/estudios" element={<AdminStudios />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </TooltipProvider>
     </BrowserRouter>
+  )
+}
+
+const App = () => (
+  <AppProvider>
+    <AppContent />
   </AppProvider>
 )
 

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import useAppStore from '@/stores/useAppStore'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { CreditCard, CheckCircle2, Loader2, ArrowLeft, ShieldCheck } from 'lucide-react'
+import { CreditCard, CheckCircle2, Loader2, ArrowLeft, ShieldCheck, Info } from 'lucide-react'
 
 export default function Checkout() {
   const { id } = useParams()
@@ -43,7 +43,7 @@ export default function Checkout() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-50 flex items-center justify-center p-4 selection:bg-blue-500/30">
+    <div className="min-h-screen bg-zinc-950 text-zinc-50 flex items-center justify-center p-4 selection:bg-blue-500/30 font-sans">
       <div className="w-full max-w-md absolute top-4 left-4 z-10">
         <Button
           variant="ghost"
@@ -90,7 +90,7 @@ export default function Checkout() {
             </div>
           ) : (
             <div className="space-y-6">
-              <div className="bg-zinc-950 rounded-xl p-5 space-y-3 border border-zinc-800/80">
+              <div className="bg-zinc-950 rounded-xl p-5 space-y-3 border border-zinc-800/80 shadow-inner">
                 <div className="flex justify-between text-sm items-center">
                   <span className="text-zinc-500">Serviço</span>
                   <span className="font-medium text-zinc-200 text-right max-w-[180px] truncate">
@@ -110,15 +110,22 @@ export default function Checkout() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-center gap-2 text-xs text-zinc-500 font-medium">
-                <ShieldCheck className="size-4 text-green-500/70" />
-                Ambiente Seguro Mercado Pago
-              </div>
+              {studio?.mpAccessToken ? (
+                <div className="flex items-center justify-center gap-2 text-xs text-zinc-400 bg-zinc-800/30 py-2 rounded-lg border border-zinc-800">
+                  <ShieldCheck className="size-4 text-green-500/70" />
+                  Ambiente Seguro Mercado Pago ({studio.name})
+                </div>
+              ) : (
+                <div className="flex items-center justify-center gap-2 text-xs text-orange-400 bg-orange-500/10 py-2 rounded-lg border border-orange-500/20">
+                  <Info className="size-4" />
+                  Token do Mercado Pago não configurado para este estúdio.
+                </div>
+              )}
 
               <Button
                 className="w-full bg-[#009EE3] hover:bg-[#0080B7] text-white py-6 text-lg rounded-xl transition-all shadow-lg shadow-[#009EE3]/20"
                 onClick={handlePay}
-                disabled={isProcessing}
+                disabled={isProcessing || !studio?.mpAccessToken}
               >
                 {isProcessing ? (
                   <>

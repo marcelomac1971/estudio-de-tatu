@@ -21,11 +21,13 @@ import {
   Calendar,
   Home,
   MessageSquare,
-  Settings,
+  Settings as SettingsIcon,
   Users,
   Lock,
   BarChart3,
   ChevronsUpDown,
+  Building2,
+  ShieldCheck,
 } from 'lucide-react'
 import { Button } from './ui/button'
 import useAppStore from '@/stores/useAppStore'
@@ -33,6 +35,8 @@ import useAppStore from '@/stores/useAppStore'
 export default function Layout() {
   const location = useLocation()
   const {
+    role,
+    setRole,
     subscriptionStatus,
     setSubscriptionStatus,
     studios,
@@ -48,7 +52,7 @@ export default function Layout() {
             <Lock className="size-8 text-destructive" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-foreground mb-2">assinatura expirada</h1>
+            <h1 className="text-2xl font-bold text-foreground mb-2">Assinatura Expirada</h1>
             <p className="text-sm text-muted-foreground">
               O acesso aos recursos de automação, agenda e base de clientes do estúdio foi
               bloqueado.
@@ -68,18 +72,25 @@ export default function Layout() {
 
   const currentStudio = studios.find((s) => s.id === currentStudioId)
 
-  const navItems = [
+  const studioNavItems = [
     { name: 'Dashboard', path: '/', icon: Home },
     { name: 'Conversas', path: '/conversas', icon: MessageSquare, badge: '3' },
     { name: 'Agenda', path: '/agenda', icon: Calendar },
     { name: 'Clientes', path: '/clientes', icon: Users },
     { name: 'Relatórios', path: '/relatorios', icon: BarChart3 },
-    { name: 'Configurações', path: '/configuracoes', icon: Settings },
+    { name: 'Configurações', path: '/configuracoes', icon: SettingsIcon },
   ]
+
+  const adminNavItems = [
+    { name: 'Visão Geral (SaaS)', path: '/admin', icon: BarChart3 },
+    { name: 'Estúdios Parceiros', path: '/admin/estudios', icon: Building2 },
+  ]
+
+  const navItems = role === 'admin' ? adminNavItems : studioNavItems
 
   return (
     <SidebarProvider>
-      <div className="flex h-screen w-full overflow-hidden bg-background">
+      <div className="flex h-screen w-full overflow-hidden bg-background text-foreground dark">
         <Sidebar variant="sidebar" collapsible="icon" className="border-r border-border">
           <SidebarHeader className="flex flex-col border-b border-border px-2 py-2">
             <SidebarMenu>
@@ -92,12 +103,18 @@ export default function Layout() {
                     >
                       <div className="flex items-center gap-2 overflow-hidden w-full">
                         <div className="size-8 rounded-md bg-primary flex items-center justify-center font-bold text-primary-foreground shrink-0 shadow-sm">
-                          {currentStudio?.name.charAt(0) || 'S'}
+                          {role === 'admin' ? (
+                            <ShieldCheck className="size-4" />
+                          ) : (
+                            currentStudio?.name.charAt(0) || 'S'
+                          )}
                         </div>
                         <div className="flex flex-col gap-0.5 leading-none truncate group-data-[collapsible=icon]:hidden text-left">
-                          <span className="font-bold text-sm truncate">{currentStudio?.name}</span>
+                          <span className="font-bold text-sm truncate">
+                            {role === 'admin' ? 'SaaS Admin' : currentStudio?.name}
+                          </span>
                           <span className="text-[10px] text-muted-foreground truncate uppercase font-semibold tracking-wider">
-                            Multi-tenant
+                            {role === 'admin' ? 'Plataforma' : 'Multi-tenant'}
                           </span>
                         </div>
                       </div>
@@ -105,18 +122,24 @@ export default function Layout() {
                     </SidebarMenuButton>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56" align="start" side="bottom" sideOffset={8}>
-                    {studios.map((s) => (
-                      <DropdownMenuItem
-                        key={s.id}
-                        onClick={() => setCurrentStudioId(s.id)}
-                        className="cursor-pointer font-medium"
-                      >
-                        {s.name}
-                        {s.id === currentStudioId && (
-                          <span className="ml-auto flex size-2 rounded-full bg-primary" />
-                        )}
+                    {role === 'admin' ? (
+                      <DropdownMenuItem disabled className="font-medium text-muted-foreground">
+                        Modo Global
                       </DropdownMenuItem>
-                    ))}
+                    ) : (
+                      studios.map((s) => (
+                        <DropdownMenuItem
+                          key={s.id}
+                          onClick={() => setCurrentStudioId(s.id)}
+                          className="cursor-pointer font-medium"
+                        >
+                          {s.name}
+                          {s.id === currentStudioId && (
+                            <span className="ml-auto flex size-2 rounded-full bg-primary" />
+                          )}
+                        </DropdownMenuItem>
+                      ))
+                    )}
                   </DropdownMenuContent>
                 </DropdownMenu>
               </SidebarMenuItem>
@@ -154,27 +177,49 @@ export default function Layout() {
             <div className="flex items-center gap-4">
               <SidebarTrigger />
               <h1 className="text-sm font-medium text-muted-foreground hidden sm:block">
-                Painel de Automação
+                {role === 'admin'
+                  ? 'Gestão da Plataforma Modern Noir'
+                  : 'Painel de Automação do Estúdio'}
               </h1>
             </div>
             <div className="flex items-center gap-4">
               <Button
                 variant="ghost"
                 size="icon"
-                className="relative text-muted-foreground hover:text-foreground"
+                className="relative text-muted-foreground hover:text-foreground hidden sm:flex"
               >
                 <Bell className="size-5" />
                 <span className="absolute top-2 right-2 size-2 bg-primary rounded-full animate-pulse-ring" />
               </Button>
               <div className="flex items-center gap-2 pl-4 border-l border-border">
                 <div className="text-right hidden md:block">
-                  <p className="text-sm font-medium leading-none">Alex Artista</p>
-                  <p className="text-xs text-muted-foreground">Admin</p>
+                  <p className="text-sm font-medium leading-none">Alex Admin</p>
+                  <p className="text-xs text-muted-foreground">
+                    {role === 'admin' ? 'Plataforma Owner' : 'Studio Owner'}
+                  </p>
                 </div>
-                <Avatar className="size-8">
-                  <AvatarImage src="https://img.usecurling.com/ppl/thumbnail?gender=male&seed=9" />
-                  <AvatarFallback>AL</AvatarFallback>
-                </Avatar>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Avatar className="size-8 cursor-pointer ring-2 ring-transparent hover:ring-primary transition-all">
+                      <AvatarImage src="https://img.usecurling.com/ppl/thumbnail?gender=male&seed=9" />
+                      <AvatarFallback>AL</AvatarFallback>
+                    </Avatar>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuItem
+                      onClick={() => setRole('admin')}
+                      className={role === 'admin' ? 'bg-accent font-bold' : ''}
+                    >
+                      <ShieldCheck className="size-4 mr-2" /> Acessar como Admin
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setRole('studio')}
+                      className={role === 'studio' ? 'bg-accent font-bold' : ''}
+                    >
+                      <Building2 className="size-4 mr-2" /> Acessar como Studio
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
           </header>

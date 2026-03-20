@@ -3,6 +3,10 @@ export type Studio = {
   name: string
   location: string
   mpAccessToken?: string
+  status: 'active' | 'inactive'
+  mrr?: number
+  contactEmail?: string
+  contactPhone?: string
 }
 
 export type Client = {
@@ -42,8 +46,34 @@ export type Appointment = {
 }
 
 export const MOCK_STUDIOS: Studio[] = [
-  { id: 's1', name: 'Studio Noir - Matriz', location: 'São Paulo, SP', mpAccessToken: 'TEST-123' },
-  { id: 's2', name: 'Studio Noir - Filial', location: 'Rio de Janeiro, RJ' },
+  {
+    id: 's1',
+    name: 'Studio Noir - Matriz',
+    location: 'São Paulo, SP',
+    mpAccessToken: 'TEST-123',
+    status: 'active',
+    mrr: 299,
+    contactEmail: 'matriz@noir.com',
+    contactPhone: '+55 11 9999-9999',
+  },
+  {
+    id: 's2',
+    name: 'Studio Noir - Filial',
+    location: 'Rio de Janeiro, RJ',
+    status: 'active',
+    mrr: 299,
+    contactEmail: 'filial@noir.com',
+    contactPhone: '+55 21 8888-8888',
+  },
+  {
+    id: 's3',
+    name: 'Ink & Blood Studio',
+    location: 'Curitiba, PR',
+    status: 'inactive',
+    mrr: 0,
+    contactEmail: 'ink@blood.com',
+    contactPhone: '+55 41 7777-7777',
+  },
 ]
 
 const today = new Date().toISOString().split('T')[0]

@@ -10,11 +10,16 @@ import {
 
 type SubscriptionStatus = 'ativo' | 'inativo'
 type WhatsappStatus = 'connected' | 'disconnected' | 'connecting'
+type Role = 'admin' | 'studio'
 
 type AppStore = {
+  role: Role
+  setRole: (role: Role) => void
   studios: Studio[]
   currentStudioId: string
   setCurrentStudioId: (id: string) => void
+  addStudio: (studio: Studio) => void
+  updateStudio: (studio: Studio) => void
   activeClients: Client[]
   activeAppointments: Appointment[]
   addAppointment: (app: Appointment) => void
@@ -33,12 +38,18 @@ type AppStore = {
     activeChats: number
     retainedDeposits: number
   }
+  adminMetrics: {
+    totalStudios: number
+    mrr: number
+    totalConversions: number
+  }
 }
 
 const AppContext = createContext<AppStore | null>(null)
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [studios] = useState<Studio[]>(MOCK_STUDIOS)
+  const [role, setRole] = useState<Role>('studio')
+  const [studios, setStudios] = useState<Studio[]>(MOCK_STUDIOS)
   const [currentStudioId, setCurrentStudioId] = useState<string>('s1')
 
   const [clients, setClients] = useState<Client[]>(MOCK_CLIENTS)
@@ -49,6 +60,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [subscriptionStatus, setSubStatus] = useState<SubscriptionStatus>(() => {
     return (localStorage.getItem('studio_subscription_status') as SubscriptionStatus) || 'ativo'
   })
+
+  const addStudio = (studio: Studio) => {
+    setStudios((prev) => [...prev, studio])
+  }
+
+  const updateStudio = (updated: Studio) => {
+    setStudios((prev) => prev.map((s) => (s.id === updated.id ? updated : s)))
+  }
 
   const addAppointment = (app: Appointment) => {
     setAppointments((prev) => [...prev, { ...app, studioId: app.studioId || currentStudioId }])
@@ -72,7 +91,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const today = new Date().toISOString().split('T')[0]
   const todayApps = activeAppointments.filter((a) => a.date === today && a.status !== 'cancelled')
-  const totalDeposits = todayApps.reduce((acc, a) => acc + a.depositPaid, 0)
+  const totalDeposits = activeAppointments.reduce((acc, a) => acc + (a.depositPaid || 0), 0)
 
   const retainedDeposits = activeAppointments
     .filter((a) => a.financialStatus === 'Compensação de Agenda')
@@ -86,13 +105,25 @@ export function AppProvider({ children }: { children: ReactNode }) {
     retainedDeposits,
   }
 
+  const adminMetrics = {
+    totalStudios: studios.filter((s) => s.status === 'active').length,
+    mrr: studios.filter((s) => s.status === 'active').reduce((acc, s) => acc + (s.mrr || 0), 0),
+    totalConversions: appointments.filter(
+      (a) => a.status === 'confirmed' || a.status === 'completed',
+    ).length,
+  }
+
   return React.createElement(
     AppContext.Provider,
     {
       value: {
+        role,
+        setRole,
         studios,
         currentStudioId,
         setCurrentStudioId,
+        addStudio,
+        updateStudio,
         activeClients,
         activeAppointments,
         addAppointment,
@@ -105,6 +136,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         whatsappNumber,
         setWhatsappNumber,
         metrics,
+        adminMetrics,
       },
     },
     children,

@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
@@ -23,11 +24,20 @@ export default function Settings() {
     studios,
     currentStudioId,
     setCurrentStudioId,
+    updateStudio,
   } = useAppStore()
 
   const currentStudio = studios.find((s) => s.id === currentStudioId)
+  const [mpToken, setMpToken] = useState(currentStudio?.mpAccessToken || '')
+
+  useEffect(() => {
+    setMpToken(currentStudio?.mpAccessToken || '')
+  }, [currentStudioId, currentStudio])
 
   const handleSave = () => {
+    if (currentStudio) {
+      updateStudio({ ...currentStudio, mpAccessToken: mpToken })
+    }
     toast({
       title: 'Configurações salvas',
       description: 'As preferências da automação e regras do estúdio foram atualizadas.',
@@ -35,21 +45,23 @@ export default function Settings() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6 animate-fade-in">
+    <div className="max-w-2xl mx-auto space-y-6 animate-fade-in-up">
       <div className="mb-8">
-        <h2 className="text-2xl font-bold tracking-tight">Configurações do Studio</h2>
-        <p className="text-muted-foreground">
+        <h2 className="text-3xl font-bold tracking-tight text-foreground">
+          Configurações do Studio
+        </h2>
+        <p className="text-muted-foreground mt-1">
           Gerencie regras financeiras, automações e compliance do seu estúdio.
         </p>
       </div>
 
-      <Card className="border-border/50 bg-card/50">
+      <Card className="border-border/50 bg-card/50 shadow-elevation">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
-            <Building2 className="size-4" /> Gestão de Estúdios (Multi-tenant)
+            <Building2 className="size-5" /> Gestão de Estúdios (Multi-tenant)
           </CardTitle>
           <CardDescription>
-            Alterne entre filiais e configure as chaves de forma independente.
+            Alterne entre filiais para configurar as chaves de forma independente.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -60,11 +72,13 @@ export default function Settings() {
                 <SelectValue placeholder="Selecione o estúdio" />
               </SelectTrigger>
               <SelectContent>
-                {studios.map((s) => (
-                  <SelectItem key={s.id} value={s.id}>
-                    {s.name} - {s.location}
-                  </SelectItem>
-                ))}
+                {studios
+                  .filter((s) => s.status === 'active')
+                  .map((s) => (
+                    <SelectItem key={s.id} value={s.id}>
+                      {s.name} - {s.location}
+                    </SelectItem>
+                  ))}
               </SelectContent>
             </Select>
           </div>
@@ -73,36 +87,36 @@ export default function Settings() {
 
       <WhatsAppConnection />
 
-      <Card className="border-border/50 bg-card/50">
+      <Card className="border-border/50 bg-card/50 shadow-elevation">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2 text-[#009EE3]">
-            <CreditCard className="size-4" /> Integração Mercado Pago
+            <CreditCard className="size-5" /> Integração Mercado Pago
           </CardTitle>
           <CardDescription>
-            Configure suas credenciais para recebimento automatizado de sinais no checkout.
+            Configure as credenciais únicas deste estúdio para o recebimento automatizado de sinais.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label>Access Token (Produção)</Label>
+            <Label>Mercado Pago Access Token (Produção)</Label>
             <Input
               type="password"
-              defaultValue={currentStudio?.mpAccessToken || ''}
+              value={mpToken}
+              onChange={(e) => setMpToken(e.target.value)}
               placeholder="APP_USR-..."
-              className="bg-background"
+              className="bg-background font-mono"
             />
-          </div>
-          <div className="space-y-2">
-            <Label>Public Key</Label>
-            <Input type="text" defaultValue="APP_USR-..." className="bg-background" />
+            <p className="text-xs text-muted-foreground">
+              O link de checkout dos clientes deste estúdio usará este token.
+            </p>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="border-border/50 bg-card/50">
+      <Card className="border-border/50 bg-card/50 shadow-elevation">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
-            <Calculator className="size-4" />
+            <Calculator className="size-5" />
             Precificação e Orçamento
           </CardTitle>
           <CardDescription>Ajuste o comportamento do motor de cálculo automático.</CardDescription>
@@ -121,27 +135,29 @@ export default function Settings() {
           <div className="space-y-2 pt-4 border-t border-border">
             <Label>Valor Base (Tamanho Mínimo)</Label>
             <div className="flex items-center gap-2">
-              <span className="text-muted-foreground">R$</span>
-              <Input type="number" defaultValue="300" className="w-32 bg-background" />
+              <span className="text-muted-foreground font-medium">R$</span>
+              <Input type="number" defaultValue="300" className="w-32 bg-background font-mono" />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="border-border/50 bg-card/50">
+      <Card className="border-border/50 bg-card/50 shadow-elevation">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
-            <ShieldCheck className="size-4" />
+            <ShieldCheck className="size-5" />
             Termos Legais e Financeiros
           </CardTitle>
-          <CardDescription>Configure retenção de sinal e consentimentos.</CardDescription>
+          <CardDescription>
+            Configure retenção de sinal e consentimentos de compliance.
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label className="text-base">Coleta de Consentimento LGPD</Label>
               <p className="text-sm text-muted-foreground">
-                Exige assinatura digital (IP e Timestamp) antes de avançar.
+                Exige assinatura digital (IP e Timestamp) antes do checkout.
               </p>
             </div>
             <Switch defaultChecked />
@@ -160,20 +176,20 @@ export default function Settings() {
           <div className="space-y-2 pt-4 border-t border-border">
             <Label>Porcentagem padrão de Sinal (Entrada)</Label>
             <div className="flex items-center gap-2">
-              <Input type="number" defaultValue="25" className="w-24 bg-background" />
-              <span className="text-muted-foreground">% do valor total</span>
+              <Input type="number" defaultValue="25" className="w-24 bg-background font-mono" />
+              <span className="text-muted-foreground font-medium">% do valor total</span>
             </div>
             <p className="text-xs text-muted-foreground mt-1">
-              Este valor será retido sob "Compensação de Agenda" caso cancelem {'<'} 24h.
+              Este valor será retido sob "Compensação de Agenda" caso o cliente cancele {'<'} 24h.
             </p>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="border-border/50 bg-card/50">
+      <Card className="border-border/50 bg-card/50 shadow-elevation">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
-            <BellRing className="size-4" />
+            <BellRing className="size-5" />
             Lembretes Automáticos (Anti-Idle)
           </CardTitle>
           <CardDescription>Fluxo de comunicação pré-sessão para reduzir faltas.</CardDescription>
@@ -200,11 +216,11 @@ export default function Settings() {
         </CardContent>
       </Card>
 
-      <Card className="border-border/50 bg-card/50 border-destructive/20">
+      <Card className="border-border/50 bg-card/50 border-destructive/20 shadow-elevation">
         <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Lock className="size-4 text-destructive" />
-            Status da Assinatura
+          <CardTitle className="text-lg flex items-center gap-2 text-destructive">
+            <Lock className="size-5" />
+            Status da Assinatura SaaS
           </CardTitle>
           <CardDescription>Gerencie o plano de acesso à automação.</CardDescription>
         </CardHeader>
@@ -225,7 +241,7 @@ export default function Settings() {
       </Card>
 
       <div className="flex justify-end pb-12">
-        <Button onClick={handleSave} size="lg">
+        <Button onClick={handleSave} size="lg" className="shadow-lg">
           Salvar Alterações
         </Button>
       </div>

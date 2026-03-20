@@ -1,4 +1,4 @@
-import { Users, Calendar, Wallet, Activity, ArrowRight, Ban, AlertCircle } from 'lucide-react'
+import { Users, Calendar, Wallet, TrendingUp, AlertCircle, ArrowRight, Ban } from 'lucide-react'
 import { MetricCard } from '@/components/MetricCard'
 import useAppStore from '@/stores/useAppStore'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Link } from 'react-router-dom'
 
 export default function Index() {
-  const { metrics, activeAppointments } = useAppStore()
+  const { metrics, activeAppointments, activeClients } = useAppStore()
   const today = new Date().toISOString().split('T')[0]
   const upcoming = activeAppointments
     .filter((a) => a.date >= today && a.status !== 'cancelled')
@@ -16,54 +16,64 @@ export default function Index() {
 
   const pendingConfirmations = activeAppointments.filter((a) => a.status === 'pending_confirmation')
 
+  const conversionRate = Math.round((metrics.todayAppointments / (metrics.leads || 1)) * 100)
+  const healthAlertsCount = activeClients.filter(
+    (c) => c.healthAlerts && c.healthAlerts.length > 0,
+  ).length
+
   return (
     <div className="max-w-6xl mx-auto space-y-8 animate-fade-in-up">
+      <div className="mb-2">
+        <h2 className="text-3xl font-bold tracking-tight text-foreground">Dashboard do Estúdio</h2>
+        <p className="text-muted-foreground mt-1">
+          Acompanhe as métricas de conversão e agenda em tempo real.
+        </p>
+      </div>
+
       {pendingConfirmations.length > 0 && (
-        <Alert className="bg-orange-500/10 border-orange-500/20 text-orange-600 animate-fade-in">
+        <Alert className="bg-orange-500/10 border-orange-500/20 text-orange-600 animate-fade-in shadow-sm">
           <AlertCircle className="h-4 w-4 stroke-orange-600" />
           <AlertTitle className="font-bold">Atenção Requerida (Automação de Agenda)</AlertTitle>
           <AlertDescription className="mt-1">
             Existem <strong>{pendingConfirmations.length} agendamentos</strong> aguardando
-            confirmação do cliente (Lembrete T-24h disparado). Se não houver resposta, o horário
-            poderá ficar disponível na agenda.
+            confirmação do cliente (Lembrete T-24h disparado).
           </AlertDescription>
         </Alert>
       )}
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <MetricCard
-          title="Novos Leads"
-          value={metrics.leads}
-          icon={Users}
-          trend="+12% essa semana"
+          title="Taxa de Conversão"
+          value={`${conversionRate}%`}
+          icon={TrendingUp}
+          trend="+5% esse mês"
           trendUp={true}
         />
-        <MetricCard title="Agendamentos Hoje" value={metrics.todayAppointments} icon={Calendar} />
         <MetricCard
-          title="Total em Sinais"
+          title="Total em Sinais (R$)"
           value={`R$ ${metrics.totalDeposits}`}
           icon={Wallet}
           trend="+R$ 450 hoje"
           trendUp={true}
         />
         <MetricCard
-          title="Conversas Ativas"
-          value={metrics.activeChats}
-          icon={Activity}
-          className="border-primary/20 relative"
-        />
-        <MetricCard
-          title="Retenções (Sinais)"
+          title="Retenções (No-Show)"
           value={`R$ ${metrics.retainedDeposits}`}
           icon={Ban}
           className="border-destructive/20 relative bg-destructive/5"
         />
+        <MetricCard
+          title="Alertas de Saúde"
+          value={healthAlertsCount}
+          icon={AlertCircle}
+          className={healthAlertsCount > 0 ? 'border-destructive/50 bg-destructive/5' : ''}
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <Card className="lg:col-span-2 border-border/50 bg-card/50">
+        <Card className="lg:col-span-2 border-border/50 bg-card/50 shadow-elevation">
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-lg">Atividade Recente (Bot)</CardTitle>
+            <CardTitle className="text-lg">Atividade Recente do Bot</CardTitle>
             <Button variant="ghost" size="sm" asChild>
               <Link to="/conversas" className="flex items-center gap-1 text-primary">
                 Ver Conversas <ArrowRight className="size-4" />
@@ -76,17 +86,14 @@ export default function Index() {
                 {
                   time: 'Há 5 min',
                   text: 'Cliente assinou o termo LGPD digitalmente e pagou o sinal via Mercado Pago.',
-                  type: 'reminder',
                 },
                 {
                   time: 'Há 12 min',
                   text: 'Novo agendamento gerado automaticamente para Mariana Costa.',
-                  type: 'legal',
                 },
                 {
                   time: 'Há 1 hora',
                   text: 'Cancelamento < 24h detectado. Compensação de Agenda aplicada ao sinal (R$ 50).',
-                  type: 'finance',
                 },
               ].map((activity, i) => (
                 <div key={i} className="flex gap-4 items-start">
@@ -105,7 +112,7 @@ export default function Index() {
           </CardContent>
         </Card>
 
-        <Card className="border-border/50 bg-card/50">
+        <Card className="border-border/50 bg-card/50 shadow-elevation">
           <CardHeader>
             <CardTitle className="text-lg">Próximas Sessões</CardTitle>
           </CardHeader>
