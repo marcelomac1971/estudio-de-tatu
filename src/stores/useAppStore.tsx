@@ -8,13 +8,15 @@ import {
   MOCK_STUDIOS,
 } from '@/lib/mockData'
 
-type SubscriptionStatus = 'ativo' | 'inativo'
-type WhatsappStatus = 'connected' | 'disconnected' | 'connecting'
 type Role = 'admin' | 'studio'
+type AuthUser = { email: string; role: Role; studioId?: string }
 
 type AppStore = {
+  isAuthenticated: boolean
+  authUser: AuthUser | null
+  login: (email: string, pass: string) => boolean
+  logout: () => void
   role: Role
-  setRole: (role: Role) => void
   studios: Studio[]
   currentStudioId: string
   setCurrentStudioId: (id: string) => void
@@ -25,84 +27,93 @@ type AppStore = {
   addAppointment: (app: Appointment) => void
   updateAppointment: (app: Appointment) => void
   updateClient: (client: Client) => void
-  subscriptionStatus: SubscriptionStatus
-  setSubscriptionStatus: (status: SubscriptionStatus) => void
-  whatsappStatus: WhatsappStatus
-  setWhatsappStatus: (status: WhatsappStatus) => void
-  whatsappNumber: string | null
-  setWhatsappNumber: (num: string | null) => void
+  adminConfig: { supabaseUrl: string; supabaseKey: string }
+  setAdminConfig: (config: { supabaseUrl: string; supabaseKey: string }) => void
   metrics: {
     leads: number
     todayAppointments: number
     totalDeposits: number
-    activeChats: number
     retainedDeposits: number
   }
   adminMetrics: {
     totalStudios: number
     mrr: number
     totalConversions: number
+    globalLeads: number
+    globalDeposits: number
   }
+  whatsappStatus: 'connected' | 'disconnected' | 'connecting'
+  setWhatsappStatus: (status: 'connected' | 'disconnected' | 'connecting') => void
+  whatsappNumber: string | null
+  setWhatsappNumber: (num: string | null) => void
 }
 
 const AppContext = createContext<AppStore | null>(null)
 
 export function AppProvider({ children }: { children: ReactNode }) {
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [authUser, setAuthUser] = useState<AuthUser | null>(null)
   const [role, setRole] = useState<Role>('studio')
+
   const [studios, setStudios] = useState<Studio[]>(MOCK_STUDIOS)
   const [currentStudioId, setCurrentStudioId] = useState<string>('s1')
-
   const [clients, setClients] = useState<Client[]>(MOCK_CLIENTS)
   const [appointments, setAppointments] = useState<Appointment[]>(MOCK_APPOINTMENTS)
-  const [whatsappStatus, setWhatsappStatus] = useState<WhatsappStatus>('disconnected')
-  const [whatsappNumber, setWhatsappNumber] = useState<string | null>(null)
 
-  const [subscriptionStatus, setSubStatus] = useState<SubscriptionStatus>(() => {
-    return (localStorage.getItem('studio_subscription_status') as SubscriptionStatus) || 'ativo'
+  const [adminConfig, setAdminConfig] = useState({
+    supabaseUrl: 'https://ncohzpajxzzljdgvmxsk.supabase.co',
+    supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
   })
 
-  const addStudio = (studio: Studio) => {
-    setStudios((prev) => [...prev, studio])
+  const [whatsappStatus, setWhatsappStatus] = useState<'connected' | 'disconnected' | 'connecting'>(
+    'disconnected',
+  )
+  const [whatsappNumber, setWhatsappNumber] = useState<string | null>(null)
+
+  const login = (email: string, pass: string) => {
+    if (email === 'marcelomac762@gmail.com' && pass === 'uber1971*') {
+      setIsAuthenticated(true)
+      setAuthUser({ email, role: 'admin' })
+      setRole('admin')
+      return true
+    }
+    if (email && pass) {
+      setIsAuthenticated(true)
+      setAuthUser({ email, role: 'studio', studioId: 's1' })
+      setRole('studio')
+      setCurrentStudioId('s1')
+      return true
+    }
+    return false
   }
 
-  const updateStudio = (updated: Studio) => {
+  const logout = () => {
+    setIsAuthenticated(false)
+    setAuthUser(null)
+  }
+
+  const addStudio = (studio: Studio) => setStudios((prev) => [...prev, studio])
+  const updateStudio = (updated: Studio) =>
     setStudios((prev) => prev.map((s) => (s.id === updated.id ? updated : s)))
-  }
-
-  const addAppointment = (app: Appointment) => {
+  const addAppointment = (app: Appointment) =>
     setAppointments((prev) => [...prev, { ...app, studioId: app.studioId || currentStudioId }])
-  }
-
-  const updateAppointment = (updated: Appointment) => {
+  const updateAppointment = (updated: Appointment) =>
     setAppointments((prev) => prev.map((a) => (a.id === updated.id ? updated : a)))
-  }
-
-  const updateClient = (updated: Client) => {
+  const updateClient = (updated: Client) =>
     setClients((prev) => prev.map((c) => (c.id === updated.id ? updated : c)))
-  }
-
-  const setSubscriptionStatus = (status: SubscriptionStatus) => {
-    localStorage.setItem('studio_subscription_status', status)
-    setSubStatus(status)
-  }
 
   const activeAppointments = appointments.filter((a) => a.studioId === currentStudioId)
   const activeClients = clients.filter((c) => c.studioId === currentStudioId)
 
-  const today = new Date().toISOString().split('T')[0]
-  const todayApps = activeAppointments.filter((a) => a.date === today && a.status !== 'cancelled')
-  const totalDeposits = activeAppointments.reduce((acc, a) => acc + (a.depositPaid || 0), 0)
-
-  const retainedDeposits = activeAppointments
-    .filter((a) => a.financialStatus === 'Compensação de Agenda')
-    .reduce((acc, a) => acc + a.depositPaid, 0)
-
   const metrics = {
     leads: activeClients.length * 3 + 12,
-    todayAppointments: todayApps.length,
-    totalDeposits,
-    activeChats: currentStudioId === 's1' ? 3 : 1,
-    retainedDeposits,
+    todayAppointments: activeAppointments.filter(
+      (a) => a.date === new Date().toISOString().split('T')[0],
+    ).length,
+    totalDeposits: activeAppointments.reduce((acc, a) => acc + (a.depositPaid || 0), 0),
+    retainedDeposits: activeAppointments
+      .filter((a) => a.financialStatus === 'Compensação de Agenda')
+      .reduce((acc, a) => acc + a.depositPaid, 0),
   }
 
   const adminMetrics = {
@@ -111,14 +122,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
     totalConversions: appointments.filter(
       (a) => a.status === 'confirmed' || a.status === 'completed',
     ).length,
+    globalLeads: clients.length * 4 + 45,
+    globalDeposits: appointments.reduce((acc, a) => acc + (a.depositPaid || 0), 0),
   }
 
   return React.createElement(
     AppContext.Provider,
     {
       value: {
+        isAuthenticated,
+        authUser,
+        login,
+        logout,
         role,
-        setRole,
         studios,
         currentStudioId,
         setCurrentStudioId,
@@ -129,14 +145,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
         addAppointment,
         updateAppointment,
         updateClient,
-        subscriptionStatus,
-        setSubscriptionStatus,
+        adminConfig,
+        setAdminConfig,
+        metrics,
+        adminMetrics,
         whatsappStatus,
         setWhatsappStatus,
         whatsappNumber,
         setWhatsappNumber,
-        metrics,
-        adminMetrics,
       },
     },
     children,
@@ -145,8 +161,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
 export default function useAppStore() {
   const context = useContext(AppContext)
-  if (!context) {
-    throw new Error('useAppStore must be used within an AppProvider')
-  }
+  if (!context) throw new Error('useAppStore must be used within an AppProvider')
   return context
 }

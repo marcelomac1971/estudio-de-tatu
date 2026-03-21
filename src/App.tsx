@@ -14,6 +14,9 @@ import Checkout from './pages/Checkout'
 import NotFound from './pages/NotFound'
 import AdminDashboard from './pages/AdminDashboard'
 import AdminStudios from './pages/AdminStudios'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import ProtectedRoute from './components/ProtectedRoute'
 import { AppProvider } from './stores/useAppStore'
 
 const AppContent = () => {
@@ -28,16 +31,22 @@ const AppContent = () => {
         <Sonner />
         <Routes>
           <Route path="/checkout/:id" element={<Checkout />} />
-          <Route element={<Layout />}>
-            <Route path="/" element={<Index />} />
-            <Route path="/conversas" element={<Chat />} />
-            <Route path="/agenda" element={<Agenda />} />
-            <Route path="/clientes" element={<Clients />} />
-            <Route path="/relatorios" element={<Reports />} />
-            <Route path="/configuracoes" element={<Settings />} />
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/admin/estudios" element={<AdminStudios />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+
+          <Route element={<ProtectedRoute />}>
+            <Route element={<Layout />}>
+              <Route path="/" element={<Index />} />
+              <Route path="/conversas" element={<Chat />} />
+              <Route path="/agenda" element={<Agenda />} />
+              <Route path="/clientes" element={<Clients />} />
+              <Route path="/relatorios" element={<Reports />} />
+              <Route path="/configuracoes" element={<Settings />} />
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/estudios" element={<AdminStudios />} />
+            </Route>
           </Route>
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </TooltipProvider>
