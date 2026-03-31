@@ -5,10 +5,17 @@ import { ChatBubble } from '@/components/chat/ChatBubble'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
-import { AlertCircle, FileCheck, BrainCircuit, MessageSquareText } from 'lucide-react'
+import { AlertCircle, FileCheck, BrainCircuit, MessageSquareText, TimerOff } from 'lucide-react'
 import useAppStore from '@/stores/useAppStore'
 
-type Message = { id: string; text: string; isBot: boolean; time: string }
+type Message = {
+  id: string
+  text: string
+  isBot: boolean
+  time: string
+  type?: 'text' | 'terms' | 'system'
+}
+
 type ClientData = {
   style: string
   size: string
@@ -34,17 +41,19 @@ export function ChatArea({
   const [isAiActive, setIsAiActive] = useState(true)
   const [humanText, setHumanText] = useState('')
   const scrollRef = useRef<HTMLDivElement>(null)
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const { currentStudioId, studios, addAppointment } = useAppStore()
   const studio = studios.find((s) => s.id === currentStudioId)
 
-  const addMsg = (text: string, isBot: boolean) =>
+  const addMsg = (text: string, isBot: boolean, type: 'text' | 'terms' | 'system' = 'text') =>
     setMessages((prev) => [
       ...prev,
       {
         id: Math.random().toString(),
         text,
         isBot,
+        type,
         time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
       },
     ])
@@ -56,8 +65,26 @@ export function ChatArea({
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight
   }, [messages, step, studio])
 
+  // Session Expiration Logic: 1 hour (3600000ms) cancellation if inactive on legal step
+  useEffect(() => {
+    if (step === 3 && isAiActive) {
+      timeoutRef.current = setTimeout(() => {
+        setIsAiActive(false)
+        setStep(6) // 6 represents 'Canceled' state
+        addMsg(
+          'Sessão expirada: O cliente não interagiu dentro de 1 hora. Atendimento cancelado automaticamente para desocupar a fila.',
+          false,
+          'system',
+        )
+      }, 3600000)
+    }
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    }
+  }, [step, isAiActive, setStep])
+
   const handleOption = (text: string, nextStep: number) => {
-    if (!isAiActive) return
+    if (!isAiActive && nextStep !== 6) return
     addMsg(text, false)
     setIsTyping(true)
     setStep(-1)
@@ -81,14 +108,19 @@ export function ChatArea({
           true,
         )
       } else if (nextStep === 3) {
-        addMsg(
-          'Imagem recebida 📸.\n\n⚠️ Módulo Legal Obrigatório\nPara avançarmos com a reserva, você precisa concordar com os seguintes termos do estúdio:\n\n1. Procedimento invasivo e permanente.\n2. Tratamento de dados (LGPD) para ficha de saúde.\n3. Autorização de imagem para portfólio.\n4. Compromisso com o Aftercare.\n5. Sinal financeiro não reembolsável (< 24h).',
-          true,
-        )
+        addMsg('Imagem recebida 📸.', true)
+        setTimeout(() => {
+          addMsg('', true, 'terms')
+        }, 600)
       } else if (nextStep === 4) {
         setClientData((p: any) => ({ ...p, legalAccepted: true }))
+
+        // Simulating IP and timestamp capture for legal compliance
+        const ipMock = `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`
+        const ts = new Date().toISOString()
+
         addMsg(
-          'Termos aceitos digitalmente! ✔️\n\nPara oficializar e reservar seu horário na agenda, exigimos um SINAL de R$ 200.',
+          `Termos aceitos digitalmente! ✔️\n(Registro: IP ${ipMock} - ${ts})\n\nPara oficializar e reservar seu horário na agenda, exigimos um SINAL de R$ 200.`,
           true,
         )
 
@@ -112,7 +144,7 @@ export function ChatArea({
               `Acesse o checkout seguro do Mercado Pago para realizar o pagamento do sinal e bloquear a agenda:\n\n[CHECKOUT_LINK:${newAppId}]`,
               true,
             ),
-          1000,
+          1500,
         )
         setStep(5)
       }
@@ -121,7 +153,7 @@ export function ChatArea({
 
   const handleHumanSend = () => {
     if (humanText.trim()) {
-      addMsg(humanText, true) // Send as "bot side" but it's human
+      addMsg(humanText, true)
       setHumanText('')
     }
   }
@@ -136,21 +168,28 @@ export function ChatArea({
           </Avatar>
           <div>
             <h3 className="font-semibold text-sm">Mariana Costa</h3>
-            <p className="text-xs text-muted-foreground">Triagem em andamento</p>
+            <p className="text-xs text-muted-foreground">
+              {step === 6 ? 'Sessão Cancelada (Inatividade)' : 'Triagem em andamento'}
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-3 bg-muted/50 px-3 py-1.5 rounded-full border border-border">
-          <BrainCircuit
-            className={`size-4 ${isAiActive ? 'text-primary' : 'text-muted-foreground'}`}
-          />
+          {step === 6 ? (
+            <TimerOff className="size-4 text-destructive" />
+          ) : (
+            <BrainCircuit
+              className={`size-4 ${isAiActive ? 'text-primary' : 'text-muted-foreground'}`}
+            />
+          )}
           <div className="flex items-center gap-2">
             <Switch
               checked={isAiActive}
               onCheckedChange={setIsAiActive}
+              disabled={step === 6}
               className="data-[state=checked]:bg-primary"
             />
             <Label className="text-xs font-bold cursor-pointer">
-              {isAiActive ? 'IA Ligada' : 'IA Desligada'}
+              {step === 6 ? 'IA Parada' : isAiActive ? 'IA Ligada' : 'IA Desligada'}
             </Label>
           </div>
         </div>
@@ -158,7 +197,7 @@ export function ChatArea({
 
       <ScrollArea className="flex-1 p-4" ref={scrollRef}>
         <div className="max-w-2xl mx-auto flex flex-col justify-end min-h-full pb-4">
-          {!isAiActive && (
+          {!isAiActive && step !== 6 && (
             <div className="flex justify-center mb-6">
               <span className="bg-destructive/10 text-destructive text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 border border-destructive/20">
                 <AlertCircle className="size-3" /> Intervenção Humana Ativa (IA Pausada)
@@ -166,7 +205,7 @@ export function ChatArea({
             </div>
           )}
           {messages.map((m) => (
-            <ChatBubble key={m.id} text={m.text} isBot={m.isBot} time={m.time} />
+            <ChatBubble key={m.id} text={m.text} isBot={m.isBot} time={m.time} type={m.type} />
           ))}
           {isTyping && (
             <div className="flex w-full mb-4 justify-start">
@@ -190,7 +229,11 @@ export function ChatArea({
       </ScrollArea>
 
       <div className="p-4 border-t border-border bg-card/50 shrink-0">
-        {isAiActive ? (
+        {step === 6 ? (
+          <div className="text-center py-3 text-sm text-destructive font-medium border border-destructive/20 bg-destructive/5 rounded-lg">
+            Esta sessão foi cancelada automaticamente devido à inatividade.
+          </div>
+        ) : isAiActive ? (
           <div>
             <p className="text-xs text-muted-foreground mb-2 font-medium flex items-center gap-1">
               <MessageSquareText className="size-3" /> Simular Resposta do Cliente:
@@ -217,10 +260,10 @@ export function ChatArea({
               )}
               {step === 3 && (
                 <Button
-                  className="bg-green-600 hover:bg-green-700 text-white"
+                  className="bg-green-600 hover:bg-green-700 text-white shadow-lg animate-fade-in-up"
                   onClick={() => handleOption('Li e aceito os 5 termos.', 4)}
                 >
-                  <FileCheck className="size-4 mr-2" /> Concordar com os Termos
+                  <FileCheck className="size-4 mr-2" /> Confirmar Termos
                 </Button>
               )}
               {step >= 5 && (
