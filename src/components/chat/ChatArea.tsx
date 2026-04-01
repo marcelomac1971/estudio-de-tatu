@@ -194,15 +194,15 @@ export function ChatArea({
             />
           )}
           <div className="flex items-center gap-2">
-            <Switch
-              checked={isAiActive}
-              onCheckedChange={setIsAiActive}
+            <Button
+              variant={isAiActive ? 'destructive' : 'default'}
+              size="sm"
+              onClick={() => setIsAiActive(!isAiActive)}
               disabled={step === 7}
-              className="data-[state=checked]:bg-primary"
-            />
-            <Label className="text-xs font-bold cursor-pointer">
-              {step === 7 ? 'IA Parada' : isAiActive ? 'IA Ligada' : 'IA Desligada'}
-            </Label>
+              className="h-7 text-xs font-bold px-3"
+            >
+              {step === 7 ? 'Sessão Expirada' : isAiActive ? 'Assumir Conversa' : 'Reativar IA'}
+            </Button>
           </div>
         </div>
       </div>

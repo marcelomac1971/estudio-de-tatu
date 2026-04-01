@@ -9,13 +9,19 @@ export function LegalTab() {
     },
     {
       title: 'Saúde (LGPD)',
-      text: 'Autorizo o tratamento dos meus dados de saúde exclusivamente para segurança do procedimento.',
+      text: 'Autorizo o tratamento dos meus dados de saúde (alergias e condições médicas) exclusivamente para fins de segurança do procedimento, conforme a Lei Geral de Proteção de Dados.',
     },
-    { title: 'Direito de Imagem', text: 'Autorizo a publicação de fotos da obra para portfólio.' },
-    { title: 'Cuidados', text: 'Comprometo-me a seguir as orientações de aftercare.' },
     {
-      title: 'Sinal Financeiro',
-      text: 'Compreendo que o valor garante a agenda e não é reembolsável em faltas sem aviso de 24h.',
+      title: 'Direito de Imagem',
+      text: 'Autorizo a captura e publicação de fotos da obra finalizada em redes sociais para fins de portfólio, preservando minha identidade sempre que possível.',
+    },
+    {
+      title: 'Cuidados',
+      text: 'Comprometo-me a seguir todas as orientações de aftercare (pós-tatuagem) fornecidas pelo profissional.',
+    },
+    {
+      title: 'Sinal',
+      text: 'Compreendo que o valor do sinal garante a reserva da agenda e não será reembolsado em caso de falta sem aviso prévio de 24h.',
     },
   ]
 

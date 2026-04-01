@@ -13,16 +13,23 @@ import {
   YAxis,
 } from 'recharts'
 import useAppStore from '@/stores/useAppStore'
-import { BarChart3, TrendingUp, Users, DollarSign } from 'lucide-react'
+import {
+  BarChart3,
+  TrendingUp,
+  Users,
+  DollarSign,
+  Download,
+  MessageCircle,
+  Bell,
+} from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 // Mock Data for the charts
 const convData = [
-  { month: 'Jan', triagens: 45, agendamentos: 28 },
-  { month: 'Fev', triagens: 52, agendamentos: 35 },
-  { month: 'Mar', triagens: 61, agendamentos: 42 },
-  { month: 'Abr', triagens: 58, agendamentos: 39 },
-  { month: 'Mai', triagens: 70, agendamentos: 51 },
-  { month: 'Jun', triagens: 85, agendamentos: 68 },
+  { step: 'Total Leads', users: 150 },
+  { step: 'Screening', users: 120 },
+  { step: 'Terms Accepted', users: 85 },
+  { step: 'Payment Confirmed', users: 65 },
 ]
 
 const finData = [
@@ -40,8 +47,7 @@ const noShowData = [
 ]
 
 const convConfig = {
-  triagens: { label: 'Triagens Iniciadas', color: 'hsl(var(--muted-foreground))' },
-  agendamentos: { label: 'Agendamentos Concluídos', color: 'hsl(var(--primary))' },
+  users: { label: 'Usuários', color: 'hsl(var(--primary))' },
 }
 
 const finConfig = {
@@ -58,13 +64,52 @@ export default function Reports() {
 
   return (
     <div className="space-y-6 animate-fade-in-up">
-      <div className="flex flex-col gap-1">
-        <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-          <BarChart3 className="size-6 text-primary" /> Painel de Relatórios
-        </h2>
-        <p className="text-muted-foreground text-sm">
-          Métricas avançadas e conversão do {currentStudio?.name}.
-        </p>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="flex flex-col gap-1">
+          <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+            <BarChart3 className="size-6 text-primary" /> Painel de Relatórios
+          </h2>
+          <p className="text-muted-foreground text-sm">
+            Métricas avançadas e conversão do {currentStudio?.name}.
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" className="gap-2">
+            <Download className="size-4" /> Exportar PDF
+          </Button>
+          <Button variant="outline" size="sm" className="gap-2">
+            <Download className="size-4" /> Exportar CSV
+          </Button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Card className="border-border/50 bg-card/50 shadow-sm">
+          <CardHeader className="py-4 border-b border-border/30">
+            <CardTitle className="text-sm flex items-center gap-2 text-foreground">
+              <MessageCircle className="size-4 text-primary" /> Recuperação de Leads (24h)
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-4">
+            <div className="text-2xl font-bold text-foreground">24</div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Mensagens automáticas enviadas hoje para leads que abandonaram o checkout.
+            </p>
+          </CardContent>
+        </Card>
+        <Card className="border-border/50 bg-card/50 shadow-sm">
+          <CardHeader className="py-4 border-b border-border/30">
+            <CardTitle className="text-sm flex items-center gap-2 text-foreground">
+              <Bell className="size-4 text-secondary" /> Lembretes de Agendamento (T-24h)
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-4">
+            <div className="text-2xl font-bold text-foreground">12</div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Mensagens de confirmação enviadas para clientes com agendamento para amanhã.
+            </p>
+          </CardContent>
+        </Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -79,21 +124,27 @@ export default function Reports() {
           </CardHeader>
           <CardContent>
             <ChartContainer config={convConfig} className="h-[300px] w-full">
-              <BarChart data={convData} margin={{ top: 20, right: 0, left: 0, bottom: 0 }}>
+              <BarChart
+                data={convData}
+                layout="vertical"
+                margin={{ top: 0, right: 20, left: 60, bottom: 0 }}
+              >
                 <CartesianGrid
-                  vertical={false}
+                  horizontal={false}
                   strokeDasharray="3 3"
                   className="stroke-border/50"
                 />
-                <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={10} />
-                <YAxis tickLine={false} axisLine={false} tickMargin={10} />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="triagens" fill="var(--color-triagens)" radius={[4, 4, 0, 0]} />
-                <Bar
-                  dataKey="agendamentos"
-                  fill="var(--color-agendamentos)"
-                  radius={[4, 4, 0, 0]}
+                <XAxis type="number" tickLine={false} axisLine={false} tickMargin={10} />
+                <YAxis
+                  dataKey="step"
+                  type="category"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={10}
+                  width={100}
                 />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <Bar dataKey="users" fill="var(--color-users)" radius={[0, 4, 4, 0]} barSize={32} />
               </BarChart>
             </ChartContainer>
           </CardContent>
