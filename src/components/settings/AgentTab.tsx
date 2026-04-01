@@ -71,11 +71,23 @@ export function AgentTab() {
             <div className="space-y-2">
               <Label>Mensagem Inicial (Boas-vindas)</Label>
               <Textarea
-                rows={4}
+                rows={3}
                 value={studio.botFirstMessage || ''}
                 onChange={(e) => updateStudio({ ...studio, botFirstMessage: e.target.value })}
                 className="bg-background resize-none"
               />
+            </div>
+            <div className="space-y-2">
+              <Label>Mensagem de Recuperação (24h)</Label>
+              <Textarea
+                rows={3}
+                value={studio.recoveryMessage || ''}
+                onChange={(e) => updateStudio({ ...studio, recoveryMessage: e.target.value })}
+                className="bg-background resize-none"
+              />
+              <p className="text-xs text-muted-foreground">
+                Enviada automaticamente 24h após o abandono do fluxo.
+              </p>
             </div>
             <div className="space-y-2">
               <Label>Percentual de Sinal (%)</Label>
@@ -90,7 +102,23 @@ export function AgentTab() {
                 className="bg-background"
               />
               <p className="text-xs text-muted-foreground">
-                Porcentagem do valor total cobrada antecipadamente para reservar a agenda.
+                Porcentagem do valor total cobrada antecipadamente.
+              </p>
+            </div>
+            <div className="space-y-2">
+              <Label>Margem de Busca de Disponibilidade (Dias)</Label>
+              <Input
+                type="number"
+                min="1"
+                max="30"
+                value={studio.availabilitySearchMargin || 3}
+                onChange={(e) =>
+                  updateStudio({ ...studio, availabilitySearchMargin: Number(e.target.value) })
+                }
+                className="bg-background"
+              />
+              <p className="text-xs text-muted-foreground">
+                Dias para buscar alternativas caso a data solicitada esteja ocupada.
               </p>
             </div>
           </div>

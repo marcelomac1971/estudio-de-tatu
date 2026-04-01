@@ -17,6 +17,8 @@ export type Studio = {
   mpAccessToken?: string
   googleCalendarConnected?: boolean
   botFirstMessage?: string
+  recoveryMessage?: string
+  availabilitySearchMargin?: number
   tattooStyles?: string[]
   tattooStyleConfigs?: TattooStyleConfig[]
   depositPercentage?: number
@@ -72,6 +74,9 @@ export const MOCK_STUDIOS: Studio[] = [
     googleCalendarConnected: false,
     botFirstMessage:
       'Olá! Bem-vindo ao atendimento automatizado do Studio Noir. Como posso te ajudar hoje?',
+    recoveryMessage:
+      'Oi! Vi que você começou um orçamento conosco ontem mas não finalizou. Ainda tem interesse? Nossas vagas estão acabando!',
+    availabilitySearchMargin: 3,
     tattooStyles: ['Realismo', 'Fine Line', 'Blackwork', 'Old School'],
     depositPercentage: 30,
     tattooStyleConfigs: [

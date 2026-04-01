@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import useAppStore from '@/stores/useAppStore'
+import { useToast } from '@/components/ui/use-toast'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import {
@@ -18,6 +19,7 @@ export default function Checkout() {
   const { activeAppointments, updateAppointment, studios } = useAppStore()
   const [isProcessing, setIsProcessing] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
+  const { toast } = useToast()
 
   const app = activeAppointments.find((a) => a.id === id)
   const studio = app ? studios.find((s) => s.id === app.studioId) : null
@@ -43,6 +45,14 @@ export default function Checkout() {
       updateAppointment({ ...app, status: 'confirmed', paymentStatus: 'approved' })
       setIsSuccess(true)
       setIsProcessing(false)
+
+      toast({
+        title: '🔔 Pagamento de Sinal Confirmado!',
+        description: `O pagamento de R$ ${app.depositPaid} para o agendamento de ${app.description} foi aprovado. Webhook disparado e evento adicionado ao calendário.`,
+        duration: 8000,
+        variant: 'default',
+        className: 'bg-green-600 text-white border-green-700',
+      })
     }, 2000)
   }
 

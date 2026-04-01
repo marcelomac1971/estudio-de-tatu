@@ -7,6 +7,7 @@ import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { AlertCircle, FileCheck, BrainCircuit, MessageSquareText, TimerOff } from 'lucide-react'
 import useAppStore from '@/stores/useAppStore'
+import { useToast } from '@/components/ui/use-toast'
 
 type Message = {
   id: string
@@ -20,6 +21,8 @@ type ClientData = {
   style: string
   size: string
   location: string
+  date?: string
+  time?: string
   priceEstimate: number
   depositAmount: number
   health: string
@@ -43,6 +46,7 @@ export function ChatArea({
   const [humanText, setHumanText] = useState('')
   const scrollRef = useRef<HTMLDivElement>(null)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const { toast } = useToast()
 
   const { currentStudioId, studios, addAppointment } = useAppStore()
   const studio = studios.find((s) => s.id === currentStudioId)
@@ -67,10 +71,10 @@ export function ChatArea({
   }, [messages, step, studio])
 
   useEffect(() => {
-    if (step === 5 && isAiActive) {
+    if (step === 99 && isAiActive) {
       timeoutRef.current = setTimeout(() => {
         setIsAiActive(false)
-        setStep(7)
+        setStep(100)
         addMsg(
           'Sessão expirada: O cliente não interagiu dentro de 1 hora. Atendimento cancelado automaticamente para desocupar a fila.',
           false,
@@ -96,14 +100,16 @@ export function ChatArea({
   }
 
   const handleOption = (text: string, nextStep: number) => {
-    if (!isAiActive && nextStep !== 7) return
-    addMsg(text, false)
+    if (!isAiActive && nextStep !== 99 && nextStep !== 100) return
+    if (nextStep !== -2) {
+      addMsg(text, false)
+    }
     setIsTyping(true)
     setStep(-1)
 
     setTimeout(() => {
       setIsTyping(false)
-      setStep(nextStep)
+      if (nextStep !== -2) setStep(nextStep)
 
       if (nextStep === 1) {
         addMsg('Perfeito! Qual estilo de tatuagem você busca?', true)
@@ -119,16 +125,50 @@ export function ChatArea({
           const { total, deposit } = calculatePrice(p.style, sizeVal, text)
           setTimeout(() => {
             addMsg(
-              `Com base no estilo ${p.style}, tamanho ${p.size} e local ${text}, o valor total estimado é R$ ${total}.\n\nPara agendar, o valor do sinal é R$ ${deposit}.\n\nPor favor, envie sua imagem de referência.`,
+              `Com base no estilo ${p.style}, tamanho ${p.size} e local ${text}, o valor total estimado é R$ ${total}.\n\nPara agendar, o valor do sinal é R$ ${deposit}.\n\nPara quando você gostaria de agendar? (Selecione uma data)`,
               true,
             )
           }, 100)
           return { ...p, location: text, priceEstimate: total, depositAmount: deposit }
         })
-      } else if (nextStep === 5) {
+      } else if (nextStep === 4.1) {
+        const dateStr = text.split(' às ')[0] || text
+        setTimeout(() => {
+          addMsg(`Consultando a agenda do estúdio...`, true)
+          setTimeout(() => {
+            const margin = studio?.availabilitySearchMargin || 3
+            addMsg(
+              `Infelizmente a data solicitada já está ocupada. Buscando disponibilidade em uma margem de ${margin} dias...`,
+              true,
+            )
+            setTimeout(() => {
+              addMsg(
+                `Encontrei os seguintes horários livres próximos:\n- ${dateStr} às 16:00\n- ${dateStr} (Dia seguinte) às 10:00\n\nPodemos confirmar algum desses?`,
+                true,
+              )
+            }, 1500)
+          }, 1000)
+        }, 100)
+        setStep(4.5)
+      } else if (nextStep === 4.2) {
+        let selectedDate = '2024-12-01'
+        let selectedTime = '16:00'
+        if (text.includes('às')) {
+          selectedDate = text.split(' às ')[0]
+          selectedTime = text.split(' às ')[1]
+        }
+        setClientData((p: any) => ({ ...p, date: selectedDate, time: selectedTime }))
+        setTimeout(() => {
+          addMsg(
+            `Data e horário (${text}) pré-reservados com sucesso!\n\nPor favor, envie sua imagem de referência para o projeto.`,
+            true,
+          )
+        }, 100)
+        setStep(5)
+      } else if (nextStep === 6) {
         addMsg('Imagem recebida 📸.', true)
         setTimeout(() => addMsg('', true, 'terms'), 600)
-      } else if (nextStep === 6) {
+      } else if (nextStep === 7) {
         setClientData((p: any) => {
           const newAppId = `app-${Date.now()}`
           const ipMock = `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`
@@ -148,10 +188,10 @@ export function ChatArea({
             id: newAppId,
             studioId: studio!.id,
             clientId: 'c2',
-            date: '2024-12-01',
-            time: 'A definir',
+            date: p.date ? new Date().toISOString().split('T')[0] : '2024-12-01',
+            time: p.time || '10:00',
             duration: 3,
-            description: `Tattoo ${p.style}`,
+            description: `Tattoo ${p.style} (${p.size}) em ${p.location}`,
             totalValue: p.priceEstimate,
             depositPaid: p.depositAmount || 200,
             status: 'pending',
@@ -159,6 +199,13 @@ export function ChatArea({
           })
           return { ...p, legalAccepted: true }
         })
+      } else if (nextStep === -2) {
+        addMsg(
+          studio?.recoveryMessage ||
+            'Oi! Vi que você não finalizou seu agendamento. Ainda tem interesse? As vagas estão acabando!',
+          true,
+        )
+        setStep(7)
       }
     }, 1000)
   }
@@ -181,12 +228,12 @@ export function ChatArea({
           <div>
             <h3 className="font-semibold text-sm">Mariana Costa</h3>
             <p className="text-xs text-muted-foreground">
-              {step === 7 ? 'Sessão Cancelada (Inatividade)' : 'Triagem em andamento'}
+              {step === 100 ? 'Sessão Cancelada (Inatividade)' : 'Triagem em andamento'}
             </p>
           </div>
         </div>
         <div className="flex items-center gap-3 bg-muted/50 px-3 py-1.5 rounded-full border border-border">
-          {step === 7 ? (
+          {step === 100 ? (
             <TimerOff className="size-4 text-destructive" />
           ) : (
             <BrainCircuit
@@ -198,10 +245,10 @@ export function ChatArea({
               variant={isAiActive ? 'destructive' : 'default'}
               size="sm"
               onClick={() => setIsAiActive(!isAiActive)}
-              disabled={step === 7}
+              disabled={step === 100}
               className="h-7 text-xs font-bold px-3"
             >
-              {step === 7 ? 'Sessão Expirada' : isAiActive ? 'Assumir Conversa' : 'Reativar IA'}
+              {step === 100 ? 'Sessão Expirada' : isAiActive ? 'Assumir Conversa' : 'Reativar IA'}
             </Button>
           </div>
         </div>
@@ -209,7 +256,7 @@ export function ChatArea({
 
       <ScrollArea className="flex-1 p-4" ref={scrollRef}>
         <div className="max-w-2xl mx-auto flex flex-col justify-end min-h-full pb-4">
-          {!isAiActive && step !== 7 && (
+          {!isAiActive && step !== 100 && (
             <div className="flex justify-center mb-6">
               <span className="bg-destructive/10 text-destructive text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 border border-destructive/20">
                 <AlertCircle className="size-3" /> Intervenção Humana Ativa (IA Pausada)
@@ -241,14 +288,14 @@ export function ChatArea({
       </ScrollArea>
 
       <div className="p-4 border-t border-border bg-card/50 shrink-0">
-        {step === 7 ? (
+        {step === 100 ? (
           <div className="text-center py-3 text-sm text-destructive font-medium border border-destructive/20 bg-destructive/5 rounded-lg">
             Esta sessão foi cancelada automaticamente devido à inatividade.
           </div>
         ) : isAiActive ? (
           <div>
             <p className="text-xs text-muted-foreground mb-2 font-medium flex items-center gap-1">
-              <MessageSquareText className="size-3" /> Simular Resposta do Cliente:
+              <MessageSquareText className="size-3" /> Simular Ações do Usuário:
             </p>
             <div className="flex flex-wrap gap-2">
               {step === 0 && (
@@ -291,25 +338,64 @@ export function ChatArea({
                 </>
               )}
               {step === 4 && (
+                <>
+                  <Button variant="outline" onClick={() => handleOption('Amanhã às 14:00', 4.1)}>
+                    Amanhã às 14:00 (Ocupado)
+                  </Button>
+                  <Button variant="outline" onClick={() => handleOption('Amanhã às 16:00', 4.2)}>
+                    Amanhã às 16:00 (Livre)
+                  </Button>
+                </>
+              )}
+              {step === 4.5 && (
+                <>
+                  <Button variant="outline" onClick={() => handleOption('Amanhã às 16:00', 4.2)}>
+                    Aceitar: Amanhã às 16:00
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => handleOption('Depois de amanhã às 10:00', 4.2)}
+                  >
+                    Aceitar: Depois de amanhã às 10:00
+                  </Button>
+                </>
+              )}
+              {step === 5 && (
                 <Button
                   className="bg-primary text-primary-foreground"
-                  onClick={() => handleOption('[Anexa Imagem]', 5)}
+                  onClick={() => handleOption('[Anexa Imagem]', 6)}
                 >
                   Anexar Referência
                 </Button>
               )}
-              {step === 5 && (
+              {step === 6 && (
                 <Button
                   className="bg-green-600 hover:bg-green-700 text-white shadow-lg animate-fade-in-up"
-                  onClick={() => handleOption('Li e aceito os 5 termos.', 6)}
+                  onClick={() => handleOption('Li e aceito os 5 termos.', 7)}
                 >
                   <FileCheck className="size-4 mr-2" /> Confirmar Termos
                 </Button>
               )}
-              {step >= 6 && (
-                <p className="text-sm font-medium text-secondary">
-                  Aguardando pagamento no Checkout Mercado Pago...
-                </p>
+              {step === 7 && (
+                <>
+                  <p className="text-sm font-medium text-secondary flex-1 pt-2">
+                    Aguardando pagamento no Checkout...
+                  </p>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="animate-fade-in"
+                    onClick={() => {
+                      handleOption('', -2)
+                      toast({
+                        title: 'Recuperação de Lead Disparada',
+                        description: 'Simulação de abandono após 24h realizada com sucesso.',
+                      })
+                    }}
+                  >
+                    Simular Abandono (24h)
+                  </Button>
+                </>
               )}
             </div>
           </div>
