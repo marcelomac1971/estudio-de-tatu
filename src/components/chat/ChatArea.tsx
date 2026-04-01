@@ -21,6 +21,7 @@ type ClientData = {
   size: string
   location: string
   priceEstimate: number
+  depositAmount: number
   health: string
   legalAccepted: boolean
 }
@@ -65,12 +66,11 @@ export function ChatArea({
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight
   }, [messages, step, studio])
 
-  // Session Expiration Logic: 1 hour (3600000ms) cancellation if inactive on legal step
   useEffect(() => {
-    if (step === 3 && isAiActive) {
+    if (step === 5 && isAiActive) {
       timeoutRef.current = setTimeout(() => {
         setIsAiActive(false)
-        setStep(6) // 6 represents 'Canceled' state
+        setStep(7)
         addMsg(
           'Sessão expirada: O cliente não interagiu dentro de 1 hora. Atendimento cancelado automaticamente para desocupar a fila.',
           false,
@@ -83,8 +83,20 @@ export function ChatArea({
     }
   }, [step, isAiActive, setStep])
 
+  const calculatePrice = (styleName: string, sizeCm: number, loc: string) => {
+    const cfg = studio?.tattooStyleConfigs?.find((c) => c.name === styleName)
+    const pct = studio?.depositPercentage || 20
+    if (!cfg) return { total: 0, deposit: 0 }
+    let total = cfg.basePrice
+    if (sizeCm > cfg.referenceSize) total += (sizeCm - cfg.referenceSize) * cfg.sizeSurcharge
+    if (cfg.complexLocations.some((c) => c.toLowerCase() === loc.toLowerCase())) {
+      total += cfg.locationSurcharge
+    }
+    return { total, deposit: total * (pct / 100) }
+  }
+
   const handleOption = (text: string, nextStep: number) => {
-    if (!isAiActive && nextStep !== 6) return
+    if (!isAiActive && nextStep !== 7) return
     addMsg(text, false)
     setIsTyping(true)
     setStep(-1)
@@ -96,57 +108,57 @@ export function ChatArea({
       if (nextStep === 1) {
         addMsg('Perfeito! Qual estilo de tatuagem você busca?', true)
       } else if (nextStep === 2) {
-        setClientData((p: any) => ({
-          ...p,
-          style: text,
-          size: '15cm',
-          location: 'Antebraço',
-          priceEstimate: 800,
-        }))
-        addMsg(
-          `Entendi! Baseado no estilo ${text} (aprox 15cm no antebraço), o valor estimado é R$ 800.\n\nPor favor, envie sua imagem de referência.`,
-          true,
-        )
+        setClientData((p: any) => ({ ...p, style: text }))
+        addMsg('Qual o tamanho aproximado da tatuagem em centímetros (cm)?', true)
       } else if (nextStep === 3) {
-        addMsg('Imagem recebida 📸.', true)
-        setTimeout(() => {
-          addMsg('', true, 'terms')
-        }, 600)
+        setClientData((p: any) => ({ ...p, size: text }))
+        addMsg('Em qual parte do corpo você pretende fazer?', true)
       } else if (nextStep === 4) {
-        setClientData((p: any) => ({ ...p, legalAccepted: true }))
-
-        // Simulating IP and timestamp capture for legal compliance
-        const ipMock = `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`
-        const ts = new Date().toISOString()
-
-        addMsg(
-          `Termos aceitos digitalmente! ✔️\n(Registro: IP ${ipMock} - ${ts})\n\nPara oficializar e reservar seu horário na agenda, exigimos um SINAL de R$ 200.`,
-          true,
-        )
-
-        const newAppId = `app-${Date.now()}`
-        addAppointment({
-          id: newAppId,
-          studioId: studio!.id,
-          clientId: 'c2',
-          date: '2024-12-01',
-          time: 'A definir',
-          duration: 3,
-          description: `Tattoo ${clientData.style || text}`,
-          totalValue: 800,
-          depositPaid: 200,
-          status: 'pending',
-          paymentStatus: 'pending',
-        })
-        setTimeout(
-          () =>
+        setClientData((p: any) => {
+          const sizeVal = parseInt(p.size) || 15
+          const { total, deposit } = calculatePrice(p.style, sizeVal, text)
+          setTimeout(() => {
             addMsg(
-              `Acesse o checkout seguro do Mercado Pago para realizar o pagamento do sinal e bloquear a agenda:\n\n[CHECKOUT_LINK:${newAppId}]`,
+              `Com base no estilo ${p.style}, tamanho ${p.size} e local ${text}, o valor total estimado é R$ ${total}.\n\nPara agendar, o valor do sinal é R$ ${deposit}.\n\nPor favor, envie sua imagem de referência.`,
               true,
-            ),
-          1500,
-        )
-        setStep(5)
+            )
+          }, 100)
+          return { ...p, location: text, priceEstimate: total, depositAmount: deposit }
+        })
+      } else if (nextStep === 5) {
+        addMsg('Imagem recebida 📸.', true)
+        setTimeout(() => addMsg('', true, 'terms'), 600)
+      } else if (nextStep === 6) {
+        setClientData((p: any) => {
+          const newAppId = `app-${Date.now()}`
+          const ipMock = `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`
+          const ts = new Date().toISOString()
+          setTimeout(() => {
+            addMsg(
+              `Termos aceitos digitalmente! ✔️\n(Registro: IP ${ipMock} - ${ts})\n\nPara oficializar, exigimos o SINAL de R$ ${p.depositAmount || 200}.`,
+              true,
+            )
+            setTimeout(
+              () =>
+                addMsg(`Acesse o checkout do Mercado Pago:\n\n[CHECKOUT_LINK:${newAppId}]`, true),
+              1500,
+            )
+          }, 100)
+          addAppointment({
+            id: newAppId,
+            studioId: studio!.id,
+            clientId: 'c2',
+            date: '2024-12-01',
+            time: 'A definir',
+            duration: 3,
+            description: `Tattoo ${p.style}`,
+            totalValue: p.priceEstimate,
+            depositPaid: p.depositAmount || 200,
+            status: 'pending',
+            paymentStatus: 'pending',
+          })
+          return { ...p, legalAccepted: true }
+        })
       }
     }, 1000)
   }
@@ -169,12 +181,12 @@ export function ChatArea({
           <div>
             <h3 className="font-semibold text-sm">Mariana Costa</h3>
             <p className="text-xs text-muted-foreground">
-              {step === 6 ? 'Sessão Cancelada (Inatividade)' : 'Triagem em andamento'}
+              {step === 7 ? 'Sessão Cancelada (Inatividade)' : 'Triagem em andamento'}
             </p>
           </div>
         </div>
         <div className="flex items-center gap-3 bg-muted/50 px-3 py-1.5 rounded-full border border-border">
-          {step === 6 ? (
+          {step === 7 ? (
             <TimerOff className="size-4 text-destructive" />
           ) : (
             <BrainCircuit
@@ -185,11 +197,11 @@ export function ChatArea({
             <Switch
               checked={isAiActive}
               onCheckedChange={setIsAiActive}
-              disabled={step === 6}
+              disabled={step === 7}
               className="data-[state=checked]:bg-primary"
             />
             <Label className="text-xs font-bold cursor-pointer">
-              {step === 6 ? 'IA Parada' : isAiActive ? 'IA Ligada' : 'IA Desligada'}
+              {step === 7 ? 'IA Parada' : isAiActive ? 'IA Ligada' : 'IA Desligada'}
             </Label>
           </div>
         </div>
@@ -197,7 +209,7 @@ export function ChatArea({
 
       <ScrollArea className="flex-1 p-4" ref={scrollRef}>
         <div className="max-w-2xl mx-auto flex flex-col justify-end min-h-full pb-4">
-          {!isAiActive && step !== 6 && (
+          {!isAiActive && step !== 7 && (
             <div className="flex justify-center mb-6">
               <span className="bg-destructive/10 text-destructive text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 border border-destructive/20">
                 <AlertCircle className="size-3" /> Intervenção Humana Ativa (IA Pausada)
@@ -229,7 +241,7 @@ export function ChatArea({
       </ScrollArea>
 
       <div className="p-4 border-t border-border bg-card/50 shrink-0">
-        {step === 6 ? (
+        {step === 7 ? (
           <div className="text-center py-3 text-sm text-destructive font-medium border border-destructive/20 bg-destructive/5 rounded-lg">
             Esta sessão foi cancelada automaticamente devido à inatividade.
           </div>
@@ -245,28 +257,56 @@ export function ChatArea({
                 </Button>
               )}
               {step === 1 &&
-                studio?.tattooStyles?.map((s) => (
-                  <Button key={s} variant="outline" onClick={() => handleOption(s, 2)}>
-                    {s}
-                  </Button>
-                ))}
+                studio?.tattooStyleConfigs
+                  ?.filter((c) => c.enabled)
+                  .map((s) => (
+                    <Button key={s.name} variant="outline" onClick={() => handleOption(s.name, 2)}>
+                      {s.name}
+                    </Button>
+                  ))}
               {step === 2 && (
+                <>
+                  <Button variant="outline" onClick={() => handleOption('10cm', 3)}>
+                    10cm
+                  </Button>
+                  <Button variant="outline" onClick={() => handleOption('15cm', 3)}>
+                    15cm
+                  </Button>
+                  <Button variant="outline" onClick={() => handleOption('25cm', 3)}>
+                    25cm
+                  </Button>
+                </>
+              )}
+              {step === 3 && (
+                <>
+                  <Button variant="outline" onClick={() => handleOption('Antebraço', 4)}>
+                    Antebraço
+                  </Button>
+                  <Button variant="outline" onClick={() => handleOption('Costela', 4)}>
+                    Costela
+                  </Button>
+                  <Button variant="outline" onClick={() => handleOption('Pescoço', 4)}>
+                    Pescoço
+                  </Button>
+                </>
+              )}
+              {step === 4 && (
                 <Button
                   className="bg-primary text-primary-foreground"
-                  onClick={() => handleOption('[Anexa Imagem]', 3)}
+                  onClick={() => handleOption('[Anexa Imagem]', 5)}
                 >
                   Anexar Referência
                 </Button>
               )}
-              {step === 3 && (
+              {step === 5 && (
                 <Button
                   className="bg-green-600 hover:bg-green-700 text-white shadow-lg animate-fade-in-up"
-                  onClick={() => handleOption('Li e aceito os 5 termos.', 4)}
+                  onClick={() => handleOption('Li e aceito os 5 termos.', 6)}
                 >
                   <FileCheck className="size-4 mr-2" /> Confirmar Termos
                 </Button>
               )}
-              {step >= 5 && (
+              {step >= 6 && (
                 <p className="text-sm font-medium text-secondary">
                   Aguardando pagamento no Checkout Mercado Pago...
                 </p>

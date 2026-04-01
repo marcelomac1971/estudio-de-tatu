@@ -1,3 +1,14 @@
+export type TattooStyleConfig = {
+  name: string
+  enabled: boolean
+  basePrice: number
+  referenceSize: number
+  referenceLocation: string
+  sizeSurcharge: number
+  complexLocations: string[]
+  locationSurcharge: number
+}
+
 export type Studio = {
   id: string
   name: string
@@ -7,6 +18,8 @@ export type Studio = {
   googleCalendarConnected?: boolean
   botFirstMessage?: string
   tattooStyles?: string[]
+  tattooStyleConfigs?: TattooStyleConfig[]
+  depositPercentage?: number
   status: 'active' | 'inactive'
   mrr?: number
   contactEmail?: string
@@ -60,6 +73,29 @@ export const MOCK_STUDIOS: Studio[] = [
     botFirstMessage:
       'Olá! Bem-vindo ao atendimento automatizado do Studio Noir. Como posso te ajudar hoje?',
     tattooStyles: ['Realismo', 'Fine Line', 'Blackwork', 'Old School'],
+    depositPercentage: 30,
+    tattooStyleConfigs: [
+      {
+        name: 'Realismo',
+        enabled: true,
+        basePrice: 800,
+        referenceSize: 15,
+        referenceLocation: 'Antebraço',
+        sizeSurcharge: 50,
+        complexLocations: ['Costela', 'Pescoço'],
+        locationSurcharge: 200,
+      },
+      {
+        name: 'Fineline',
+        enabled: true,
+        basePrice: 400,
+        referenceSize: 10,
+        referenceLocation: 'Antebraço',
+        sizeSurcharge: 30,
+        complexLocations: ['Costela', 'Mão'],
+        locationSurcharge: 100,
+      },
+    ],
     status: 'active',
     mrr: 299,
     contactEmail: 'matriz@noir.com',
@@ -73,6 +109,8 @@ export const MOCK_STUDIOS: Studio[] = [
     googleCalendarConnected: true,
     botFirstMessage: 'E aí! Bem-vindo ao Ink & Blood. Bora rabiscar?',
     tattooStyles: ['Tradicional', 'Aquarela', 'Oriental'],
+    depositPercentage: 20,
+    tattooStyleConfigs: [],
     status: 'active',
     mrr: 299,
     contactEmail: 'ink@blood.com',

@@ -7,6 +7,7 @@ type ClientData = {
   size: string
   location: string
   priceEstimate: number
+  depositAmount: number
   health: string
   legalAccepted: boolean
 }
@@ -72,7 +73,7 @@ export function ChatSidebar({ step, clientData }: { step: number; clientData: Cl
           </div>
         </div>
 
-        {step >= 2 && (
+        {step >= 4 && (
           <div className="bg-secondary/10 border border-secondary/30 rounded-lg p-4 animate-fade-in-up">
             <p className="text-xs text-secondary mb-2 font-bold flex items-center gap-1">
               <Calculator className="size-3" /> Precificação (Motor IA)
@@ -81,14 +82,14 @@ export function ChatSidebar({ step, clientData }: { step: number; clientData: Cl
               <span>Valor Total:</span>{' '}
               <span className="font-bold">R$ {clientData.priceEstimate}</span>
             </div>
-            {step >= 5 && (
+            {step >= 4 && (
               <>
                 <div className="border-t border-secondary/20 my-3" />
                 <div className="flex justify-between text-sm text-secondary font-bold items-center">
                   <span className="flex items-center gap-1">
                     <CreditCard className="size-4" /> Sinal Exigido:
                   </span>
-                  <span>R$ 200</span>
+                  <span>R$ {clientData.depositAmount}</span>
                 </div>
               </>
             )}

@@ -1,29 +1,58 @@
-import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { Bot, Plus, X } from 'lucide-react'
+import { Switch } from '@/components/ui/switch'
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from '@/components/ui/accordion'
+import { Bot, Settings2 } from 'lucide-react'
 import useAppStore from '@/stores/useAppStore'
-import { Badge } from '@/components/ui/badge'
+import { TattooStyleConfig } from '@/lib/mockData'
+
+const COMMON_STYLES = [
+  'Realismo',
+  'Fineline',
+  'Blackwork',
+  'Old School / Tradicional',
+  'Oriental',
+  'Tribal',
+  'Geométrico',
+  'Sketch',
+  'Minimalista',
+  'Aquarela',
+]
 
 export function AgentTab() {
   const { currentStudioId, studios, updateStudio } = useAppStore()
   const studio = studios.find((s) => s.id === currentStudioId)
-  const [newStyle, setNewStyle] = useState('')
 
   if (!studio) return null
 
-  const handleAddStyle = () => {
-    if (newStyle && !studio.tattooStyles?.includes(newStyle)) {
-      updateStudio({ ...studio, tattooStyles: [...(studio.tattooStyles || []), newStyle] })
-      setNewStyle('')
-    }
-  }
+  const configs = studio.tattooStyleConfigs || []
 
-  const handleRemoveStyle = (style: string) => {
-    updateStudio({ ...studio, tattooStyles: studio.tattooStyles?.filter((s) => s !== style) })
+  const mergedConfigs = COMMON_STYLES.map((name) => {
+    const existing = configs.find((c) => c.name === name)
+    return (
+      existing || {
+        name,
+        enabled: false,
+        basePrice: 0,
+        referenceSize: 0,
+        referenceLocation: '',
+        sizeSurcharge: 0,
+        complexLocations: [],
+        locationSurcharge: 0,
+      }
+    )
+  })
+
+  const handleUpdateConfig = (name: string, updates: Partial<TattooStyleConfig>) => {
+    const updated = mergedConfigs.map((c) => (c.name === name ? { ...c, ...updates } : c))
+    updateStudio({ ...studio, tattooStyleConfigs: updated })
   }
 
   return (
@@ -38,59 +67,133 @@ export function AgentTab() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="space-y-2">
-            <Label>Mensagem Inicial (Boas-vindas)</Label>
-            <Textarea
-              rows={4}
-              value={studio.botFirstMessage || ''}
-              onChange={(e) => updateStudio({ ...studio, botFirstMessage: e.target.value })}
-              className="bg-background resize-none"
-            />
-            <p className="text-xs text-muted-foreground">
-              Esta é a primeira mensagem que o robô enviará ao novo contato.
-            </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label>Mensagem Inicial (Boas-vindas)</Label>
+              <Textarea
+                rows={4}
+                value={studio.botFirstMessage || ''}
+                onChange={(e) => updateStudio({ ...studio, botFirstMessage: e.target.value })}
+                className="bg-background resize-none"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Percentual de Sinal (%)</Label>
+              <Input
+                type="number"
+                min="0"
+                max="100"
+                value={studio.depositPercentage || 0}
+                onChange={(e) =>
+                  updateStudio({ ...studio, depositPercentage: Number(e.target.value) })
+                }
+                className="bg-background"
+              />
+              <p className="text-xs text-muted-foreground">
+                Porcentagem do valor total cobrada antecipadamente para reservar a agenda.
+              </p>
+            </div>
           </div>
 
           <div className="space-y-4 pt-4 border-t border-border">
-            <div>
-              <Label>Estilos de Tatuagem (Modelos Obrigatórios)</Label>
-              <p className="text-xs text-muted-foreground mt-1 mb-3">
-                Essas opções serão apresentadas ao cliente pelo bot para auxiliar no cálculo do
-                orçamento.
-              </p>
+            <div className="flex items-center gap-2">
+              <Settings2 className="size-4" />
+              <Label className="text-base">Estilos de Tatuagem (Precificação Dinâmica)</Label>
             </div>
-            <div className="flex gap-2">
-              <Input
-                value={newStyle}
-                onChange={(e) => setNewStyle(e.target.value)}
-                placeholder="Ex: Aquarela"
-                className="bg-background max-w-xs"
-                onKeyDown={(e) => e.key === 'Enter' && handleAddStyle()}
-              />
-              <Button onClick={handleAddStyle} type="button" variant="secondary">
-                <Plus className="size-4 mr-2" /> Adicionar
-              </Button>
-            </div>
-            <div className="flex flex-wrap gap-2 pt-2">
-              {studio.tattooStyles?.map((style) => (
-                <Badge
-                  key={style}
-                  variant="secondary"
-                  className="pl-3 pr-1 py-1.5 flex items-center gap-1 bg-secondary/20"
-                >
-                  {style}
-                  <button
-                    onClick={() => handleRemoveStyle(style)}
-                    className="p-0.5 rounded-full hover:bg-secondary/30 transition-colors"
-                  >
-                    <X className="size-3" />
-                  </button>
-                </Badge>
+            <Accordion type="single" collapsible className="w-full">
+              {mergedConfigs.map((cfg) => (
+                <AccordionItem key={cfg.name} value={cfg.name} className="border-border">
+                  <div className="flex items-center justify-between py-4 w-full">
+                    <div className="flex items-center gap-4">
+                      <Switch
+                        checked={cfg.enabled}
+                        onCheckedChange={(checked) =>
+                          handleUpdateConfig(cfg.name, { enabled: checked })
+                        }
+                      />
+                      <span className={cfg.enabled ? 'font-medium' : 'text-muted-foreground'}>
+                        {cfg.name}
+                      </span>
+                    </div>
+                    {cfg.enabled && <AccordionTrigger className="py-0 hover:no-underline" />}
+                  </div>
+                  {cfg.enabled && (
+                    <AccordionContent className="p-4 bg-muted/30 rounded-lg space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label>Preço Base (R$)</Label>
+                          <Input
+                            type="number"
+                            value={cfg.basePrice}
+                            onChange={(e) =>
+                              handleUpdateConfig(cfg.name, { basePrice: Number(e.target.value) })
+                            }
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Tamanho Ref. (cm)</Label>
+                          <Input
+                            type="number"
+                            value={cfg.referenceSize}
+                            onChange={(e) =>
+                              handleUpdateConfig(cfg.name, {
+                                referenceSize: Number(e.target.value),
+                              })
+                            }
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Local Ref.</Label>
+                          <Input
+                            placeholder="Ex: Antebraço"
+                            value={cfg.referenceLocation}
+                            onChange={(e) =>
+                              handleUpdateConfig(cfg.name, { referenceLocation: e.target.value })
+                            }
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Acréscimo por cm (R$)</Label>
+                          <Input
+                            type="number"
+                            value={cfg.sizeSurcharge}
+                            onChange={(e) =>
+                              handleUpdateConfig(cfg.name, {
+                                sizeSurcharge: Number(e.target.value),
+                              })
+                            }
+                          />
+                        </div>
+                        <div className="space-y-2 col-span-2">
+                          <Label>Locais Complexos (Separados por vírgula)</Label>
+                          <Input
+                            placeholder="Ex: Costela, Pescoço"
+                            value={cfg.complexLocations.join(', ')}
+                            onChange={(e) =>
+                              handleUpdateConfig(cfg.name, {
+                                complexLocations: e.target.value.split(',').map((s) => s.trim()),
+                              })
+                            }
+                          />
+                        </div>
+                        <div className="space-y-2 col-span-2">
+                          <Label>Acréscimo Locais Complexos (R$)</Label>
+                          <Input
+                            type="number"
+                            value={cfg.locationSurcharge}
+                            onChange={(e) =>
+                              handleUpdateConfig(cfg.name, {
+                                locationSurcharge: Number(e.target.value),
+                              })
+                            }
+                          />
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  )}
+                </AccordionItem>
               ))}
-              {(!studio.tattooStyles || studio.tattooStyles.length === 0) && (
-                <p className="text-sm text-muted-foreground italic">Nenhum estilo configurado.</p>
-              )}
-            </div>
+            </Accordion>
           </div>
         </CardContent>
       </Card>
