@@ -46,6 +46,8 @@ type AppStore = {
   setWhatsappStatus: (status: 'connected' | 'disconnected' | 'connecting') => void
   whatsappNumber: string | null
   setWhatsappNumber: (num: string | null) => void
+  humanTakeover: boolean
+  setHumanTakeover: (val: boolean) => void
 }
 
 const AppContext = createContext<AppStore | null>(null)
@@ -69,6 +71,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     'disconnected',
   )
   const [whatsappNumber, setWhatsappNumber] = useState<string | null>(null)
+  const [humanTakeover, setHumanTakeover] = useState(false)
 
   const login = (email: string, pass: string) => {
     if (email === 'marcelomac762@gmail.com' && pass === 'uber1971*') {
@@ -153,6 +156,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setWhatsappStatus,
         whatsappNumber,
         setWhatsappNumber,
+        humanTakeover,
+        setHumanTakeover,
       },
     },
     children,

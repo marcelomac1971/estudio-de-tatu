@@ -22,7 +22,10 @@ export type Studio = {
   tattooStyles?: string[]
   tattooStyleConfigs?: TattooStyleConfig[]
   depositPercentage?: number
-  status: 'active' | 'inactive'
+  status: 'active' | 'expiring' | 'grace_period' | 'suspended' | 'reactivated'
+  billingCycleEnd?: string
+  zapiInstanceId?: string
+  zapiToken?: string
   mrr?: number
   contactEmail?: string
   contactPhone?: string
@@ -102,6 +105,9 @@ export const MOCK_STUDIOS: Studio[] = [
       },
     ],
     status: 'active',
+    billingCycleEnd: '2026-05-10',
+    zapiInstanceId: '3A5B9C8D',
+    zapiToken: 'tok_123456789',
     mrr: 299,
     contactEmail: 'matriz@noir.com',
     contactPhone: '+55 11 9999-9999',
@@ -116,7 +122,8 @@ export const MOCK_STUDIOS: Studio[] = [
     tattooStyles: ['Tradicional', 'Aquarela', 'Oriental'],
     depositPercentage: 20,
     tattooStyleConfigs: [],
-    status: 'active',
+    status: 'grace_period',
+    billingCycleEnd: '2026-04-01',
     mrr: 299,
     contactEmail: 'ink@blood.com',
     contactPhone: '+55 41 7777-7777',

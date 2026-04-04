@@ -32,8 +32,42 @@ export default function AdminStudios() {
   const { studios, updateStudio } = useAppStore()
   const [editingStudio, setEditingStudio] = useState<any>(null)
 
-  const handleToggleStatus = (studio: any) => {
-    updateStudio({ ...studio, status: studio.status === 'active' ? 'inactive' : 'active' })
+  const handleStatusChange = (studio: any, newStatus: string) => {
+    updateStudio({ ...studio, status: newStatus })
+  }
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'active':
+        return 'bg-green-500/10 text-green-500 hover:bg-green-500/20 border-none'
+      case 'expiring':
+        return 'bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500/20 border-none'
+      case 'grace_period':
+        return 'bg-orange-500/10 text-orange-500 hover:bg-orange-500/20 border-none'
+      case 'suspended':
+        return 'bg-red-500/10 text-red-500 hover:bg-red-500/20 border-none'
+      case 'reactivated':
+        return 'bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 border-none'
+      default:
+        return 'bg-muted text-muted-foreground border-none'
+    }
+  }
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'active':
+        return 'Ativo'
+      case 'expiring':
+        return 'Expirando'
+      case 'grace_period':
+        return 'Grace Period'
+      case 'suspended':
+        return 'Suspenso'
+      case 'reactivated':
+        return 'Reativado'
+      default:
+        return status
+    }
   }
 
   return (
@@ -54,10 +88,9 @@ export default function AdminStudios() {
             <TableHeader>
               <TableRow className="border-border hover:bg-transparent">
                 <TableHead>Nome do Estúdio</TableHead>
-                <TableHead>Localização</TableHead>
-                <TableHead>Contato</TableHead>
-                <TableHead>MRR (Plano)</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead>Faturamento</TableHead>
+                <TableHead>Ciclo</TableHead>
+                <TableHead>Status SaaS</TableHead>
                 <TableHead className="text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
@@ -67,24 +100,23 @@ export default function AdminStudios() {
                   key={studio.id}
                   className="border-border transition-colors hover:bg-muted/30"
                 >
-                  <TableCell className="font-medium">{studio.name}</TableCell>
-                  <TableCell className="text-muted-foreground">{studio.location}</TableCell>
-                  <TableCell className="text-muted-foreground text-xs">
-                    {studio.contactEmail}
-                    <br />
-                    {studio.contactPhone}
+                  <TableCell className="font-medium">
+                    {studio.name}
+                    <div className="text-xs text-muted-foreground mt-0.5">
+                      {studio.contactEmail}
+                    </div>
                   </TableCell>
-                  <TableCell className="font-semibold text-primary">R$ {studio.mrr || 0}</TableCell>
+                  <TableCell className="font-semibold text-primary">
+                    R$ {studio.mrr || 0}/mês
+                  </TableCell>
+                  <TableCell className="text-muted-foreground text-xs">
+                    Vence em:
+                    <br />
+                    {studio.billingCycleEnd || 'N/D'}
+                  </TableCell>
                   <TableCell>
-                    <Badge
-                      variant={studio.status === 'active' ? 'secondary' : 'destructive'}
-                      className={
-                        studio.status === 'active'
-                          ? 'bg-secondary/10 text-secondary hover:bg-secondary/20 border-none'
-                          : 'bg-destructive/10 text-destructive hover:bg-destructive/20 border-none'
-                      }
-                    >
-                      {studio.status === 'active' ? 'Ativo' : 'Inativo'}
+                    <Badge className={getStatusBadge(studio.status)}>
+                      {getStatusLabel(studio.status)}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
@@ -98,15 +130,20 @@ export default function AdminStudios() {
                         <DropdownMenuItem onClick={() => setEditingStudio(studio)}>
                           <Edit className="size-4 mr-2" /> Editar Dados
                         </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => handleStatusChange(studio, 'active')}>
+                          Marcar como Ativo
+                        </DropdownMenuItem>
                         <DropdownMenuItem
-                          onClick={() => handleToggleStatus(studio)}
-                          className={
-                            studio.status === 'active'
-                              ? 'text-destructive focus:text-destructive'
-                              : 'text-secondary focus:text-secondary'
-                          }
+                          onClick={() => handleStatusChange(studio, 'grace_period')}
                         >
-                          {studio.status === 'active' ? 'Desativar Estúdio' : 'Ativar Estúdio'}
+                          Marcar Grace Period (3 dias)
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => handleStatusChange(studio, 'suspended')}
+                          className="text-red-500"
+                        >
+                          Suspender Acesso
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>

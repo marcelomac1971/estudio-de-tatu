@@ -46,6 +46,13 @@ const noShowData = [
   { name: 'No-Show / Cancelado', value: 15, color: 'hsl(var(--destructive))' },
 ]
 
+const styleData = [
+  { name: 'Realismo', value: 40, color: 'hsl(var(--chart-1))' },
+  { name: 'Fineline', value: 30, color: 'hsl(var(--chart-2))' },
+  { name: 'Blackwork', value: 20, color: 'hsl(var(--chart-3))' },
+  { name: 'Old School', value: 10, color: 'hsl(var(--chart-4))' },
+]
+
 const convConfig = {
   users: { label: 'Usuários', color: 'hsl(var(--primary))' },
 }
@@ -56,6 +63,10 @@ const finConfig = {
 
 const noShowConfig = {
   value: { label: 'Agendamentos' },
+}
+
+const styleConfig = {
+  value: { label: 'Trabalhos' },
 }
 
 export default function Reports() {
@@ -183,14 +194,12 @@ export default function Reports() {
           </CardContent>
         </Card>
 
-        <Card className="border-border/50 bg-card/50 lg:col-span-2 max-w-3xl mx-auto w-full">
+        <Card className="border-border/50 bg-card/50">
           <CardHeader className="text-center">
             <CardTitle className="text-base flex items-center justify-center gap-2">
               <DollarSign className="size-4" /> Retenção e Faltas (No-Show)
             </CardTitle>
-            <CardDescription>
-              Percentual de clientes que cancelaram com menos de 24h ou não compareceram.
-            </CardDescription>
+            <CardDescription>Percentual de cancelamentos em {'<'} 24h.</CardDescription>
           </CardHeader>
           <CardContent className="flex justify-center">
             <ChartContainer config={noShowConfig} className="h-[250px] w-full max-w-sm">
@@ -204,6 +213,34 @@ export default function Reports() {
                   paddingAngle={5}
                 >
                   {noShowData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <ChartTooltip content={<ChartTooltipContent />} />
+              </PieChart>
+            </ChartContainer>
+          </CardContent>
+        </Card>
+
+        <Card className="border-border/50 bg-card/50">
+          <CardHeader className="text-center">
+            <CardTitle className="text-base flex items-center justify-center gap-2">
+              <BarChart3 className="size-4" /> Style Analysis
+            </CardTitle>
+            <CardDescription>Distribuição de estilos mais solicitados.</CardDescription>
+          </CardHeader>
+          <CardContent className="flex justify-center">
+            <ChartContainer config={styleConfig} className="h-[250px] w-full max-w-sm">
+              <PieChart>
+                <Pie
+                  data={styleData}
+                  dataKey="value"
+                  nameKey="name"
+                  innerRadius={0}
+                  outerRadius={80}
+                  paddingAngle={2}
+                >
+                  {styleData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>

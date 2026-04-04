@@ -45,10 +45,10 @@ export default function AdminDashboard() {
           trendUp={true}
         />
         <MetricCard
-          title="Volume de Sinais (Mercado Pago)"
-          value={`R$ ${adminMetrics.globalDeposits.toLocaleString('pt-BR')}`}
+          title="MRR (Plataforma)"
+          value={`R$ ${adminMetrics.mrr.toLocaleString('pt-BR')}`}
           icon={DollarSign}
-          trend="+R$ 3.5k esta semana"
+          trend="+R$ 299 hoje"
           trendUp={true}
         />
       </div>
@@ -86,16 +86,31 @@ export default function AdminDashboard() {
         </Card>
 
         <Card className="border-border/50 bg-card/50 shadow-elevation flex items-center justify-center p-8">
-          <div className="text-center space-y-4">
+          <div className="text-center space-y-4 w-full">
             <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
               <Activity className="size-8 text-primary" />
             </div>
             <div>
               <h3 className="text-xl font-bold">Saúde do Sistema</h3>
               <p className="text-sm text-muted-foreground mt-2">
-                Todos os {adminMetrics.totalStudios} estúdios estão operando normalmente.
-                Integrações de WhatsApp e Mercado Pago estáveis.
+                Temos <strong>{adminMetrics.totalStudios} estúdios ativos</strong> operando
+                normalmente na plataforma.
               </p>
+
+              <div className="grid grid-cols-2 gap-4 mt-6">
+                <div className="bg-background p-3 rounded-lg border border-border">
+                  <p className="text-xs text-muted-foreground mb-1">Volume Sinais Processados</p>
+                  <p className="text-lg font-bold text-foreground">
+                    R$ {adminMetrics.globalDeposits.toLocaleString('pt-BR')}
+                  </p>
+                </div>
+                <div className="bg-background p-3 rounded-lg border border-border">
+                  <p className="text-xs text-muted-foreground mb-1">Instâncias Z-API Ativas</p>
+                  <p className="text-lg font-bold text-foreground">
+                    {(adminMetrics.totalStudios * 0.9).toFixed(0)}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </Card>
