@@ -157,7 +157,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     try {
       const { supabase } = await import('@/lib/supabase/client')
       await supabase.auth.signOut()
-    } catch (e) {}
+    } catch (e) {
+      console.error(e)
+    }
     setIsAuthenticated(false)
     setAuthUser(null)
     localStorage.removeItem('modern-noir-session')

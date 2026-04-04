@@ -254,7 +254,9 @@ export function ChatArea({
                     parseInt(timePart[1]),
                   ).toISOString()
                 }
-              } catch (e) {}
+              } catch (e) {
+                console.error(e)
+              }
             }
 
             await supabase.from('agendamentos').insert({
