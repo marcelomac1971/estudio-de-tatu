@@ -73,6 +73,29 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!session)
   const [authUser, setAuthUser] = useState<AuthUser | null>(session?.authUser || null)
+
+  React.useEffect(() => {
+    import('@/lib/supabase/client').then(({ supabase }) => {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session?.user) {
+          setIsAuthenticated(true)
+          setAuthUser({ email: session.user.email || '', role: 'studio' })
+        }
+      })
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange((event, session) => {
+        if (session?.user) {
+          setIsAuthenticated(true)
+          setAuthUser({ email: session.user.email || '', role: 'studio' })
+        } else {
+          setIsAuthenticated(false)
+          setAuthUser(null)
+        }
+      })
+      return () => subscription.unsubscribe()
+    })
+  }, [])
   const [role, setRole] = useState<Role>(session?.role || 'studio')
 
   const [studios, setStudios] = useState<Studio[]>(MOCK_STUDIOS)
@@ -130,7 +153,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return false
   }
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      const { supabase } = await import('@/lib/supabase/client')
+      await supabase.auth.signOut()
+    } catch (e) {}
     setIsAuthenticated(false)
     setAuthUser(null)
     localStorage.removeItem('modern-noir-session')

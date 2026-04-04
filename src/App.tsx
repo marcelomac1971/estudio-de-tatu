@@ -18,6 +18,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import ProtectedRoute from './components/ProtectedRoute'
 import { AppProvider } from './stores/useAppStore'
+import { AuthProvider } from './hooks/use-auth'
 
 const AppContent = () => {
   useEffect(() => {
@@ -55,9 +56,11 @@ const AppContent = () => {
 }
 
 const App = () => (
-  <AppProvider>
-    <AppContent />
-  </AppProvider>
+  <AuthProvider>
+    <AppProvider>
+      <AppContent />
+    </AppProvider>
+  </AuthProvider>
 )
 
 export default App

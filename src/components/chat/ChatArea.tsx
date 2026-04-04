@@ -3,11 +3,10 @@ import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ChatBubble } from '@/components/chat/ChatBubble'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Switch } from '@/components/ui/switch'
-import { Label } from '@/components/ui/label'
 import { AlertCircle, FileCheck, BrainCircuit, MessageSquareText, TimerOff } from 'lucide-react'
 import useAppStore from '@/stores/useAppStore'
 import { useToast } from '@/components/ui/use-toast'
+import { supabase } from '@/lib/supabase/client'
 
 type Message = {
   id: string
@@ -45,7 +44,6 @@ export function ChatArea({
   const [isAiActive, setIsAiActive] = useState(true)
   const [humanText, setHumanText] = useState('')
   const scrollRef = useRef<HTMLDivElement>(null)
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
   const { toast } = useToast()
 
   const { currentStudioId, studios, addAppointment } = useAppStore()
@@ -70,22 +68,51 @@ export function ChatArea({
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight
   }, [messages, step, studio])
 
+  const trigger24hFollowUp = () => {
+    addMsg(
+      'Oi! Vi que você não finalizou seu agendamento. Ainda tem interesse? As vagas estão acabando!',
+      true,
+    )
+    setStep(99)
+  }
+
+  const trigger2hEnd = () => {
+    setIsAiActive(false)
+    setStep(100)
+    addMsg(
+      'Sessão encerrada por inatividade. Quando quiser retornar, basta mandar um "Oi".',
+      false,
+      'system',
+    )
+  }
+
   useEffect(() => {
-    if (step === 99 && isAiActive) {
-      timeoutRef.current = setTimeout(() => {
-        setIsAiActive(false)
-        setStep(100)
-        addMsg(
-          'Sessão expirada: O cliente não interagiu dentro de 1 hora. Atendimento cancelado automaticamente para desocupar a fila.',
-          false,
-          'system',
-        )
-      }, 3600000)
+    let timeout24: NodeJS.Timeout
+    let timeout2: NodeJS.Timeout
+
+    if (isAiActive && step > 0 && step < 99 && step !== 7 && step !== 100) {
+      timeout24 = setTimeout(
+        () => {
+          trigger24hFollowUp()
+        },
+        24 * 60 * 60 * 1000,
+      )
     }
+
+    if (isAiActive && step === 99) {
+      timeout2 = setTimeout(
+        () => {
+          trigger2hEnd()
+        },
+        2 * 60 * 60 * 1000,
+      )
+    }
+
     return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+      if (timeout24) clearTimeout(timeout24)
+      if (timeout2) clearTimeout(timeout2)
     }
-  }, [step, isAiActive, setStep])
+  }, [step, isAiActive])
 
   const calculatePrice = (styleName: string, sizeCm: number, loc: string) => {
     const cfg = studio?.tattooStyleConfigs?.find((c) => c.name === styleName)
@@ -125,37 +152,74 @@ export function ChatArea({
           const { total, deposit } = calculatePrice(p.style, sizeVal, text)
           setTimeout(() => {
             addMsg(
-              `Com base no estilo ${p.style}, tamanho ${p.size} e local ${text}, o valor total estimado é R$ ${total}.\n\nPara agendar, o valor do sinal é R$ ${deposit}.\n\nPara quando você gostaria de agendar? (Selecione uma data)`,
+              `Com base no estilo ${p.style}, tamanho ${p.size} e local ${text}, o valor total estimado é R$ ${total}.\n\nPara agendar, o valor do sinal é R$ ${deposit}.\n\nPara quando você gostaria de agendar? (Ex: Amanhã às 14:00)`,
               true,
             )
           }, 100)
           return { ...p, location: text, priceEstimate: total, depositAmount: deposit }
         })
       } else if (nextStep === 4.1) {
-        const dateStr = text.split(' às ')[0] || text
-        setTimeout(() => {
+        const inputStr = text
+        setIsTyping(true)
+        setStep(-1)
+
+        setTimeout(async () => {
           addMsg(`Consultando a agenda do estúdio...`, true)
-          setTimeout(() => {
-            const margin = studio?.availabilitySearchMargin || 3
-            addMsg(
-              `Infelizmente a data solicitada já está ocupada. Buscando disponibilidade em uma margem de ${margin} dias...`,
-              true,
-            )
+
+          try {
+            const { data } = await supabase
+              .from('agendamentos')
+              .select('data_hora')
+              .gte('data_hora', new Date().toISOString())
+
+            const occupiedDates = (data || []).map((a) => {
+              const d = new Date(a.data_hora!)
+              return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')} às ${d.getHours()}:00`
+            })
+
+            let baseDate = inputStr.split(' às ')[0]
+            if (baseDate === 'Amanhã') {
+              const tmrw = new Date()
+              tmrw.setDate(tmrw.getDate() + 1)
+              baseDate = `${tmrw.getDate().toString().padStart(2, '0')}/${(tmrw.getMonth() + 1).toString().padStart(2, '0')}`
+            }
+
+            const possibleSlots = [
+              `${baseDate} às 10:00`,
+              `${baseDate} às 14:00`,
+              `${baseDate} às 16:00`,
+              `${baseDate} às 18:00`,
+            ]
+
+            const availableSlots = possibleSlots.filter((s) => !occupiedDates.includes(s))
+
             setTimeout(() => {
-              addMsg(
-                `Encontrei os seguintes horários livres próximos:\n- ${dateStr} às 16:00\n- ${dateStr} (Dia seguinte) às 10:00\n\nPodemos confirmar algum desses?`,
-                true,
-              )
-            }, 1500)
-          }, 1000)
-        }, 100)
-        setStep(4.5)
+              if (availableSlots.length > 0) {
+                const slotsText = availableSlots
+                  .slice(0, 3)
+                  .map((s) => `- ${s}`)
+                  .join('\n')
+                addMsg(
+                  `Encontrei os seguintes horários livres próximos:\n${slotsText}\n\nPodemos confirmar algum desses?`,
+                  true,
+                )
+              } else {
+                addMsg(`Infelizmente não encontrei horários livres próximos.`, true)
+              }
+              setIsTyping(false)
+              setStep(4.5)
+            }, 1000)
+          } catch (err) {
+            setIsTyping(false)
+            setStep(4.5)
+          }
+        }, 1000)
       } else if (nextStep === 4.2) {
-        let selectedDate = '2024-12-01'
+        let selectedDate = '01/12'
         let selectedTime = '16:00'
         if (text.includes('às')) {
-          selectedDate = text.split(' às ')[0]
-          selectedTime = text.split(' às ')[1]
+          selectedDate = text.split(' às ')[0].trim()
+          selectedTime = text.split(' às ')[1].trim()
         }
         setClientData((p: any) => ({ ...p, date: selectedDate, time: selectedTime }))
         setTimeout(() => {
@@ -173,6 +237,35 @@ export function ChatArea({
           const newAppId = `app-${Date.now()}`
           const ipMock = `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`
           const ts = new Date().toISOString()
+
+          const saveDb = async () => {
+            const currentYear = new Date().getFullYear()
+            let isoDate = new Date().toISOString()
+            if (p.date && p.time) {
+              try {
+                const [day, month] = p.date.split('/')
+                if (day && month) {
+                  const timePart = p.time.split(':')
+                  isoDate = new Date(
+                    currentYear,
+                    parseInt(month) - 1,
+                    parseInt(day),
+                    parseInt(timePart[0]),
+                    parseInt(timePart[1]),
+                  ).toISOString()
+                }
+              } catch (e) {}
+            }
+
+            await supabase.from('agendamentos').insert({
+              estudio_id: '00000000-0000-0000-0000-000000000001',
+              data_hora: isoDate,
+              valor_sinal: p.depositAmount || 200,
+              status_pagamento: 'pendente',
+            })
+          }
+          saveDb()
+
           setTimeout(() => {
             addMsg(
               `Termos aceitos digitalmente! ✔️\n(Registro: IP ${ipMock} - ${ts})\n\nPara oficializar, exigimos o SINAL de R$ ${p.depositAmount || 200}.`,
@@ -184,11 +277,12 @@ export function ChatArea({
               1500,
             )
           }, 100)
+
           addAppointment({
             id: newAppId,
-            studioId: studio!.id,
+            studioId: studio?.id || 's1',
             clientId: 'c2',
-            date: p.date ? new Date().toISOString().split('T')[0] : '2024-12-01',
+            date: p.date || '2024-12-01',
             time: p.time || '10:00',
             duration: 3,
             description: `Tattoo ${p.style} (${p.size}) em ${p.location}`,
@@ -200,12 +294,7 @@ export function ChatArea({
           return { ...p, legalAccepted: true }
         })
       } else if (nextStep === -2) {
-        addMsg(
-          studio?.recoveryMessage ||
-            'Oi! Vi que você não finalizou seu agendamento. Ainda tem interesse? As vagas estão acabando!',
-          true,
-        )
-        setStep(7)
+        trigger24hFollowUp()
       }
     }, 1000)
   }
@@ -223,12 +312,16 @@ export function ChatArea({
         <div className="flex items-center gap-3">
           <Avatar>
             <AvatarImage src="https://img.usecurling.com/ppl/thumbnail?gender=female&seed=15" />
-            <AvatarFallback>C</AvatarFallback>
+            <AvatarFallback>MC</AvatarFallback>
           </Avatar>
           <div>
             <h3 className="font-semibold text-sm">Mariana Costa</h3>
             <p className="text-xs text-muted-foreground">
-              {step === 100 ? 'Sessão Cancelada (Inatividade)' : 'Triagem em andamento'}
+              {step === 100
+                ? 'Sessão Encerrada'
+                : step === 99
+                  ? 'Aguardando Retorno'
+                  : 'Triagem em andamento'}
             </p>
           </div>
         </div>
@@ -290,13 +383,37 @@ export function ChatArea({
       <div className="p-4 border-t border-border bg-card/50 shrink-0">
         {step === 100 ? (
           <div className="text-center py-3 text-sm text-destructive font-medium border border-destructive/20 bg-destructive/5 rounded-lg">
-            Esta sessão foi cancelada automaticamente devido à inatividade.
+            Esta sessão foi encerrada automaticamente para liberar o agente.
           </div>
         ) : isAiActive ? (
           <div>
-            <p className="text-xs text-muted-foreground mb-2 font-medium flex items-center gap-1">
-              <MessageSquareText className="size-3" /> Simular Ações do Usuário:
-            </p>
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-xs text-muted-foreground font-medium flex items-center gap-1">
+                <MessageSquareText className="size-3" /> Simular Ações do Usuário:
+              </p>
+              <div className="flex gap-2">
+                {step > 0 && step < 99 && step !== 7 && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-7 text-[10px]"
+                    onClick={trigger24hFollowUp}
+                  >
+                    Simular 24h
+                  </Button>
+                )}
+                {step === 99 && (
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="h-7 text-[10px]"
+                    onClick={trigger2hEnd}
+                  >
+                    Simular +2h
+                  </Button>
+                )}
+              </div>
+            </div>
             <div className="flex flex-wrap gap-2">
               {step === 0 && (
                 <Button onClick={() => handleOption('Quero fazer um orçamento', 1)}>
@@ -340,10 +457,10 @@ export function ChatArea({
               {step === 4 && (
                 <>
                   <Button variant="outline" onClick={() => handleOption('Amanhã às 14:00', 4.1)}>
-                    Amanhã às 14:00 (Ocupado)
+                    Amanhã às 14:00
                   </Button>
-                  <Button variant="outline" onClick={() => handleOption('Amanhã às 16:00', 4.2)}>
-                    Amanhã às 16:00 (Livre)
+                  <Button variant="outline" onClick={() => handleOption('25/12 às 10:00', 4.1)}>
+                    25/12 às 10:00
                   </Button>
                 </>
               )}
@@ -379,22 +496,8 @@ export function ChatArea({
               {step === 7 && (
                 <>
                   <p className="text-sm font-medium text-secondary flex-1 pt-2">
-                    Aguardando pagamento no Checkout...
+                    Agendamento salvo no Banco. Aguardando Checkout...
                   </p>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    className="animate-fade-in"
-                    onClick={() => {
-                      handleOption('', -2)
-                      toast({
-                        title: 'Recuperação de Lead Disparada',
-                        description: 'Simulação de abandono após 24h realizada com sucesso.',
-                      })
-                    }}
-                  >
-                    Simular Abandono (24h)
-                  </Button>
                 </>
               )}
             </div>

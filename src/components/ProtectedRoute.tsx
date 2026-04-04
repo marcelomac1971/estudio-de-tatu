@@ -1,10 +1,18 @@
 import { Navigate, Outlet } from 'react-router-dom'
-import useAppStore from '@/stores/useAppStore'
+import { useAuth } from '@/hooks/use-auth'
 
 export default function ProtectedRoute() {
-  const { isAuthenticated } = useAppStore()
+  const { user, loading } = useAuth()
 
-  if (!isAuthenticated) {
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
+        Carregando...
+      </div>
+    )
+  }
+
+  if (!user) {
     return <Navigate to="/login" replace />
   }
 
