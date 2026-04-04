@@ -53,12 +53,42 @@ type AppStore = {
 const AppContext = createContext<AppStore | null>(null)
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [authUser, setAuthUser] = useState<AuthUser | null>(null)
-  const [role, setRole] = useState<Role>('studio')
+  const initSession = () => {
+    try {
+      const stored = localStorage.getItem('modern-noir-session')
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        if (parsed && parsed.authUser && parsed.role) {
+          return parsed
+        }
+        localStorage.removeItem('modern-noir-session')
+      }
+    } catch {
+      localStorage.removeItem('modern-noir-session')
+    }
+    return null
+  }
+
+  const session = initSession()
+
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!session)
+  const [authUser, setAuthUser] = useState<AuthUser | null>(session?.authUser || null)
+  const [role, setRole] = useState<Role>(session?.role || 'studio')
 
   const [studios, setStudios] = useState<Studio[]>(MOCK_STUDIOS)
-  const [currentStudioId, setCurrentStudioId] = useState<string>('s1')
+  const [currentStudioId, setCurrentStudioIdState] = useState<string>(
+    session?.currentStudioId || 's1',
+  )
+
+  const setCurrentStudioId = (id: string) => {
+    setCurrentStudioIdState(id)
+    if (isAuthenticated && authUser) {
+      localStorage.setItem(
+        'modern-noir-session',
+        JSON.stringify({ authUser, role, currentStudioId: id }),
+      )
+    }
+  }
   const [clients, setClients] = useState<Client[]>(MOCK_CLIENTS)
   const [appointments, setAppointments] = useState<Appointment[]>(MOCK_APPOINTMENTS)
 
@@ -75,16 +105,26 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const login = (email: string, pass: string) => {
     if (email === 'marcelomac762@gmail.com' && pass === 'uber1971*') {
+      const user = { email, role: 'admin' as Role }
       setIsAuthenticated(true)
-      setAuthUser({ email, role: 'admin' })
+      setAuthUser(user)
       setRole('admin')
+      localStorage.setItem(
+        'modern-noir-session',
+        JSON.stringify({ authUser: user, role: 'admin', currentStudioId }),
+      )
       return true
     }
     if (email && pass) {
+      const user = { email, role: 'studio' as Role, studioId: 's1' }
       setIsAuthenticated(true)
-      setAuthUser({ email, role: 'studio', studioId: 's1' })
+      setAuthUser(user)
       setRole('studio')
-      setCurrentStudioId('s1')
+      setCurrentStudioIdState('s1')
+      localStorage.setItem(
+        'modern-noir-session',
+        JSON.stringify({ authUser: user, role: 'studio', currentStudioId: 's1' }),
+      )
       return true
     }
     return false
@@ -93,6 +133,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     setIsAuthenticated(false)
     setAuthUser(null)
+    localStorage.removeItem('modern-noir-session')
   }
 
   const addStudio = (studio: Studio) => setStudios((prev) => [...prev, studio])
