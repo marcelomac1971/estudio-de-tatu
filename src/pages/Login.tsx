@@ -13,7 +13,7 @@ export default function Login() {
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
-  const { user, signInWithEmail, signInWithGoogle } = useAuth()
+  const { user, signIn, signInWithGoogle } = useAuth()
 
   useEffect(() => {
     if (user) {
@@ -25,16 +25,31 @@ export default function Login() {
     e.preventDefault()
     setIsLoading(true)
     setError('')
-    const { error } = await signInWithEmail(email, password)
-    if (error) {
-      setError('Credenciais inválidas.')
+    try {
+      const { error } = await signIn(email, password)
+      if (error) {
+        setError('Credenciais inválidas.')
+      }
+    } catch (err) {
+      setError('Erro inesperado ao realizar login.')
+    } finally {
+      setIsLoading(false)
     }
-    setIsLoading(false)
   }
 
   const handleGoogleLogin = async () => {
     setIsLoading(true)
-    await signInWithGoogle()
+    setError('')
+    try {
+      const { error } = await signInWithGoogle()
+      if (error) {
+        setError('Erro ao autenticar com o Google.')
+        setIsLoading(false)
+      }
+    } catch (err) {
+      setError('Erro inesperado ao autenticar com o Google.')
+      setIsLoading(false)
+    }
   }
 
   return (

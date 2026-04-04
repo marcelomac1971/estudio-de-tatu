@@ -356,18 +356,32 @@ export const Constants = {
 //   PRIMARY KEY termos_lgpd_pkey: PRIMARY KEY (id)
 
 // --- ROW LEVEL SECURITY POLICIES ---
+// Table: agendamentos
+//   Policy "agendamentos_delete" (DELETE, PERMISSIVE) roles={authenticated}
+//     USING: true
+//   Policy "agendamentos_insert" (INSERT, PERMISSIVE) roles={authenticated}
+//     WITH CHECK: true
+//   Policy "agendamentos_select" (SELECT, PERMISSIVE) roles={authenticated}
+//     USING: true
+//   Policy "agendamentos_update" (UPDATE, PERMISSIVE) roles={authenticated}
+//     USING: true
 // Table: clientes
 //   Policy "Isolamento por Estúdio" (ALL, PERMISSIVE) roles={public}
 //     USING: (estudio_id = auth.uid())
-
-// --- WARNING: TABLES WITH RLS ENABLED BUT NO POLICIES ---
-// These tables have Row Level Security enabled but NO policies defined.
-// This means ALL queries (SELECT, INSERT, UPDATE, DELETE) will return ZERO rows
-// for non-superuser roles (including the anon and authenticated roles used by the app).
-// You MUST create RLS policies for these tables to allow data access.
-//   - agendamentos
-//   - estudios
-//   - termos_lgpd
+// Table: estudios
+//   Policy "estudios_insert" (INSERT, PERMISSIVE) roles={authenticated}
+//     WITH CHECK: true
+//   Policy "estudios_select" (SELECT, PERMISSIVE) roles={authenticated}
+//     USING: true
+//   Policy "estudios_update" (UPDATE, PERMISSIVE) roles={authenticated}
+//     USING: true
+// Table: termos_lgpd
+//   Policy "termos_lgpd_insert" (INSERT, PERMISSIVE) roles={authenticated}
+//     WITH CHECK: true
+//   Policy "termos_lgpd_select" (SELECT, PERMISSIVE) roles={authenticated}
+//     USING: true
+//   Policy "termos_lgpd_update" (UPDATE, PERMISSIVE) roles={authenticated}
+//     USING: true
 
 // --- INDEXES ---
 // Table: estudios
