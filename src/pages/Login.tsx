@@ -4,8 +4,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
-import { Building2 } from 'lucide-react'
+import { Building2, Info } from 'lucide-react'
 import { useAuth } from '@/hooks/use-auth'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -28,10 +29,12 @@ export default function Login() {
     try {
       const { error } = await signIn(email, password)
       if (error) {
-        setError('Credenciais inválidas.')
+        setError(
+          error.message === 'Invalid login credentials' ? 'Credenciais inválidas.' : error.message,
+        )
       }
-    } catch (err) {
-      setError('Erro inesperado ao realizar login.')
+    } catch (err: any) {
+      setError(err?.message || 'Erro inesperado ao realizar login.')
     } finally {
       setIsLoading(false)
     }
@@ -79,6 +82,28 @@ export default function Login() {
               {isLoading ? 'Entrando...' : 'Entrar'}
             </Button>
           </form>
+
+          <Alert className="mt-6 bg-muted/50 border-border/50">
+            <Info className="size-4 text-primary" />
+            <AlertDescription className="text-xs text-left ml-2">
+              <span className="block mb-1 font-medium">Credenciais de teste:</span>
+              <span className="block text-muted-foreground">E-mail: marcelomacbook@me.com</span>
+              <span className="block text-muted-foreground">Senha: Skip@Pass</span>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="w-full mt-2 h-7 text-xs"
+                onClick={(e) => {
+                  e.preventDefault()
+                  setEmail('marcelomacbook@me.com')
+                  setPassword('Skip@Pass')
+                }}
+              >
+                Preencher credenciais
+              </Button>
+            </AlertDescription>
+          </Alert>
 
           <div className="mt-6 text-center text-sm text-muted-foreground">
             Ainda não tem um estúdio cadastrado?{' '}
