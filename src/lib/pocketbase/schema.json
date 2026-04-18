@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-18T15:58:58.369Z",
+  "generatedAt": "2026-04-18T16:03:06.470Z",
   "collections": [
     {
       "name": "users",
@@ -43,6 +43,427 @@
         "CREATE UNIQUE INDEX `idx_tokenKey__pb_users_auth_` ON `users` (`tokenKey`)",
         "CREATE UNIQUE INDEX `idx_email__pb_users_auth_` ON `users` (`email`) WHERE `email` != ''"
       ]
+    },
+    {
+      "name": "studios",
+      "type": "base",
+      "apiRules": {
+        "list": "@request.auth.id != '' && owner = @request.auth.id",
+        "view": "@request.auth.id != '' && owner = @request.auth.id",
+        "create": "@request.auth.id != ''",
+        "update": "@request.auth.id != '' && owner = @request.auth.id",
+        "delete": "@request.auth.id != '' && owner = @request.auth.id"
+      },
+      "fields": [
+        {
+          "name": "name",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "owner",
+          "type": "relation",
+          "required": true,
+          "system": false,
+          "collectionRef": "users"
+        },
+        {
+          "name": "contactPhone",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "contactEmail",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "address",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "location",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "mrr",
+          "type": "number",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "botFirstMessage",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "recoveryMessage",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "depositPercentage",
+          "type": "number",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "availabilitySearchMargin",
+          "type": "number",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "tattooStyleConfigs",
+          "type": "json",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "zapiInstanceId",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "zapiToken",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "googleCalendarConnected",
+          "type": "bool",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "billingCycleEnd",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "created",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate"]
+        },
+        {
+          "name": "updated",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate", "onUpdate"]
+        }
+      ],
+      "indexes": []
+    },
+    {
+      "name": "clients",
+      "type": "base",
+      "apiRules": {
+        "list": "@request.auth.id != ''",
+        "view": "@request.auth.id != ''",
+        "create": "@request.auth.id != ''",
+        "update": "@request.auth.id != ''",
+        "delete": "@request.auth.id != ''"
+      },
+      "fields": [
+        {
+          "name": "name",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "phone",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "email",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "studio",
+          "type": "relation",
+          "required": true,
+          "system": false,
+          "collectionRef": "studios"
+        },
+        {
+          "name": "avatar",
+          "type": "url",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "totalSpent",
+          "type": "number",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "healthDataConsent",
+          "type": "bool",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "imageRights",
+          "type": "bool",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "consentTimestamp",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "consentIp",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "referenceType",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "referenceImage",
+          "type": "url",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "history",
+          "type": "json",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "healthAlerts",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "created",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate"]
+        },
+        {
+          "name": "updated",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate", "onUpdate"]
+        }
+      ],
+      "indexes": ["CREATE UNIQUE INDEX idx_clients_phone ON clients (phone) WHERE phone != ''"]
+    },
+    {
+      "name": "appointments",
+      "type": "base",
+      "apiRules": {
+        "list": "@request.auth.id != ''",
+        "view": "@request.auth.id != ''",
+        "create": "@request.auth.id != ''",
+        "update": "@request.auth.id != ''",
+        "delete": "@request.auth.id != ''"
+      },
+      "fields": [
+        {
+          "name": "studio",
+          "type": "relation",
+          "required": true,
+          "system": false,
+          "collectionRef": "studios"
+        },
+        {
+          "name": "client",
+          "type": "relation",
+          "required": true,
+          "system": false,
+          "collectionRef": "clients"
+        },
+        {
+          "name": "date",
+          "type": "date",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "time",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "status",
+          "type": "select",
+          "required": false,
+          "system": false,
+          "selectValues": [
+            "scheduled",
+            "completed",
+            "cancelled",
+            "pending",
+            "pending_confirmation",
+            "confirmed"
+          ]
+        },
+        {
+          "name": "notes",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "totalValue",
+          "type": "number",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "depositPaid",
+          "type": "number",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "paymentStatus",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "financialStatus",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "rescheduleLink",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "created",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate"]
+        },
+        {
+          "name": "updated",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate", "onUpdate"]
+        }
+      ],
+      "indexes": []
+    },
+    {
+      "name": "messages",
+      "type": "base",
+      "apiRules": {
+        "list": "@request.auth.id != ''",
+        "view": "@request.auth.id != ''",
+        "create": "@request.auth.id != ''",
+        "update": "@request.auth.id != ''",
+        "delete": "@request.auth.id != ''"
+      },
+      "fields": [
+        {
+          "name": "studio",
+          "type": "relation",
+          "required": true,
+          "system": false,
+          "collectionRef": "studios"
+        },
+        {
+          "name": "client",
+          "type": "relation",
+          "required": true,
+          "system": false,
+          "collectionRef": "clients"
+        },
+        {
+          "name": "content",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "sender_type",
+          "type": "select",
+          "required": true,
+          "system": false,
+          "selectValues": ["studio", "client", "system", "bot"]
+        },
+        {
+          "name": "created",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate"]
+        },
+        {
+          "name": "updated",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate", "onUpdate"]
+        }
+      ],
+      "indexes": []
     }
   ]
 }

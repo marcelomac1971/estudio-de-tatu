@@ -79,7 +79,9 @@ export function ChatArea({
           })),
         )
       }
-    } catch (e) {}
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   useEffect(() => {
@@ -116,7 +118,9 @@ export function ChatArea({
           content: text,
           sender_type: type === 'system' ? 'system' : isBot ? 'bot' : 'client',
         })
-      } catch (e) {}
+      } catch (e) {
+        console.error(e)
+      }
     }
   }
 

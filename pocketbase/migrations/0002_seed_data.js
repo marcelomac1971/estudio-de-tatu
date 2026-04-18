@@ -39,7 +39,7 @@ migrate(
       clientRecord.set('name', 'Mariana Costa')
       clientRecord.set('phone', '5511999999999')
       clientRecord.set('studio', studioRecord.id)
-      clientRecord.set('avatar', 'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=15')
+      clientRecord.set('avatar', '')
       clientRecord.set('healthDataConsent', true)
       clientRecord.set('imageRights', true)
       app.save(clientRecord)
