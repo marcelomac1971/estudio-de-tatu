@@ -63,32 +63,44 @@ export default function Agenda() {
     }
   }
 
-  const handleConfirm = (app: any) => {
-    updateAppointment({ ...app, status: 'confirmed' })
-    setSelectedApp({ ...app, status: 'confirmed' })
-    toast({
-      title: 'Agendamento Confirmado',
-      description: 'O cliente clicou em Confirmar Agendamento no WhatsApp.',
-    })
+  const handleConfirm = async (app: any) => {
+    try {
+      await updateAppointment({ ...app, status: 'confirmed' })
+      setSelectedApp({ ...app, status: 'confirmed' })
+      toast({
+        title: 'Agendamento Confirmado',
+        description: 'O cliente clicou em Confirmar Agendamento no WhatsApp.',
+      })
+    } catch (err: any) {
+      toast({ title: 'Erro', description: err.message, variant: 'destructive' })
+    }
   }
 
-  const handleCancel = (app: any, type: string) => {
-    if (type === '<24h') {
-      updateAppointment({ ...app, status: 'cancelled', financialStatus: 'Compensação de Agenda' })
-      setSelectedApp({ ...app, status: 'cancelled', financialStatus: 'Compensação de Agenda' })
-      toast({
-        variant: 'destructive',
-        title: 'Compensação de Agenda Aplicada',
-        description: 'Sinal retido devido ao cancelamento fora do prazo / no-show.',
-      })
-    } else {
-      const link = `https://studionoir.app/reagendar/${app.id}`
-      updateAppointment({ ...app, status: 'cancelled', rescheduleLink: link })
-      setSelectedApp({ ...app, status: 'cancelled', rescheduleLink: link })
-      toast({
-        title: 'Link de Reagendamento Gerado',
-        description: 'O cliente manteve o sinal e recebeu o link para reagendar (>24h).',
-      })
+  const handleCancel = async (app: any, type: string) => {
+    try {
+      if (type === '<24h') {
+        await updateAppointment({
+          ...app,
+          status: 'cancelled',
+          financialStatus: 'Compensação de Agenda',
+        })
+        setSelectedApp({ ...app, status: 'cancelled', financialStatus: 'Compensação de Agenda' })
+        toast({
+          variant: 'destructive',
+          title: 'Compensação de Agenda Aplicada',
+          description: 'Sinal retido devido ao cancelamento fora do prazo / no-show.',
+        })
+      } else {
+        const link = `https://studionoir.app/reagendar/${app.id}`
+        await updateAppointment({ ...app, status: 'cancelled', rescheduleLink: link })
+        setSelectedApp({ ...app, status: 'cancelled', rescheduleLink: link })
+        toast({
+          title: 'Link de Reagendamento Gerado',
+          description: 'O cliente manteve o sinal e recebeu o link para reagendar (>24h).',
+        })
+      }
+    } catch (err: any) {
+      toast({ title: 'Erro', description: err.message, variant: 'destructive' })
     }
   }
 

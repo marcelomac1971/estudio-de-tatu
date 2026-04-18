@@ -146,7 +146,10 @@ export default function Layout() {
                     ? 'Gestão da Plataforma'
                     : `Dashboard - ${currentStudio?.name || 'Estúdio'}`}
                 </h1>
-                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold border border-emerald-500/20 shadow-sm animate-fade-in">
+                <div
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold border border-emerald-500/20 shadow-sm animate-fade-in cursor-help"
+                  title={`Conectado a: ${import.meta.env.VITE_POCKETBASE_URL || 'Local'}`}
+                >
                   <Cloud className="size-3.5" />
                   <span>Skip Cloud Ativo</span>
                 </div>

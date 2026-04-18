@@ -6,7 +6,8 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { AlertCircle, FileCheck, BrainCircuit, MessageSquareText, TimerOff } from 'lucide-react'
 import useAppStore from '@/stores/useAppStore'
 import { useToast } from '@/components/ui/use-toast'
-import { supabase } from '@/lib/supabase/client'
+import pb from '@/lib/pocketbase/client'
+import { useRealtime } from '@/hooks/use-realtime'
 
 type Message = {
   id: string
@@ -26,6 +27,7 @@ type ClientData = {
   depositAmount: number
   health: string
   legalAccepted: boolean
+  id?: string
 }
 
 export function ChatArea({
@@ -46,20 +48,77 @@ export function ChatArea({
   const scrollRef = useRef<HTMLDivElement>(null)
   const { toast } = useToast()
 
-  const { currentStudioId, studios, addAppointment } = useAppStore()
+  const { currentStudioId, studios, addAppointment, activeClients } = useAppStore()
   const studio = studios.find((s) => s.id === currentStudioId)
 
-  const addMsg = (text: string, isBot: boolean, type: 'text' | 'terms' | 'system' = 'text') =>
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: Math.random().toString(),
-        text,
-        isBot,
-        type,
-        time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-      },
-    ])
+  const currentClient = activeClients[0]
+
+  const fetchMessages = async () => {
+    if (!currentStudioId || !currentClient?.id) return
+    try {
+      const records = await pb.collection('messages').getFullList({
+        filter: `studio = "${currentStudioId}" && client = "${currentClient.id}"`,
+        sort: 'created',
+      })
+      if (records.length > 0) {
+        setMessages(
+          records.map((r) => ({
+            id: r.id,
+            text: r.content,
+            isBot: r.sender_type === 'bot' || r.sender_type === 'system',
+            type:
+              r.sender_type === 'system'
+                ? 'system'
+                : r.content === '' && r.sender_type === 'bot'
+                  ? 'terms'
+                  : 'text',
+            time: new Date(r.created).toLocaleTimeString('pt-BR', {
+              hour: '2-digit',
+              minute: '2-digit',
+            }),
+          })),
+        )
+      }
+    } catch (e) {}
+  }
+
+  useEffect(() => {
+    fetchMessages()
+  }, [currentStudioId, currentClient?.id])
+
+  useRealtime(
+    'messages',
+    () => {
+      fetchMessages()
+    },
+    !!currentStudioId && !!currentClient?.id,
+  )
+
+  const addMsg = async (
+    text: string,
+    isBot: boolean,
+    type: 'text' | 'terms' | 'system' = 'text',
+  ) => {
+    const newMsg: Message = {
+      id: Math.random().toString(),
+      text,
+      isBot,
+      type,
+      time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+    }
+    setMessages((prev) => [...prev, newMsg])
+
+    if (currentStudioId && currentClient?.id) {
+      try {
+        await pb.collection('messages').create({
+          studio: currentStudioId,
+          client: currentClient.id,
+          content: text,
+          sender_type: type === 'system' ? 'system' : isBot ? 'bot' : 'client',
+        })
+      } catch (e) {}
+    }
+  }
 
   useEffect(() => {
     if (step === 0 && messages.length === 0 && studio?.botFirstMessage) {
@@ -171,14 +230,14 @@ export function ChatArea({
           addMsg(`Consultando a agenda do estúdio...`, true)
 
           try {
-            const { data } = await supabase
-              .from('agendamentos')
-              .select('data_hora')
-              .gte('data_hora', new Date().toISOString())
+            const records = await pb.collection('appointments').getFullList({
+              filter: `date >= "${new Date().toISOString().split('T')[0]}"`,
+            })
 
-            const occupiedDates = (data || []).map((a) => {
-              const d = new Date(a.data_hora!)
-              return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')} às ${d.getHours()}:00`
+            const occupiedDates = records.map((a) => {
+              if (!a.date) return ''
+              const d = new Date(a.date)
+              return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')} às ${a.time || '10:00'}`
             })
 
             let baseDate = inputStr.split(' às ')[0]
@@ -264,21 +323,21 @@ export function ChatArea({
             }
 
             try {
-              await supabase.from('agendamentos').insert({
-                estudio_id: studio?.id || null,
-                data_hora: isoDate,
-                valor_sinal: p.depositAmount || 200,
-                status_pagamento: 'pendente',
+              await addAppointment({
+                studioId: studio?.id || '',
+                clientId: currentClient?.id || '',
+                date: isoDate,
+                time: p.time || '10:00',
                 duration: 3,
                 description: `Tattoo ${p.style} (${p.size}) em ${p.location}`,
-                total_value: p.priceEstimate,
-                date: p.date || '2024-12-01',
-                time: p.time || '10:00',
+                totalValue: p.priceEstimate,
+                depositPaid: p.depositAmount || 200,
                 status: 'pending',
-                payment_status: 'pending',
+                paymentStatus: 'pending',
               })
             } catch (err) {
               console.error('Erro ao salvar agendamento:', err)
+              toast({ title: 'Erro ao salvar', variant: 'destructive' })
             }
           }
           saveDb()
@@ -295,19 +354,6 @@ export function ChatArea({
             )
           }, 100)
 
-          addAppointment({
-            id: newAppId,
-            studioId: studio?.id || 's1',
-            clientId: 'c2',
-            date: p.date || '2024-12-01',
-            time: p.time || '10:00',
-            duration: 3,
-            description: `Tattoo ${p.style} (${p.size}) em ${p.location}`,
-            totalValue: p.priceEstimate,
-            depositPaid: p.depositAmount || 200,
-            status: 'pending',
-            paymentStatus: 'pending',
-          })
           return { ...p, legalAccepted: true }
         })
       } else if (nextStep === -2) {
@@ -318,7 +364,7 @@ export function ChatArea({
 
   const handleHumanSend = () => {
     if (humanText.trim()) {
-      addMsg(humanText, true)
+      addMsg(humanText, false)
       setHumanText('')
     }
   }
@@ -328,11 +374,16 @@ export function ChatArea({
       <div className="h-16 border-b border-border bg-card/80 backdrop-blur flex items-center justify-between px-4 shrink-0 z-10">
         <div className="flex items-center gap-3">
           <Avatar>
-            <AvatarImage src="https://img.usecurling.com/ppl/thumbnail?gender=female&seed=15" />
+            <AvatarImage
+              src={
+                currentClient?.avatar ||
+                'https://img.usecurling.com/ppl/thumbnail?gender=female&seed=15'
+              }
+            />
             <AvatarFallback>MC</AvatarFallback>
           </Avatar>
           <div>
-            <h3 className="font-semibold text-sm">Mariana Costa</h3>
+            <h3 className="font-semibold text-sm">{currentClient?.name || 'Mariana Costa'}</h3>
             <p className="text-xs text-muted-foreground">
               {step === 100
                 ? 'Sessão Encerrada'
