@@ -28,6 +28,7 @@ import {
   Building2,
   ShieldCheck,
   LogOut,
+  Cloud,
 } from 'lucide-react'
 import { Button } from './ui/button'
 import useAppStore from '@/stores/useAppStore'
@@ -139,9 +140,17 @@ export default function Layout() {
           <header className="h-14 shrink-0 border-b border-border flex items-center justify-between px-4 bg-background/95 backdrop-blur z-10">
             <div className="flex items-center gap-4">
               <SidebarTrigger />
-              <h1 className="text-sm font-medium text-muted-foreground hidden sm:block">
-                {role === 'admin' ? 'Gestão da Plataforma' : `Dashboard - ${currentStudio?.name}`}
-              </h1>
+              <div className="hidden sm:flex items-center gap-3">
+                <h1 className="text-sm font-medium text-muted-foreground">
+                  {role === 'admin'
+                    ? 'Gestão da Plataforma'
+                    : `Dashboard - ${currentStudio?.name || 'Estúdio'}`}
+                </h1>
+                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold border border-emerald-500/20 shadow-sm animate-fade-in">
+                  <Cloud className="size-3.5" />
+                  <span>Skip Cloud Ativo</span>
+                </div>
+              </div>
             </div>
             <div className="flex items-center gap-4">
               <Button

@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
-import { Building2, Info } from 'lucide-react'
+import { Building2, Info, Cloud } from 'lucide-react'
 import { useAuth } from '@/hooks/use-auth'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 
@@ -46,11 +46,15 @@ export default function Login() {
 
       <Card className="w-full max-w-md relative z-10 border-border/50 shadow-2xl bg-card/80 backdrop-blur">
         <CardHeader className="text-center space-y-2">
-          <div className="mx-auto w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mb-2">
-            <Building2 className="size-6 text-primary" />
+          <div className="mx-auto w-12 h-12 bg-primary/10 border border-primary/20 rounded-full flex items-center justify-center mb-2 shadow-sm relative">
+            <Cloud
+              className="size-6 text-primary absolute animate-pulse"
+              style={{ opacity: 0.2 }}
+            />
+            <Building2 className="size-5 text-primary relative z-10" />
           </div>
-          <CardTitle className="text-2xl font-bold">Modern Noir SaaS</CardTitle>
-          <CardDescription>Faça login para acessar seu estúdio ou painel admin.</CardDescription>
+          <CardTitle className="text-2xl font-bold">Skip Cloud Connect</CardTitle>
+          <CardDescription>Autenticação nativa e segura para seu estúdio.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">

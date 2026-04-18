@@ -117,11 +117,15 @@ export function ChatArea({
   const calculatePrice = (styleName: string, sizeCm: number, loc: string) => {
     const cfg = studio?.tattooStyleConfigs?.find((c) => c.name === styleName)
     const pct = studio?.depositPercentage || 20
-    if (!cfg) return { total: 0, deposit: 0 }
-    let total = cfg.basePrice
-    if (sizeCm > cfg.referenceSize) total += (sizeCm - cfg.referenceSize) * cfg.sizeSurcharge
-    if (cfg.complexLocations.some((c) => c.toLowerCase() === loc.toLowerCase())) {
-      total += cfg.locationSurcharge
+    if (!cfg) return { total: 400, deposit: 400 * (pct / 100) }
+    let total = cfg.basePrice || 400
+    if (sizeCm > (cfg.referenceSize || 15))
+      total += (sizeCm - (cfg.referenceSize || 15)) * (cfg.sizeSurcharge || 0)
+    if (
+      cfg.complexLocations &&
+      cfg.complexLocations.some((c) => c.toLowerCase() === loc.toLowerCase())
+    ) {
+      total += cfg.locationSurcharge || 0
     }
     return { total, deposit: total * (pct / 100) }
   }
@@ -259,19 +263,23 @@ export function ChatArea({
               }
             }
 
-            await supabase.from('agendamentos').insert({
-              estudio_id: studio?.id,
-              data_hora: isoDate,
-              valor_sinal: p.depositAmount || 200,
-              status_pagamento: 'pendente',
-              duration: 3,
-              description: `Tattoo ${p.style} (${p.size}) em ${p.location}`,
-              total_value: p.priceEstimate,
-              date: p.date || '2024-12-01',
-              time: p.time || '10:00',
-              status: 'pending',
-              payment_status: 'pending',
-            })
+            try {
+              await supabase.from('agendamentos').insert({
+                estudio_id: studio?.id || null,
+                data_hora: isoDate,
+                valor_sinal: p.depositAmount || 200,
+                status_pagamento: 'pendente',
+                duration: 3,
+                description: `Tattoo ${p.style} (${p.size}) em ${p.location}`,
+                total_value: p.priceEstimate,
+                date: p.date || '2024-12-01',
+                time: p.time || '10:00',
+                status: 'pending',
+                payment_status: 'pending',
+              })
+            } catch (err) {
+              console.error('Erro ao salvar agendamento:', err)
+            }
           }
           saveDb()
 
@@ -430,13 +438,31 @@ export function ChatArea({
                 </Button>
               )}
               {step === 1 &&
-                studio?.tattooStyleConfigs
-                  ?.filter((c) => c.enabled)
-                  .map((s) => (
-                    <Button key={s.name} variant="outline" onClick={() => handleOption(s.name, 2)}>
-                      {s.name}
+                (studio?.tattooStyleConfigs?.filter((c) => c.enabled).length ? (
+                  studio.tattooStyleConfigs
+                    .filter((c) => c.enabled)
+                    .map((s) => (
+                      <Button
+                        key={s.name}
+                        variant="outline"
+                        onClick={() => handleOption(s.name, 2)}
+                      >
+                        {s.name}
+                      </Button>
+                    ))
+                ) : (
+                  <>
+                    <Button variant="outline" onClick={() => handleOption('Realismo', 2)}>
+                      Realismo
                     </Button>
-                  ))}
+                    <Button variant="outline" onClick={() => handleOption('Old School', 2)}>
+                      Old School
+                    </Button>
+                    <Button variant="outline" onClick={() => handleOption('Fineline', 2)}>
+                      Fineline
+                    </Button>
+                  </>
+                ))}
               {step === 2 && (
                 <>
                   <Button variant="outline" onClick={() => handleOption('10cm', 3)}>

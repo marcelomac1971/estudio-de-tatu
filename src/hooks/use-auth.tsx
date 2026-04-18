@@ -32,11 +32,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(session?.user ?? null)
       setLoading(false)
     })
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
+    supabase.auth
+      .getSession()
+      .then(({ data: { session }, error }) => {
+        if (error) {
+          console.error('Error fetching session:', error)
+        }
+        setSession(session)
+        setUser(session?.user ?? null)
+        setLoading(false)
+      })
+      .catch((err) => {
+        console.error('Unexpected error fetching session:', err)
+        setLoading(false)
+      })
     return () => subscription.unsubscribe()
   }, [])
 

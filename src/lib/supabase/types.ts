@@ -13,28 +13,55 @@ export type Database = {
         Row: {
           cliente_id: string | null
           data_hora: string | null
+          date: string | null
+          description: string | null
+          duration: number | null
           estudio_id: string | null
+          financial_status: string | null
           id: string
+          payment_status: string | null
           referencia_imagem_url: string | null
+          reschedule_link: string | null
+          status: string | null
           status_pagamento: string | null
+          time: string | null
+          total_value: number | null
           valor_sinal: number | null
         }
         Insert: {
           cliente_id?: string | null
           data_hora?: string | null
+          date?: string | null
+          description?: string | null
+          duration?: number | null
           estudio_id?: string | null
+          financial_status?: string | null
           id?: string
+          payment_status?: string | null
           referencia_imagem_url?: string | null
+          reschedule_link?: string | null
+          status?: string | null
           status_pagamento?: string | null
+          time?: string | null
+          total_value?: number | null
           valor_sinal?: number | null
         }
         Update: {
           cliente_id?: string | null
           data_hora?: string | null
+          date?: string | null
+          description?: string | null
+          duration?: number | null
           estudio_id?: string | null
+          financial_status?: string | null
           id?: string
+          payment_status?: string | null
           referencia_imagem_url?: string | null
+          reschedule_link?: string | null
+          status?: string | null
           status_pagamento?: string | null
+          time?: string | null
+          total_value?: number | null
           valor_sinal?: number | null
         }
         Relationships: [
@@ -57,30 +84,57 @@ export type Database = {
       clientes: {
         Row: {
           alergias: string | null
+          avatar: string | null
+          consent_ip: string | null
+          consent_timestamp: string | null
           created_at: string | null
           estudio_id: string | null
+          health_data_consent: boolean | null
           historico_medico: string | null
+          history: Json | null
           id: string
+          image_rights: boolean | null
           nome: string | null
+          reference_image: string | null
+          reference_type: string | null
           telefone: string | null
+          total_spent: number | null
         }
         Insert: {
           alergias?: string | null
+          avatar?: string | null
+          consent_ip?: string | null
+          consent_timestamp?: string | null
           created_at?: string | null
           estudio_id?: string | null
+          health_data_consent?: boolean | null
           historico_medico?: string | null
+          history?: Json | null
           id?: string
+          image_rights?: boolean | null
           nome?: string | null
+          reference_image?: string | null
+          reference_type?: string | null
           telefone?: string | null
+          total_spent?: number | null
         }
         Update: {
           alergias?: string | null
+          avatar?: string | null
+          consent_ip?: string | null
+          consent_timestamp?: string | null
           created_at?: string | null
           estudio_id?: string | null
+          health_data_consent?: boolean | null
           historico_medico?: string | null
+          history?: Json | null
           id?: string
+          image_rights?: boolean | null
           nome?: string | null
+          reference_image?: string | null
+          reference_type?: string | null
           telefone?: string | null
+          total_spent?: number | null
         }
         Relationships: [
           {
@@ -94,28 +148,73 @@ export type Database = {
       }
       estudios: {
         Row: {
+          address: string | null
+          availability_search_margin: number | null
+          billing_cycle_end: string | null
+          bot_first_message: string | null
+          contact_email: string | null
           created_at: string | null
+          deposit_percentage: number | null
+          google_calendar_connected: boolean | null
           id: string
+          location: string | null
           mp_access_token: string | null
+          mrr: number | null
           nome: string
+          recovery_message: string | null
           status_assinatura: string | null
+          tattoo_style_configs: Json | null
+          tattoo_styles: Json | null
+          user_id: string | null
           whatsapp_vinculado: string | null
+          zapi_instance_id: string | null
+          zapi_token: string | null
         }
         Insert: {
+          address?: string | null
+          availability_search_margin?: number | null
+          billing_cycle_end?: string | null
+          bot_first_message?: string | null
+          contact_email?: string | null
           created_at?: string | null
+          deposit_percentage?: number | null
+          google_calendar_connected?: boolean | null
           id?: string
+          location?: string | null
           mp_access_token?: string | null
+          mrr?: number | null
           nome: string
+          recovery_message?: string | null
           status_assinatura?: string | null
+          tattoo_style_configs?: Json | null
+          tattoo_styles?: Json | null
+          user_id?: string | null
           whatsapp_vinculado?: string | null
+          zapi_instance_id?: string | null
+          zapi_token?: string | null
         }
         Update: {
+          address?: string | null
+          availability_search_margin?: number | null
+          billing_cycle_end?: string | null
+          bot_first_message?: string | null
+          contact_email?: string | null
           created_at?: string | null
+          deposit_percentage?: number | null
+          google_calendar_connected?: boolean | null
           id?: string
+          location?: string | null
           mp_access_token?: string | null
+          mrr?: number | null
           nome?: string
+          recovery_message?: string | null
           status_assinatura?: string | null
+          tattoo_style_configs?: Json | null
+          tattoo_styles?: Json | null
+          user_id?: string | null
           whatsapp_vinculado?: string | null
+          zapi_instance_id?: string | null
+          zapi_token?: string | null
         }
         Relationships: []
       }
@@ -316,6 +415,15 @@ export const Constants = {
 //   valor_sinal: numeric (nullable)
 //   status_pagamento: text (nullable, default: 'pendente'::text)
 //   referencia_imagem_url: text (nullable)
+//   duration: numeric (nullable)
+//   description: text (nullable)
+//   total_value: numeric (nullable)
+//   financial_status: text (nullable)
+//   reschedule_link: text (nullable)
+//   date: text (nullable)
+//   time: text (nullable)
+//   status: text (nullable, default: 'pending'::text)
+//   payment_status: text (nullable, default: 'pending'::text)
 // Table: clientes
 //   id: uuid (not null, default: gen_random_uuid())
 //   estudio_id: uuid (nullable)
@@ -324,6 +432,15 @@ export const Constants = {
 //   alergias: text (nullable)
 //   historico_medico: text (nullable)
 //   created_at: timestamp with time zone (nullable, default: now())
+//   avatar: text (nullable)
+//   total_spent: numeric (nullable, default: 0)
+//   health_data_consent: boolean (nullable, default: false)
+//   image_rights: boolean (nullable, default: false)
+//   consent_timestamp: text (nullable)
+//   consent_ip: text (nullable)
+//   reference_type: text (nullable)
+//   reference_image: text (nullable)
+//   history: jsonb (nullable)
 // Table: estudios
 //   id: uuid (not null, default: gen_random_uuid())
 //   nome: text (not null)
@@ -331,6 +448,21 @@ export const Constants = {
 //   mp_access_token: text (nullable)
 //   status_assinatura: text (nullable, default: 'ativo'::text)
 //   created_at: timestamp with time zone (nullable, default: now())
+//   user_id: uuid (nullable)
+//   contact_email: text (nullable)
+//   address: text (nullable)
+//   location: text (nullable)
+//   mrr: numeric (nullable)
+//   tattoo_styles: jsonb (nullable)
+//   bot_first_message: text (nullable)
+//   recovery_message: text (nullable)
+//   deposit_percentage: numeric (nullable)
+//   availability_search_margin: integer (nullable)
+//   tattoo_style_configs: jsonb (nullable)
+//   zapi_instance_id: text (nullable)
+//   zapi_token: text (nullable)
+//   google_calendar_connected: boolean (nullable, default: false)
+//   billing_cycle_end: text (nullable)
 // Table: termos_lgpd
 //   id: uuid (not null, default: gen_random_uuid())
 //   estudio_id: uuid (nullable)
@@ -349,6 +481,7 @@ export const Constants = {
 //   PRIMARY KEY clientes_pkey: PRIMARY KEY (id)
 // Table: estudios
 //   PRIMARY KEY estudios_pkey: PRIMARY KEY (id)
+//   FOREIGN KEY estudios_user_id_fkey: FOREIGN KEY (user_id) REFERENCES auth.users(id)
 //   UNIQUE estudios_whatsapp_vinculado_key: UNIQUE (whatsapp_vinculado)
 // Table: termos_lgpd
 //   FOREIGN KEY termos_lgpd_cliente_id_fkey: FOREIGN KEY (cliente_id) REFERENCES clientes(id)
@@ -358,15 +491,23 @@ export const Constants = {
 // --- ROW LEVEL SECURITY POLICIES ---
 // Table: agendamentos
 //   Policy "agendamentos_delete" (DELETE, PERMISSIVE) roles={authenticated}
-//     USING: true
+//     USING: (estudio_id = auth.uid())
 //   Policy "agendamentos_insert" (INSERT, PERMISSIVE) roles={authenticated}
-//     WITH CHECK: true
+//     WITH CHECK: (estudio_id = auth.uid())
 //   Policy "agendamentos_select" (SELECT, PERMISSIVE) roles={authenticated}
-//     USING: true
+//     USING: (estudio_id = auth.uid())
 //   Policy "agendamentos_update" (UPDATE, PERMISSIVE) roles={authenticated}
-//     USING: true
+//     USING: (estudio_id = auth.uid())
 // Table: clientes
 //   Policy "Isolamento por Estúdio" (ALL, PERMISSIVE) roles={public}
+//     USING: (estudio_id = auth.uid())
+//   Policy "clientes_delete" (DELETE, PERMISSIVE) roles={authenticated}
+//     USING: (estudio_id = auth.uid())
+//   Policy "clientes_insert" (INSERT, PERMISSIVE) roles={authenticated}
+//     WITH CHECK: (estudio_id = auth.uid())
+//   Policy "clientes_select" (SELECT, PERMISSIVE) roles={authenticated}
+//     USING: (estudio_id = auth.uid())
+//   Policy "clientes_update" (UPDATE, PERMISSIVE) roles={authenticated}
 //     USING: (estudio_id = auth.uid())
 // Table: estudios
 //   Policy "estudios_insert" (INSERT, PERMISSIVE) roles={authenticated}

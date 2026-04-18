@@ -126,8 +126,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const loadData = useCallback(async () => {
     if (!user) return
 
-    const { data: est } = await supabase.from('estudios').select('*')
-    if (est) {
+    const { data: est, error: estError } = await supabase.from('estudios').select('*')
+    if (estError) console.error('Erro ao buscar estúdios:', estError)
+
+    if (est && est.length > 0) {
       setStudios(
         est.map((e: any) => ({
           id: e.id,
@@ -152,10 +154,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
       const userStudio = est.find((s: any) => s.id === user.id)
       if (userStudio) setCurrentStudioIdState(user.id)
-      else if (est.length > 0) setCurrentStudioIdState(est[0].id)
+      else setCurrentStudioIdState(est[0].id)
+    } else {
+      setCurrentStudioIdState('default-studio')
     }
 
-    const { data: cli } = await supabase.from('clientes').select('*').eq('estudio_id', user.id)
+    const { data: cli, error: cliError } = await supabase
+      .from('clientes')
+      .select('*')
+      .eq('estudio_id', user.id)
+    if (cliError) console.error('Erro ao buscar clientes:', cliError)
     if (cli) {
       setClients(
         cli.map((c: any) => ({
@@ -177,10 +185,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
       )
     }
 
-    const { data: appts } = await supabase
+    const { data: appts, error: apptsError } = await supabase
       .from('agendamentos')
       .select('*')
       .eq('estudio_id', user.id)
+    if (apptsError) console.error('Erro ao buscar agendamentos:', apptsError)
     if (appts) {
       setAppointments(
         appts.map((a: any) => ({
