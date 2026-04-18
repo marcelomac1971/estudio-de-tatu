@@ -260,10 +260,17 @@ export function ChatArea({
             }
 
             await supabase.from('agendamentos').insert({
-              estudio_id: '00000000-0000-0000-0000-000000000001',
+              estudio_id: studio?.id,
               data_hora: isoDate,
               valor_sinal: p.depositAmount || 200,
               status_pagamento: 'pendente',
+              duration: 3,
+              description: `Tattoo ${p.style} (${p.size}) em ${p.location}`,
+              total_value: p.priceEstimate,
+              date: p.date || '2024-12-01',
+              time: p.time || '10:00',
+              status: 'pending',
+              payment_status: 'pending',
             })
           }
           saveDb()

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import useAppStore from '@/stores/useAppStore'
 import { Building2 } from 'lucide-react'
 import { useToast } from '@/components/ui/use-toast'
+import { useAuth } from '@/hooks/use-auth'
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -16,30 +17,58 @@ export default function Register() {
     address: '',
     password: '',
   })
+  const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
-  const { addStudio, login } = useAppStore()
+  const { addStudio } = useAppStore()
   const { toast } = useToast()
+  const { signUp } = useAuth()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const newId = `s${Date.now()}`
+    setIsLoading(true)
 
-    addStudio({
-      id: newId,
-      name: formData.name,
-      contactPhone: formData.phone,
-      contactEmail: formData.email,
-      address: formData.address,
-      location: formData.address.split(',')[0] || 'Brasil',
-      status: 'active',
-      mrr: 299,
-      tattooStyles: ['Fineline', 'Realismo', 'Blackwork'],
-      botFirstMessage: 'Olá! Bem-vindo ao atendimento do nosso estúdio.',
-    })
+    const { data, error } = await signUp(formData.email, formData.password)
+    if (error) {
+      toast({ variant: 'destructive', title: 'Erro no cadastro', description: error.message })
+      setIsLoading(false)
+      return
+    }
 
-    toast({ title: 'Estúdio registrado com sucesso!', description: 'Bem-vindo à plataforma.' })
-    login(formData.email, formData.password)
-    navigate('/')
+    if (data?.user) {
+      addStudio({
+        id: data.user.id,
+        name: formData.name,
+        contactPhone: formData.phone,
+        contactEmail: formData.email,
+        address: formData.address,
+        location: formData.address.split(',')[0] || 'Brasil',
+        status: 'active',
+        mrr: 299,
+        botFirstMessage: 'Olá! Bem-vindo ao atendimento do nosso estúdio.',
+        recoveryMessage: '',
+        depositPercentage: 20,
+        availabilitySearchMargin: 3,
+        tattooStyleConfigs: [
+          {
+            name: 'Realismo',
+            enabled: true,
+            basePrice: 500,
+            referenceSize: 10,
+            referenceLocation: 'Antebraço',
+            sizeSurcharge: 50,
+            complexLocations: ['Costela', 'Pescoço'],
+            locationSurcharge: 150,
+          },
+        ],
+        zapiInstanceId: '',
+        zapiToken: '',
+        googleCalendarConnected: false,
+        billingCycleEnd: '',
+      })
+      toast({ title: 'Estúdio registrado com sucesso!', description: 'Bem-vindo à plataforma.' })
+      navigate('/')
+    }
+    setIsLoading(false)
   }
 
   return (
@@ -60,6 +89,7 @@ export default function Register() {
                 required
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                disabled={isLoading}
               />
             </div>
             <div className="space-y-2">
@@ -68,6 +98,7 @@ export default function Register() {
                 required
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                disabled={isLoading}
               />
             </div>
             <div className="space-y-2">
@@ -77,6 +108,7 @@ export default function Register() {
                 required
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                disabled={isLoading}
               />
             </div>
             <div className="space-y-2">
@@ -85,6 +117,7 @@ export default function Register() {
                 required
                 value={formData.address}
                 onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                disabled={isLoading}
               />
             </div>
             <div className="space-y-2">
@@ -94,10 +127,11 @@ export default function Register() {
                 required
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                disabled={isLoading}
               />
             </div>
-            <Button type="submit" className="w-full">
-              Finalizar Cadastro
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? 'Cadastrando...' : 'Finalizar Cadastro'}
             </Button>
           </form>
           <div className="mt-6 text-center text-sm text-muted-foreground">

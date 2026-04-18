@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/accordion'
 import { Bot, Settings2 } from 'lucide-react'
 import useAppStore from '@/stores/useAppStore'
-import { TattooStyleConfig } from '@/lib/mockData'
+import { TattooStyleConfig } from '@/stores/useAppStore'
 
 const COMMON_STYLES = [
   'Realismo',
